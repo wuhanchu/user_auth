@@ -3,7 +3,6 @@ from sqlalchemy import Column, DateTime, ForeignKey, String, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
 Base = db.Model
 
@@ -14,7 +13,7 @@ class AiService(Base):
     id = Column(INTEGER(11), primary_key=True)
     name = Column(String(255))
     service_url = Column(String(255))
-    ai_type = Column(String(255), nullable=False)
+    type = Column(String(255), nullable=False)
 
 
 class MarkProject(Base):
@@ -24,11 +23,12 @@ class MarkProject(Base):
     name = Column(String(800))
     status = Column(String(255))
     model_txt = Column(String(5000))
-    ai_type = Column(INTEGER(8))
-    type = Column(INTEGER(1))
+    ai_service = Column(INTEGER(8))
+    type = Column(String(10))
     plan_time = Column(DateTime)
     inspection_persent = Column(INTEGER(3))
     create_time = Column(DateTime)
+    remarks = Column(String(2000))
 
 
 class SysMenu(Base):

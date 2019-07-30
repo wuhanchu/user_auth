@@ -21,7 +21,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/python_demo?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
 
     @classmethod
     def init_app(cls, app):

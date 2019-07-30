@@ -11,9 +11,9 @@ def list():
     q = MarkProject.query
     name = request.args.get("name")
     type = request.args.get("type")
-    if name is not None:
+    if name is not None and name != '':
         q = q.filter(MarkProject.name.like("%" + name + "%"))
-    if type is not None:
+    if type is not None  and type != '':
         q = q.filter_by(type = type)
     q = q.order_by(MarkProject.name.desc())
 
