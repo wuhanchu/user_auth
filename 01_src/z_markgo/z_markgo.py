@@ -1,6 +1,6 @@
 from config import config
 from flask import render_template
-from webapi import app,base_api,DEFAULT_MODULES
+from webapi import app,base_user_api,DEFAULT_MODULES
 from lib.models import db
 
 

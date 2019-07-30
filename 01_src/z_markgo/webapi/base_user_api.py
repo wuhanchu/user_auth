@@ -15,7 +15,7 @@ def user_list():
     q = q.order_by(SysUser.name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    page = int(offset / limit)
+    page = int(offset / limit) + 1
     if page == 0 : page = 1
     page = q.paginate(page=page, per_page=limit)
     return JsonResult.page(page)
