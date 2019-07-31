@@ -28,10 +28,12 @@ def get_user(id):
 
 @baseRoute.route('/users', methods=['POST'])
 def add_user():
-    name = request.form.get("name")
-    username = request.form.get("username")
-    telephone = request.form.get("telephone")
-    password = request.form.get("password")
+    args = request.get_json()
+    name = args.get("name")
+    username = args.get("username")
+    telephone = args.get("telephone")
+    #todo 将password转为md5编码
+    password = args.get("password")
     user = SysUser(name=name, username=username, password=password, telephone=telephone)
     db.session.add(user)
     db.session.commit()

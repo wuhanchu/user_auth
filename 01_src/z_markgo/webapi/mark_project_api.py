@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool
+from lib import param_tool,com_tool
 from webapi import markRoute
 
 # 列表
@@ -34,9 +34,10 @@ def get_info(id):
 @markRoute.route('/projects', methods=['POST'])
 def add():
     obj = MarkProject()
-    args = request.form
+    args = request.get_json()
     # 将参数加载进去
     param_tool.set_dict_parm(obj, args)
+    obj.create_time = com_tool.get_curr_date()
     db.session.add(obj)
     db.session.commit()
     return JsonResult.success("创建成功！", {"userid": obj.id})
@@ -45,20 +46,37 @@ def add():
 @markRoute.route('/projects/<id>', methods=['PUT','PATCH'])
 def update(id):
     obj = MarkProject.query.get(id)
+    #todo 判断是否可以修改type（标注类型）
     if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
-    args = request.form
+    args = request.get_json()
     #将参数加载进去
     param_tool.set_dict_parm(obj,args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
 #删除
-@markRoute.route('/users/<id>', methods=['DELETE'])
+@markRoute.route('/projects/<id>', methods=['DELETE'])
 def delete(id):
     obj = MarkProject.query.get(id)
     db.session.delete(obj)
+    #todo 判断是否有标注数据
+    #todo 删除项目用户分配信息
     # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
     # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
+
+@markRoute.route('/projects/addusers', methods=['POST'])
+def addusers():
+    args = request.get_json()
+    project_id = args.get("project_id")
+    users_id = args.get("users_id")
+    project_users = []
+    for user_id in users_id :
+        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
+        db.session.add(puser)
+        #project_users.append(param_tool.model_to_dict(puser))
+    db.session.commit()
+    return JsonResult.success("添加项目用户成功！")
+

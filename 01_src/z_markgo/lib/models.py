@@ -25,7 +25,7 @@ class MarkProject(Base):
     model_txt = Column(String(5000))
     ai_service = Column(INTEGER(8))
     type = Column(String(10))
-    plan_time = Column(DateTime)
+    plan_time = Column(String(20))
     inspection_persent = Column(INTEGER(3))
     create_time = Column(DateTime)
     remarks = Column(String(2000))
@@ -121,9 +121,9 @@ class SysUser(Base):
 class MarkProjectUser(Base):
     __tablename__ = 'mark_project_user'
 
-    id = Column(INTEGER(11), primary_key=True)
-    user_id = Column(ForeignKey('sys_user.id'), index=True)
-    project_id = Column(ForeignKey('mark_project.id'), index=True)
+    project_id = Column(ForeignKey('mark_project.id'), primary_key=True, nullable=False)
+    user_id = Column(ForeignKey('sys_user.id'), primary_key=True, nullable=False, index=True)
+    task_num = Column(INTEGER(11))
 
     project = relationship('MarkProject')
     user = relationship('SysUser')
