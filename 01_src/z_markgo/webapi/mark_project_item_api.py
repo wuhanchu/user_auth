@@ -60,7 +60,7 @@ def project_items_upload():
     item_paths = com_tool.enum_path_files(item_path)
     #创建item条目
     for project_item_path in item_paths:
-        item = MarkVoiceItem(project_id = project_id,filepath = project_item_path)
+        item = MarkProjectItem(project_id = project_id,filepath = project_item_path)
         db.session.add(item)
     db.session.commit()
     #todo 判断是否要进行文本解析，如果需要就调用后台任务

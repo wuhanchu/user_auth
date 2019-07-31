@@ -21,7 +21,7 @@ class MarkProject(Base):
 
     id = Column(INTEGER(8), primary_key=True)
     name = Column(String(800))
-    status = Column(String(255))
+    status = Column(INTEGER(1), server_default=text("'0'"))
     model_txt = Column(String(5000))
     ai_service = Column(INTEGER(8))
     type = Column(String(10))
@@ -118,19 +118,8 @@ class SysUser(Base):
     del_fg = Column(TINYINT(1))
 
 
-class MarkProjectUser(Base):
-    __tablename__ = 'mark_project_user'
-
-    project_id = Column(ForeignKey('mark_project.id'), primary_key=True, nullable=False)
-    user_id = Column(ForeignKey('sys_user.id'), primary_key=True, nullable=False, index=True)
-    task_num = Column(INTEGER(11))
-
-    project = relationship('MarkProject')
-    user = relationship('SysUser')
-
-
-class MarkVoiceItem(Base):
-    __tablename__ = 'mark_voice_items'
+class MarkProjectItem(Base):
+    __tablename__ = 'mark_project_items'
 
     id = Column(INTEGER(8), primary_key=True)
     project_id = Column(ForeignKey('mark_project.id'), index=True)
@@ -145,6 +134,17 @@ class MarkVoiceItem(Base):
     inspection_time = Column(DateTime)
 
     project = relationship('MarkProject')
+
+
+class MarkProjectUser(Base):
+    __tablename__ = 'mark_project_user'
+
+    project_id = Column(ForeignKey('mark_project.id'), primary_key=True, nullable=False)
+    user_id = Column(ForeignKey('sys_user.id'), primary_key=True, nullable=False, index=True)
+    task_num = Column(INTEGER(11))
+
+    project = relationship('MarkProject')
+    user = relationship('SysUser')
 
 
 class SysPermissionMenu(Base):

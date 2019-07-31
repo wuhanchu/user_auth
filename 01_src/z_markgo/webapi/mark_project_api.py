@@ -2,28 +2,33 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool
+from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 
 
 # 列表
 @markRoute.route('/projects', methods=['GET'])
 def projects_list():
-    q = MarkProject.query
+    sql =r"""select p.id,p.name,p.type,p.status,pu.sum_user,pi.sum_items,pi.sum_mark_items,p.plan_time,p.create_time from mark_project p join
+        (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
+        group by p.id) pu on pu.pid = p.id join
+        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_type !=-1  then 1 else 0 end) 
+        sum_mark_items from mark_project p left join mark_project_items pi on pi.project_id  = p.id group by p.id) 
+        pi on pi.pid = p.id where 1=1 """
+
     name = request.args.get("name")
     type = request.args.get("type")
     if name is not None and name != '':
-        q = q.filter(MarkProject.name.like("%" + name + "%"))
+        sql = sql + "and p.name like '%" + name + "%'"
     if type is not None  and type != '':
-        q = q.filter_by(type = type)
-    q = q.order_by(MarkProject.name.desc())
+        sql = sql + "and p.type = '" + type + "'"
+    sql = sql + " order by p.name "
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    page = int(offset / limit) + 1
-    if page == 0 : page = 1
-    page = q.paginate(page=page, per_page=limit)
-    return JsonResult.page(page)
+    res,total = sql_tool.mysql_page(db,sql,limit,offset)
+
+    return JsonResult.sql_pag(res,total)
 
 # 详细信息
 @markRoute.route('/projects/<id>', methods=['GET'])
