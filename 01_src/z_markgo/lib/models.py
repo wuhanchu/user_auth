@@ -127,7 +127,7 @@ class MarkProjectItem(Base):
     status = Column(INTEGER(1), server_default=text("'0'"))
     asr_txt = Column(String(255))
     mark_txt = Column(String(255))
-    user_id = Column(INTEGER(11))
+    user_id = Column(ForeignKey('sys_user.id'), index=True)
     inspection_type = Column(INTEGER(1))
     mark_time = Column(DateTime)
     assigned_time = Column(DateTime)

@@ -14,16 +14,21 @@ if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
 
 # 列表
-@markRoute.route('/project_items', methods=['GET'])
-def project_items_list():
-    q = MarkProject.query
-    name = request.args.get("name")
-    type = request.args.get("type")
-    if name is not None and name != '':
-        q = q.filter(MarkProject.name.like("%" + name + "%"))
-    if type is not None  and type != '':
-        q = q.filter_by(type = type)
-    q = q.order_by(MarkProject.name.desc())
+@markRoute.route('/project_items/<project_id>', methods=['GET'])
+def project_items_list(project_id):
+    q = MarkProjectItem.query.filter_by(project_id=project_id)
+    filepath = request.args.get("filepath")
+    status = request.args.get("status")
+    user_id = request.args.get("user_id")
+
+    if filepath is not None and filepath != '':
+        q = q.filter(MarkProjectItem.filepath.like("%" + filepath + "%"))
+    if status is not None  and status != '':
+        q = q.filter_by(status = status)
+    q = q.order_by(MarkProjectItem.status)
+    q.outerjoin(SysUser)
+    if user_id is not None  and user_id != '':
+        q = q.filter_by(user_id = user_id)
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
@@ -58,9 +63,10 @@ def project_items_upload():
     os.remove(zip_file_path)
     #遍历文件
     item_paths = com_tool.enum_path_files(item_path)
+    path_len = len(item_path)
     #创建item条目
     for project_item_path in item_paths:
-        item = MarkProjectItem(project_id = project_id,filepath = project_item_path)
+        item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
         db.session.add(item)
     db.session.commit()
     #todo 判断是否要进行文本解析，如果需要就调用后台任务

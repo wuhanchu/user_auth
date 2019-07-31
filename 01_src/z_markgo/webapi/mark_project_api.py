@@ -73,31 +73,3 @@ def projects_delete(id):
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 
-@markRoute.route('/projects/addusers', methods=['POST'])
-def projects_addusers():
-    args = request.get_json()
-    project_id = args.get("project_id")
-    users_id = args.get("users_id")
-    project_users = []
-    for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
-        db.session.add(puser)
-        #project_users.append(param_tool.model_to_dict(puser))
-    db.session.commit()
-    return JsonResult.success("添加项目用户成功！")
-
-
-@markRoute.route('/project_users', methods=['GET'])
-def projects_user_list():
-    args = request.get_json()
-    project_id = args.get("project_id")
-    users_id = args.get("users_id")
-    project_users = []
-    for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
-        db.session.add(puser)
-        #project_users.append(param_tool.model_to_dict(puser))
-    db.session.commit()
-    return JsonResult.success("添加项目用户成功！")
-
-
