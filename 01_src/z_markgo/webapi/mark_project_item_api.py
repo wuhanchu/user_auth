@@ -6,14 +6,16 @@ from lib import param_tool,com_tool
 from webapi import markRoute
 import os
 
-
-item_root_path = '../mark_items'
+work_dir = os.getcwd()
+print(os.path.dirname(work_dir))
+item_root_path = os.path.join(os.path.dirname(work_dir),"z_markgo_items")
+print(item_root_path )
 if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
 
 # 列表
-@markRoute.route('/projects', methods=['GET'])
-def list():
+@markRoute.route('/project_items', methods=['GET'])
+def project_items_list():
     q = MarkProject.query
     name = request.args.get("name")
     type = request.args.get("type")
@@ -32,36 +34,42 @@ def list():
 
 # 详细信息
 @markRoute.route('/projects/<id>', methods=['GET'])
-def get_info(id):
+def project_items_get_info(id):
     obj = MarkProject.query.get(id)
     return JsonResult.queryResult(obj)
 
 #导入文件
-@markRoute.route('/projects_item/upload', methods=['POST'])
-def upload_item():
+@markRoute.route('/project_items/upload', methods=['POST'])
+def project_items_upload():
     project_id = request.form.get("project_id")
-    item_file = request.files.get("item_file")
+    zip_file = request.files.get("item_file")
 
     # 创建item项目目录
     item_path = os.path.join(item_root_path,project_id)
     if not os.path.exists(item_path):
         os.makedirs(item_path)
     # 保存文件
-    item_file.save(item_path)
+    zip_file_path = os.path.join(item_path,zip_file.filename)
+    zip_file.save(zip_file_path)
+    zip_file.close()
     # 解压文件
-
-    obj = MarkProject()
-    args = request.get_json()
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    obj.create_time = com_tool.get_curr_date()
-    db.session.add(obj)
+    com_tool.unzip_file(zip_file_path,item_path)
+    #删除压缩文件
+    os.remove(zip_file_path)
+    #遍历文件
+    item_paths = com_tool.enum_path_files(item_path)
+    #创建item条目
+    for project_item_path in item_paths:
+        item = MarkVoiceItem(project_id = project_id,filepath = project_item_path)
+        db.session.add(item)
     db.session.commit()
-    return JsonResult.success("创建成功！", {"userid": obj.id})
+    #todo 判断是否要进行文本解析，如果需要就调用后台任务
+
+    return JsonResult.success("导入音频成功！总条数%s"%len(item_paths) )
 
 # 更新
 @markRoute.route('/projects/<id>', methods=['PUT','PATCH'])
-def update(id):
+def project_items_update(id):
     obj = MarkProject.query.get(id)
     #todo 判断是否可以修改type（标注类型）
     if obj is None :
@@ -74,7 +82,7 @@ def update(id):
 
 #删除
 @markRoute.route('/projects/<id>', methods=['DELETE'])
-def delete(id):
+def project_items_delete(id):
     obj = MarkProject.query.get(id)
     db.session.delete(obj)
     #todo 判断是否有标注数据

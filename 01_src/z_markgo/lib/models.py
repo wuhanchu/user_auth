@@ -134,7 +134,7 @@ class MarkVoiceItem(Base):
 
     id = Column(INTEGER(8), primary_key=True)
     project_id = Column(ForeignKey('mark_project.id'), index=True)
-    filename = Column(String(255))
+    filepath = Column(String(255))
     status = Column(INTEGER(1), server_default=text("'0'"))
     asr_txt = Column(String(255))
     mark_txt = Column(String(255))
