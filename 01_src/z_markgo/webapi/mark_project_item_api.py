@@ -4,11 +4,16 @@ from lib.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool
 from webapi import markRoute
+import os
 
+
+item_root_path = '../mark_items'
+if not os.path.exists(item_root_path):
+    os.makedirs(item_root_path)
 
 # 列表
 @markRoute.route('/projects', methods=['GET'])
-def projects_list():
+def list():
     q = MarkProject.query
     name = request.args.get("name")
     type = request.args.get("type")
@@ -31,9 +36,20 @@ def get_info(id):
     obj = MarkProject.query.get(id)
     return JsonResult.queryResult(obj)
 
-#添加
-@markRoute.route('/projects', methods=['POST'])
-def projects_add():
+#导入文件
+@markRoute.route('/projects_item/upload', methods=['POST'])
+def upload_item():
+    project_id = request.form.get("project_id")
+    item_file = request.files.get("item_file")
+
+    # 创建item项目目录
+    item_path = os.path.join(item_root_path,project_id)
+    if not os.path.exists(item_path):
+        os.makedirs(item_path)
+    # 保存文件
+    item_file.save(item_path)
+    # 解压文件
+
     obj = MarkProject()
     args = request.get_json()
     # 将参数加载进去
@@ -45,7 +61,7 @@ def projects_add():
 
 # 更新
 @markRoute.route('/projects/<id>', methods=['PUT','PATCH'])
-def projects_update(id):
+def update(id):
     obj = MarkProject.query.get(id)
     #todo 判断是否可以修改type（标注类型）
     if obj is None :
@@ -58,7 +74,7 @@ def projects_update(id):
 
 #删除
 @markRoute.route('/projects/<id>', methods=['DELETE'])
-def projects_delete(id):
+def delete(id):
     obj = MarkProject.query.get(id)
     db.session.delete(obj)
     #todo 判断是否有标注数据
@@ -67,32 +83,3 @@ def projects_delete(id):
     # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
-
-@markRoute.route('/projects/addusers', methods=['POST'])
-def projects_addusers():
-    args = request.get_json()
-    project_id = args.get("project_id")
-    users_id = args.get("users_id")
-    project_users = []
-    for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
-        db.session.add(puser)
-        #project_users.append(param_tool.model_to_dict(puser))
-    db.session.commit()
-    return JsonResult.success("添加项目用户成功！")
-
-
-@markRoute.route('/project_users', methods=['GET'])
-def projects_user_list():
-    args = request.get_json()
-    project_id = args.get("project_id")
-    users_id = args.get("users_id")
-    project_users = []
-    for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
-        db.session.add(puser)
-        #project_users.append(param_tool.model_to_dict(puser))
-    db.session.commit()
-    return JsonResult.success("添加项目用户成功！")
-
-
