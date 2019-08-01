@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool
+from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute,app
 import os
 
@@ -32,10 +32,8 @@ def project_items_list(project_id):
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    page = int(offset / limit) + 1
-    if page == 0 : page = 1
-    page = q.paginate(page=page, per_page=limit)
-    return JsonResult.page(page)
+    list,total = sql_tool.model_page(q,limit,offset)
+    return JsonResult.res_page(list,total)
 
 # 详细信息
 @markRoute.route('/projects/<id>', methods=['GET'])
@@ -115,3 +113,9 @@ def project_items_delete_batch():
 
     db.session.commit()
     return JsonResult.success("批量删除成功！")
+
+#批量删除
+@markRoute.route('/project_items/get_next_item', methods=['GET'])
+def get_next_item():
+    #todo 获取下一个标注文件，如果是机转的，应尽量取已经机转的文件
+    return JsonResult.success("good")
