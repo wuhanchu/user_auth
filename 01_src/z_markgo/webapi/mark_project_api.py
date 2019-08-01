@@ -13,7 +13,7 @@ def projects_list():
     sql =r"""select p.id,p.name,p.type,p.status,pu.sum_user,pi.sum_items,pi.sum_mark_items,p.plan_time,p.create_time from mark_project p join
         (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
         group by p.id) pu on pu.pid = p.id join
-        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_type !=-1  then 1 else 0 end) 
+        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=2  then 1 else 0 end) 
         sum_mark_items from mark_project p left join mark_project_items pi on pi.project_id  = p.id group by p.id) 
         pi on pi.pid = p.id where 1=1 """
 
