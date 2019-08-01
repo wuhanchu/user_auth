@@ -43,7 +43,7 @@ def update_user(id):
     user = SysUser.query.get(id)
     if user is None :
         return JsonResult.error("对象不存在，id=%s"%id)
-    args = request.form
+    args = request.get_json()
     #将参数加载进去
     param_tool.set_dict_parm(user,args)
     db.session.commit()

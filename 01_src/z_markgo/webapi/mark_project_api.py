@@ -23,7 +23,7 @@ def projects_list():
         sql = sql + "and p.name like '%" + name + "%'"
     if type is not None  and type != '':
         sql = sql + "and p.type = '" + type + "'"
-    sql = sql + " order by p.name "
+    sql = sql + " order by p.id "
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
