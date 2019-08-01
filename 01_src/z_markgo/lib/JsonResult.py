@@ -29,7 +29,7 @@ class JsonResult:
     def queryResult(result=None):
         return jsonify({'code': ERROR_CODE, 'msg': "调用成功", 'data': queryToDict(result)})
 
-    def sql_pag(list,total):
+    def res_page(list,total):
         result = {"total": total, "list": queryToDict(list)}
         return jsonify({'code': SUCCESS_CODE, 'msg': None, 'data': result})
 

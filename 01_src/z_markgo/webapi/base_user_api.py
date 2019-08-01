@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool
+from lib import param_tool,sql_tool
 from webapi import baseRoute,app
 
 # 用户列表
@@ -15,10 +15,8 @@ def user_list():
     q = q.order_by(SysUser.name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    page = int(offset / limit) + 1
-    if page == 0 : page = 1
-    page = q.paginate(page=page, per_page=limit)
-    return JsonResult.page(page)
+    res,total = sql_tool.model_page(q,limit,offset)
+    return JsonResult.res_page(res,total)
 
 # 详细用户信息
 @baseRoute.route('/users/<id>', methods=['GET'])

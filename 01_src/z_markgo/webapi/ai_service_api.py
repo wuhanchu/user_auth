@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import AiService,db
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool
+from lib import param_tool,com_tool,sql_tool
 from webapi import baseRoute
 
 # 列表
@@ -19,10 +19,9 @@ def aiservices_list():
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    page = int(offset / limit) + 1
-    if page == 0 : page = 1
-    page = q.paginate(page=page, per_page=limit)
-    return JsonResult.page(page)
+    list, total = sql_tool.model_page(q,limit, offset)
+    return JsonResult.res_page(list, total)
+
 
 # 详细信息
 @baseRoute.route('/aiservices/<id>', methods=['GET'])

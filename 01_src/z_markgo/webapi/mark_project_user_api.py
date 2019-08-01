@@ -34,7 +34,7 @@ def projects_user_list(project_id):
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     res,total = sql_tool.mysql_page(db,sql,limit,offset)
-    return JsonResult.sql_pag(res,total)
+    return JsonResult.res_page(res,total)
 
 #删除
 @markRoute.route('/project_users/<project_id>/<user_id>', methods=['DELETE'])

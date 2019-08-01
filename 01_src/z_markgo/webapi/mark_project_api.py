@@ -27,9 +27,8 @@ def projects_list():
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    res,total = sql_tool.mysql_page(db,sql,limit,offset)
-
-    return JsonResult.sql_pag(res,total)
+    res,total = sql_tool.mysql_page(db,sql,offset,limit)
+    return JsonResult.list_page(res,total)
 
 # 详细信息
 @markRoute.route('/projects/<id>', methods=['GET'])
