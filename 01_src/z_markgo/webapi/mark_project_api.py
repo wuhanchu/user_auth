@@ -4,6 +4,7 @@ from lib.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
+from dao import mark_dao
 
 
 # 列表
@@ -65,11 +66,15 @@ def projects_update(id):
 @markRoute.route('/projects/<id>', methods=['DELETE'])
 def projects_delete(id):
     obj = MarkProject.query.get(id)
+
+    # 判断是否有标注数据
+    if mark_dao.user_mark_count(id) > 0:
+        return JsonResult.error("该项目已经上传标注数据！请先删除标注数据！")
+
+    # 删除项目用户分配信息
+    users = MarkProjectUser.query.filter_by(project_id=id).delete(synchronize_session=False)
+
     db.session.delete(obj)
-    #todo 判断是否有标注数据
-    #todo 删除项目用户分配信息
-    # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
-    # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 

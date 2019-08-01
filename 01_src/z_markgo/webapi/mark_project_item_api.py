@@ -3,7 +3,7 @@ from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool
-from webapi import markRoute
+from webapi import markRoute,app
 import os
 
 work_dir = os.getcwd()
@@ -63,7 +63,7 @@ def project_items_upload():
     os.remove(zip_file_path)
     #遍历文件
     item_paths = com_tool.enum_path_files(item_path)
-    path_len = len(item_path)
+    path_len = len(item_root_path)
     #创建item条目
     for project_item_path in item_paths:
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
@@ -87,13 +87,31 @@ def project_items_update(id):
     return JsonResult.success("更新成功！",{"id": obj.id})
 
 #删除
-@markRoute.route('/projects/<id>', methods=['DELETE'])
+@markRoute.route('/project_items/<id>', methods=['DELETE'])
 def project_items_delete(id):
-    obj = MarkProject.query.get(id)
+    obj = MarkProjectItem.query.get(id)
+    if obj is None:
+        return JsonResult.error("对象不存在！", {"id": id})
+    path = os.path.join(item_root_path,obj.filepath)
+    os.remove(path)
     db.session.delete(obj)
-    #todo 判断是否有标注数据
-    #todo 删除项目用户分配信息
-    # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
-    # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
+
+#批量删除
+@markRoute.route('/project_items/del_batch', methods=['DELETE'])
+def project_items_delete_batch():
+    args = request.args
+    ids = args.get("ids").split(',');
+
+    objs = MarkProjectItem.query.filter(MarkProjectItem.id.in_(ids)).all()
+    for obj in objs:
+        path = os.path.join(item_root_path, obj.filepath)
+        try:
+            os.remove(path)
+        except:
+            app.logger.warn("文件没找到：%s"%path)
+        db.session.delete(obj)
+
+    db.session.commit()
+    return JsonResult.success("批量删除成功！")

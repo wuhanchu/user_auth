@@ -4,6 +4,7 @@ from lib.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
+from dao import mark_dao
 
 @markRoute.route('/projects/addusers', methods=['POST'])
 def projects_addusers():
@@ -34,3 +35,23 @@ def projects_user_list(project_id):
     limit = int(request.args.get('limit'))
     res,total = sql_tool.mysql_page(db,sql,limit,offset)
     return JsonResult.sql_pag(res,total)
+
+#删除
+@markRoute.route('/project_users/<project_id>/<user_id>', methods=['DELETE'])
+def project_users_delete(project_id,user_id):
+    q = MarkProjectUser.query
+    obj = q.get((project_id,user_id))
+
+    if obj is None:
+        return JsonResult.error("对象不存在！project_id=%s,user_id=%s"%(project_id,user_id))
+    # 判断是否有标注数据
+    if mark_dao.user_mark_count(project_id) >0 :
+        return JsonResult.error("该项目已经上传标注数据！请先删除标注数据！" )
+
+    #删除项目用户分配信息
+    users = MarkProjectUser.query.filter_by(project_id = project_id).delete()
+
+    db.session.delete(obj)
+    db.session.commit()
+    return JsonResult.success("删除成功！")
+
