@@ -12,3 +12,7 @@ def model_to_dict(obj):
 # 判断字符串为None或空
 def str_is_empty(str):
     return str is None or str == ''
+
+# 判断字符串不为空
+def str_is_not_empty(str):
+    return not str_is_empty(str)

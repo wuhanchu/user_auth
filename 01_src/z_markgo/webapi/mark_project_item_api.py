@@ -5,6 +5,8 @@ from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute,app
 import os
+from sqlalchemy.orm import aliased
+
 
 work_dir = os.getcwd()
 print(os.path.dirname(work_dir))
@@ -21,15 +23,23 @@ def project_items_list():
     status = request.args.get("status")
     user_id = request.args.get("user_id")
 
-    q = MarkProjectItem.query.filter_by(project_id=project_id)
+    InspectionPerson = aliased(SysUser)
+    q = db.session.query(MarkProjectItem.id,MarkProjectItem.project_id,MarkProjectItem.filepath,MarkProjectItem.status,MarkProjectItem.asr_txt,
+        MarkProjectItem.mark_txt,MarkProjectItem.user_id,MarkProjectItem.inspection_status,MarkProjectItem.mark_time,MarkProjectItem.assigned_time
+        ,MarkProjectItem.inspection_time,MarkProjectItem.inspection_person,SysUser.name.label("mark_person_name"),InspectionPerson.name.label("inspection_person_name")
+        ).outerjoin(SysUser, MarkProjectItem.user)\
+        .outerjoin(InspectionPerson,MarkProjectItem.sys_user)
+
+    q.filter(MarkProjectItem.project_id == project_id)
+
     if filepath is not None and filepath != '':
         q = q.filter(MarkProjectItem.filepath.like("%" + filepath + "%"))
     if status is not None  and status != '':
-        q = q.filter_by(status = status)
+        q = q.filter(MarkProjectItem.status == status)
     q = q.order_by(MarkProjectItem.status)
-    q.outerjoin(SysUser)
+
     if user_id is not None  and user_id != '':
-        q = q.filter_by(user_id = user_id)
+        q = q.filter(MarkProjectItem.user_id == user_id)
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
@@ -62,7 +72,7 @@ def project_items_upload():
     os.remove(zip_file_path)
     #遍历文件
     item_paths = com_tool.enum_path_files(item_path)
-    path_len = len(item_root_path)
+    path_len = len(item_root_path)+1
     #创建item条目
     for project_item_path in item_paths:
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
@@ -98,7 +108,7 @@ def project_items_delete(id):
     return JsonResult.success("删除成功！", {"id": id})
 
 #批量删除
-@markRoute.route('/project_items/del_batch', methods=['DELETE'])
+@markRoute.route('/project_items', methods=['DELETE'])
 def project_items_delete_batch():
     args = request.args
     ids = args.get("ids").split(',');
@@ -114,9 +124,3 @@ def project_items_delete_batch():
 
     db.session.commit()
     return JsonResult.success("批量删除成功！")
-
-#批量删除
-@markRoute.route('/project_items/get_next_item', methods=['GET'])
-def get_next_item():
-    #todo 获取下一个标注文件，如果是机转的，应尽量取已经机转的文件
-    return JsonResult.success("good")

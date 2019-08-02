@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 Base = db.Model
 
-
 class AiService(Base):
     __tablename__ = 'ai_service'
 
@@ -132,8 +131,11 @@ class MarkProjectItem(Base):
     mark_time = Column(DateTime)
     assigned_time = Column(DateTime)
     inspection_time = Column(DateTime)
+    inspection_person = Column(ForeignKey('sys_user.id'), index=True)
 
+    sys_user = relationship('SysUser', primaryjoin='MarkProjectItem.inspection_person == SysUser.id')
     project = relationship('MarkProject')
+    user = relationship('SysUser', primaryjoin='MarkProjectItem.user_id == SysUser.id')
 
 
 class MarkProjectUser(Base):
