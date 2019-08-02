@@ -10,7 +10,8 @@ from dao import mark_dao
 # 列表
 @markRoute.route('/projects', methods=['GET'])
 def projects_list():
-    sql =r"""select p.id,p.name,p.type,p.status,pu.sum_user,pi.sum_items,pi.sum_mark_items,p.plan_time,p.create_time from mark_project p join
+    sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks
+        ,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
         (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
         group by p.id) pu on pu.pid = p.id join
         (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=2  then 1 else 0 end) 
@@ -20,9 +21,9 @@ def projects_list():
     name = request.args.get("name")
     type = request.args.get("type")
     if name is not None and name != '':
-        sql = sql + "and p.name like '%" + name + "%'"
+        sql = sql + " and p.name like '%" + name + "%'"
     if type is not None  and type != '':
-        sql = sql + "and p.type = '" + type + "'"
+        sql = sql + " and p.type = '" + type + "'"
     sql = sql + " order by p.id "
 
     offset = int(request.args.get('offset'))
