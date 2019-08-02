@@ -14,13 +14,14 @@ if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
 
 # 列表
-@markRoute.route('/project_items/<project_id>', methods=['GET'])
-def project_items_list(project_id):
-    q = MarkProjectItem.query.filter_by(project_id=project_id)
+@markRoute.route('/project_items', methods=['GET'])
+def project_items_list():
+    project_id = request.args.get("project_id")
     filepath = request.args.get("filepath")
     status = request.args.get("status")
     user_id = request.args.get("user_id")
 
+    q = MarkProjectItem.query.filter_by(project_id=project_id)
     if filepath is not None and filepath != '':
         q = q.filter(MarkProjectItem.filepath.like("%" + filepath + "%"))
     if status is not None  and status != '':

@@ -8,3 +8,7 @@ def model_to_dict(obj):
     dict_obj = obj.__dict__
     dict_obj.pop('_sa_instance_state', None)
     return dict_obj
+
+# 判断字符串为None或空
+def str_is_empty(str):
+    return str is None or str == ''
