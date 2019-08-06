@@ -22,6 +22,14 @@ class DevelopmentConfig(Config):
     DEBUG = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
+    JOBS = [
+        # {  # 每隔30S执行一次
+        #     'id': 'check_meet_state',
+        #     'func': 'lib.busi_tool:get_item_root_path',
+        #     'trigger': 'interval',
+        #     'seconds': 10,
+        # }
+    ]
 
     @classmethod
     def init_app(cls, app):

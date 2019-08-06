@@ -1,3 +1,5 @@
+import datetime
+
 # 将dict_parm（dict类型）参数设置到obj对象中
 def set_dict_parm(obj,dict_parm):
     for parm in dict_parm:
@@ -16,3 +18,6 @@ def str_is_empty(str):
 # 判断字符串不为空
 def str_is_not_empty(str):
     return not str_is_empty(str)
+
+def get_curr_time():
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

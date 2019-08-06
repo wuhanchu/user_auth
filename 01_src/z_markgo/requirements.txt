@@ -1,0 +1,8 @@
+Flask_SQLAlchemy==2.3.2
+Flask_APScheduler==1.11.0
+numpy==1.15.4
+requests==2.20.1
+SQLAlchemy==1.2.18
+Flask==1.0.2
+requests_toolbelt==0.8.0
+PyMySQL==0.9.3

@@ -26,6 +26,16 @@ def enum_path_files(path):
         for f in files:
             file_paths.append(os.path.join(root,f))
     return file_paths
+# url 路径拼接
+def url_join(par_url,sub_url):
+    if par_url.endswith("/"):
+        if sub_url.startswith(("/")):
+            sub_url = sub_url[1:]
+    else:
+        if not sub_url.startswith(("/")):
+            sub_url = "/" + sub_url
+    return par_url + sub_url
+
 
 if __name__ == '__main__':
     file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')

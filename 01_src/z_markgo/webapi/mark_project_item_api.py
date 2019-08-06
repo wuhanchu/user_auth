@@ -2,15 +2,14 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool
+from lib import param_tool,com_tool,sql_tool,busi_tool
+from lib.asr_thread_pool import asr_thread_pool
 from webapi import markRoute,app
+from dao import mark_dao
 import os
 from sqlalchemy.orm import aliased
 
-
-work_dir = os.getcwd()
-print(os.path.dirname(work_dir))
-item_root_path = os.path.join(os.path.dirname(work_dir),"z_markgo_items")
+item_root_path = busi_tool.get_item_root_path()
 print(item_root_path )
 if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
@@ -47,9 +46,9 @@ def project_items_list():
     return JsonResult.res_page(list,total)
 
 # 详细信息
-@markRoute.route('/projects/<id>', methods=['GET'])
+@markRoute.route('/project_items/<id>', methods=['GET'])
 def project_items_get_info(id):
-    obj = MarkProject.query.get(id)
+    obj = MarkProjectItem.query.get(id)
     return JsonResult.queryResult(obj)
 
 #导入文件
@@ -78,20 +77,28 @@ def project_items_upload():
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
         db.session.add(item)
     db.session.commit()
-    #todo 判断是否要进行文本解析，如果需要就调用后台任务
+    #判断是否要进行文本解析，如果需要就调用后台任务
+    project = MarkProject.query.get(project_id)
+    if project.type == "asr":
+        items = mark_dao.get_asr_items(project_id)
+        asr_thread_pool.batch_add_items(project,items);
 
-    return JsonResult.success("导入音频成功！总条数%s"%len(item_paths) )
+    return JsonResult.success("导入音频成功！总条数%s"%len(item_paths))
 
 # 更新
-@markRoute.route('/projects/<id>', methods=['PUT','PATCH'])
+@markRoute.route('/project_items/<id>', methods=['PUT','PATCH'])
 def project_items_update(id):
-    obj = MarkProject.query.get(id)
-    #todo 判断是否可以修改type（标注类型）
+    obj = MarkProjectItem.query.get(id)
     if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
-    #将参数加载进去
-    param_tool.set_dict_parm(obj,args)
+    # 将参数加载进去
+    param_tool.set_dict_parm(obj, args)
+    if args["mark_txt"] != None  :
+        obj.mark_time = param_tool.get_curr_time()
+    if args["inspection_status"] != None :
+        obj.inspection_time = param_tool.get_curr_time()
+
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
