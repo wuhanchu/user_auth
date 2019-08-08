@@ -38,7 +38,7 @@ def update_asr_txt(res):
             # 更新到数据库
             item_model = MarkProjectItem.query.get(item_id)
             item_model.asr_txt = asr_txt
-            db.session.comit()
+            db.session.commit()
 
 if __name__ == '__main__':
     print(len(range(1,100,3)))

@@ -19,6 +19,7 @@ def tc_asr(item_id,asr_url,filepath):
     try:
         res = asr_tool.tc_asr(asr_url,filepath)
         if (res['errCode'] == '0'):
+            logger.info("asr解析成功！（item:%s）" % item_id)
             return item_id, res['result']
     except Exception as e:
         logger.error("asr解析失败！（item:%s）" % item_id)
