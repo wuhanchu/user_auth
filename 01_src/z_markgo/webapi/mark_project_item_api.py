@@ -2,8 +2,8 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool,busi_tool
-from lib.asr_thread_pool import asr_thread_pool
+from lib import param_tool,com_tool,sql_tool,busi_tool,asr_tool
+from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute,app
 from dao import mark_dao
 import os
@@ -80,8 +80,11 @@ def project_items_upload():
     #判断是否要进行文本解析，如果需要就调用后台任务
     project = MarkProject.query.get(project_id)
     if project.type == "asr":
+        ai_service = AiService.query.get(project.ai_service)
         items = mark_dao.get_asr_items(project_id)
-        asr_thread_pool.batch_add_items(project,items);
+        for item in items:
+            filepath = os.path.join(item_root_path, item["filepath"])
+            dk_thread_pool.submit(busi_tool.tc_asr,mark_dao.update_asr_txt,item["id"],ai_service.service_url,filepath)
 
     return JsonResult.success("导入音频成功！总条数%s"%len(item_paths))
 

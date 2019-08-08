@@ -1,5 +1,9 @@
 from lib.models import *
+from lib import JsonResult
+import logging
+from webapi import app
 
+logger = logging.getLogger('flask.app')
 #判断项目下是否有标注数据
 def user_mark_count(project_id ,user_id=None):
     q = MarkProjectItem.query.filter_by(project_id=project_id)
@@ -12,7 +16,9 @@ def user_mark_count(project_id ,user_id=None):
 #查询所有未加载的
 def get_asr_items(project_id):
     q = MarkProjectItem.query.filter_by(project_id=project_id).filter(MarkProjectItem.asr_txt is not None)
-    return q.all()
+    list = q.all()
+    list = JsonResult.queryToDict(list)
+    return list
 
 #查询所有未加载的
 def get_all_asr_items():
@@ -23,3 +29,16 @@ def get_all_asr_items():
         if len(items)>0 :
             dict[proj] = items
     return dict
+# 更新asr 解析结果
+def update_asr_txt(res):
+    with app.app_context():
+        item_id = res._result[0]
+        asr_txt  = res._result[1]
+        if asr_txt :
+            # 更新到数据库
+            item_model = MarkProjectItem.query.get(item_id)
+            item_model.asr_txt = asr_txt
+            db.session.comit()
+
+if __name__ == '__main__':
+    print(len(range(1,100,3)))
