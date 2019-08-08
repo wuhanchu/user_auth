@@ -6,14 +6,15 @@ from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 from dao import mark_dao
 
-@markRoute.route('/projects/addusers', methods=['POST'])
+@markRoute.route('/project_users', methods=['POST'])
 def projects_addusers():
     args = request.get_json()
     project_id = args.get("project_id")
     users_id = args.get("users_id")
+    mark_role = args.get("mark_role")
     project_users = []
     for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id)
+        puser =  MarkProjectUser(project_id=project_id,user_id=user_id,mark_role=mark_role)
         db.session.add(puser)
         #project_users.append(param_tool.model_to_dict(puser))
     db.session.commit()
@@ -24,10 +25,20 @@ def projects_user_list():
     project_id = request.args.get("project_id")
     name = request.args.get("user_name")
 
-    sql =r"""select u.name ,'质检员' as role ,pi.* from sys_user u join
-    (select user_id ,count(pi.id) mark_sum,sum(case when to_days(pi.mark_time) = to_days(CURDATE()) then 1 else 0 end) mark_today
-        ,sum(case when  pi.inspection_status is not NULL then 1 else 0 end) inspection_sum, sum(case when  pi.inspection_status =-1 then 1 else 0 end) inspection_fail_sum
-    from mark_project_items pi where project_id = %s group by user_id) pi  on pi.user_id = u.id  where 1=1 """%project_id
+    sql =r"""SELECT u.name, puser.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
+        ,ifnull(pi_count.inspection_sum,0) as inspection_sum,ifnull(pi_count.inspection_fail_sum,0) as inspection_fail_sum 
+    FROM sys_user u join	mark_project_user puser on u.id = puser.user_id and puser.project_id = %s
+	left join (SELECT user_id, count( pi.id ) mark_sum,
+		sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
+		sum( CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END ) inspection_sum,
+		sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+	    FROM mark_project_items pi WHERE project_id = %s GROUP BY user_id 
+    union all SELECT inspection_person as user_id, count( pi.id ) mark_sum,  -- 质检总数
+        sum( CASE WHEN to_days( pi.inspection_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
+        0 inspection_sum,
+        sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+    FROM mark_project_items pi WHERE project_id = %s GROUP BY inspection_person) 
+        as pi_count on puser.user_id = pi_count.user_id where 1=1 """%(project_id,project_id,project_id)
 
 
     if name is not None and name != '':

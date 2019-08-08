@@ -127,7 +127,7 @@ class MarkProjectItem(Base):
     asr_txt = Column(String(255))
     mark_txt = Column(String(255))
     user_id = Column(ForeignKey('sys_user.id'), index=True)
-    inspection_status = Column(INTEGER(1))
+    inspection_status = Column(INTEGER(1), server_default=text("'0'"))
     mark_time = Column(DateTime)
     assigned_time = Column(DateTime)
     inspection_time = Column(DateTime)
@@ -144,6 +144,7 @@ class MarkProjectUser(Base):
     project_id = Column(ForeignKey('mark_project.id'), primary_key=True, nullable=False)
     user_id = Column(ForeignKey('sys_user.id'), primary_key=True, nullable=False, index=True)
     task_num = Column(INTEGER(11))
+    mark_role = Column(INTEGER(1), server_default=text("'0'"))
 
     project = relationship('MarkProject')
     user = relationship('SysUser')
