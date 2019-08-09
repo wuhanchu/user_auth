@@ -7,7 +7,7 @@ from webapi import markRoute
 from dao import mark_dao
 
 # 批量添加员工，支持直接把项目中的人员名单覆盖
-@markRoute.route('/project_users', methods=['POST'])
+@markRoute.route('/project_users', methods=['PUT'])
 def projects_update_users():
     args = request.get_json()
     project_id = args.get("project_id")
