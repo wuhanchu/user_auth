@@ -29,7 +29,7 @@ def project_items_list():
         ).outerjoin(SysUser, MarkProjectItem.user)\
         .outerjoin(InspectionPerson,MarkProjectItem.sys_user)
 
-    q.filter(MarkProjectItem.project_id == project_id)
+    q = q.filter(MarkProjectItem.project_id == project_id)
 
     if filepath is not None and filepath != '':
         q = q.filter(MarkProjectItem.filepath.like("%" + filepath + "%"))

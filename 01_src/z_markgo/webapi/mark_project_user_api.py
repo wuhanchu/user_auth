@@ -6,39 +6,52 @@ from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 from dao import mark_dao
 
+# 批量添加员工，支持直接把项目中的人员名单覆盖
 @markRoute.route('/project_users', methods=['POST'])
-def projects_addusers():
+def projects_update_users():
     args = request.get_json()
     project_id = args.get("project_id")
     users_id = args.get("users_id")
     mark_role = args.get("mark_role")
-    project_users = []
+    project_users = mark_dao.get_project_users(project_id)
     for user_id in users_id :
-        puser =  MarkProjectUser(project_id=project_id,user_id=user_id,mark_role=mark_role)
-        db.session.add(puser)
+        # 判断数据库中是否已经存在该用户
+        selected = [x for x in project_users if x[0] == user_id ]
+        if len(selected) == 0:
+            puser =  MarkProjectUser(project_id=project_id,user_id=user_id,mark_role=mark_role)
+            db.session.add(puser)
+        elif selected[0][1] != mark_role : #用户存在，并且是不同角色，报错
+            return JsonResult.error("项目中同一个用户不能同时做质检和标注：id=%s"%user_id)
+        else:   #已存在的用户，从project_users中删掉，剩下的是要删除的用户
+            project_users.remove(selected[0])
         #project_users.append(param_tool.model_to_dict(puser))
+    # 将mark_role下，没有提交的用户从数据库中删除
+    to_del_users = [x[0] for x in project_users if x[1] == mark_role]
+    if len(to_del_users)>0:
+        users = db.session.query(MarkProjectUser).filter(MarkProjectUser.project_id == project_id).filter(MarkProjectUser.user_id.in_(to_del_users)).all()
+        [db.session.delete(u) for u in users]
+
     db.session.commit()
-    return JsonResult.success("添加项目用户成功！")
+    return JsonResult.success("更新项目用户成功！")
 
 @markRoute.route('/project_users', methods=['GET'])
 def projects_user_list():
     project_id = request.args.get("project_id")
     name = request.args.get("user_name")
 
-    sql =r"""SELECT u.name, puser.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
+    sql =r"""SELECT u.name, pi_count.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
         ,ifnull(pi_count.inspection_sum,0) as inspection_sum,ifnull(pi_count.inspection_fail_sum,0) as inspection_fail_sum 
-    FROM sys_user u join	mark_project_user puser on u.id = puser.user_id and puser.project_id = %s
-	left join (SELECT user_id, count( pi.id ) mark_sum,
+    FROM sys_user u left join (SELECT user_id,0 as mark_role ,count( pi.id ) mark_sum,
 		sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
 		sum( CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END ) inspection_sum,
 		sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
 	    FROM mark_project_items pi WHERE project_id = %s GROUP BY user_id 
-    union all SELECT inspection_person as user_id, count( pi.id ) mark_sum,  -- 质检总数
+    union all SELECT inspection_person as user_id,1 as mark_role, count( pi.id ) mark_sum,  -- 质检总数
         sum( CASE WHEN to_days( pi.inspection_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
         0 inspection_sum,
         sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
     FROM mark_project_items pi WHERE project_id = %s GROUP BY inspection_person) 
-        as pi_count on puser.user_id = pi_count.user_id where 1=1 """%(project_id,project_id,project_id)
+        as pi_count on u.id = pi_count.user_id where 1=1 """%(project_id,project_id)
 
 
     if name is not None and name != '':

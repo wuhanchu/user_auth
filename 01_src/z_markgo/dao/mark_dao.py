@@ -40,5 +40,11 @@ def update_asr_txt(res):
             item_model.asr_txt = asr_txt
             db.session.commit()
 
+# 获取项目人员名单
+def get_project_users(project_id):
+    q = db.session.query(MarkProjectUser.user_id,MarkProjectUser.mark_role)
+    q = q.filter(MarkProjectUser.project_id == project_id)
+    return q.all()
+
 if __name__ == '__main__':
     print(len(range(1,100,3)))
