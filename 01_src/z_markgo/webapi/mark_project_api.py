@@ -5,10 +5,11 @@ from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 from dao import mark_dao
-
+from lib.oauth2 import require_oauth
 
 # 列表
 @markRoute.route('/projects', methods=['GET'])
+@require_oauth('profile')
 def projects_list():
     sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks
         ,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join

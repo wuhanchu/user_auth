@@ -3,6 +3,7 @@ from config import config
 from flask import render_template
 from webapi import app,DEFAULT_MODULES,base_user_api,mark_project_api,ai_service_api,mark_project_item_api,mark_project_user_api,mark_user_items_api
 from lib.models import db
+from lib.oauth2 import config_oauth
 from flask_apscheduler import APScheduler
 
 # 加载配置文件
@@ -33,6 +34,9 @@ if __name__ == '__main__':
     for module in DEFAULT_MODULES:
         print("Blueprint regist %s !" % module.name)
         app.register_blueprint(module)
+
+    # 加载oauth2认证模块
+    config_oauth(app)
 
     #添加定时任务模块 -- begin
     # scheduler = APScheduler()

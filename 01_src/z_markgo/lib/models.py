@@ -1,10 +1,17 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, ForeignKey, String, text
+from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.orm import relationship
+from authlib.flask.oauth2.sqla import (
+    OAuth2ClientMixin,
+    OAuth2AuthorizationCodeMixin,
+    OAuth2TokenMixin,
+)
+
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 Base = db.Model
+
 
 class AiService(Base):
     __tablename__ = 'ai_service'
@@ -147,6 +154,67 @@ class MarkProjectUser(Base):
     mark_role = Column(INTEGER(1), server_default=text("'0'"))
 
     project = relationship('MarkProject')
+    user = relationship('SysUser')
+
+
+class Oauth2Client(Base,OAuth2ClientMixin):
+    __tablename__ = 'oauth2_client'
+
+    client_id = Column(String(48), index=True)
+    client_secret = Column(String(120))
+    issued_at = Column(INTEGER(11), nullable=False)
+    expires_at = Column(INTEGER(11), nullable=False)
+    redirect_uri = Column(Text)
+    token_endpoint_auth_method = Column(String(48))
+    grant_type = Column(Text, nullable=False)
+    response_type = Column(Text, nullable=False)
+    scope = Column(Text, nullable=False)
+    client_name = Column(String(100))
+    client_uri = Column(Text)
+    logo_uri = Column(Text)
+    contact = Column(Text)
+    tos_uri = Column(Text)
+    policy_uri = Column(Text)
+    jwks_uri = Column(Text)
+    jwks_text = Column(Text)
+    i18n_metadata = Column(Text)
+    software_id = Column(String(36))
+    software_version = Column(String(48))
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(ForeignKey('sys_user.id', ondelete='CASCADE'), index=True)
+
+    user = relationship('SysUser')
+
+
+class Oauth2Code(Base,OAuth2AuthorizationCodeMixin):
+    __tablename__ = 'oauth2_code'
+
+    code = Column(String(120), nullable=False, unique=True)
+    client_id = Column(String(48))
+    redirect_uri = Column(Text)
+    response_type = Column(Text)
+    scope = Column(Text)
+    auth_time = Column(INTEGER(11), nullable=False)
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(ForeignKey('sys_user.id', ondelete='CASCADE'), index=True)
+
+    user = relationship('SysUser')
+
+
+class Oauth2Token(Base,OAuth2TokenMixin):
+    __tablename__ = 'oauth2_token'
+
+    client_id = Column(String(48))
+    token_type = Column(String(40))
+    access_token = Column(String(255), nullable=False, unique=True)
+    refresh_token = Column(String(255), index=True)
+    scope = Column(Text)
+    revoked = Column(TINYINT(1))
+    issued_at = Column(INTEGER(11), nullable=False)
+    expires_in = Column(INTEGER(11), nullable=False)
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(ForeignKey('sys_user.id', ondelete='CASCADE'), index=True)
+
     user = relationship('SysUser')
 
 
