@@ -23,6 +23,7 @@ start(){
     if [ $? -eq "0" ]; then
         echo "${APP_NAME} is already running. pid=${pid} ."
     else
+		export AUTHLIB_INSECURE_TRANSPORT=True
 		source activate py3.6
         nohup python $APP_NAME > ./markgo.nohup 2>&1 &
     fi

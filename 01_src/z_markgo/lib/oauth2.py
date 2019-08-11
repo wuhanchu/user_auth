@@ -1,4 +1,5 @@
 from authlib.flask.oauth2 import AuthorizationServer, ResourceProtector
+from lib import com_tool
 from authlib.flask.oauth2.sqla import (
     create_query_client_func,
     create_save_token_func,
@@ -8,13 +9,13 @@ from authlib.flask.oauth2.sqla import (
 from authlib.oauth2.rfc6749 import grants
 from werkzeug.security import gen_salt
 from .models import db, SysUser
-from .models import Oauth2Token, Oauth2Code, Oauth2Client
+from .model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def create_authorization_code(self, client, user, request):
         code = gen_salt(48)
-        item = Oauth2Code(
+        item = OAuth2AuthorizationCode(
             code=code,
             client_id=client.client_id,
             redirect_uri=request.redirect_uri,
@@ -26,7 +27,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         return code
 
     def parse_authorization_code(self, code, client):
-        item = Oauth2Code.query.filter_by(
+        item = OAuth2AuthorizationCode.query.filter_by(
             code=code, client_id=client.client_id).first()
         if item and not item.is_expired():
             return item
@@ -42,13 +43,14 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
         user = SysUser.query.filter_by(username=username).first()
-        if user.check_password(password):
+        # 校验密码
+        if user.password == com_tool.get_MD5_code(password):
             return user
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
     def authenticate_refresh_token(self, refresh_token):
-        token = Oauth2Token.query.filter_by(refresh_token=refresh_token).first()
+        token = OAuth2Token.query.filter_by(refresh_token=refresh_token).first()
         if token and not token.revoked and not token.is_refresh_token_expired():
             return token
 
@@ -56,8 +58,8 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         return SysUser.query.get(credential.user_id)
 
 
-query_client = create_query_client_func(db.session, Oauth2Client)
-save_token = create_save_token_func(db.session, Oauth2Token)
+query_client = create_query_client_func(db.session, OAuth2Client)
+save_token = create_save_token_func(db.session, OAuth2Token)
 authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token,
@@ -76,9 +78,9 @@ def config_oauth(app):
     authorization.register_grant(RefreshTokenGrant)
 
     # support revocation
-    revocation_cls = create_revocation_endpoint(db.session, Oauth2Token)
+    revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
     authorization.register_endpoint(revocation_cls)
 
     # protect resource
-    bearer_cls = create_bearer_token_validator(db.session, Oauth2Token)
+    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
     require_oauth.register_token_validator(bearer_cls())

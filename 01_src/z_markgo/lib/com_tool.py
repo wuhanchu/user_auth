@@ -1,5 +1,5 @@
 # 常用函数，时间格式，文件读写等。
-import datetime,zipfile,os
+import datetime,zipfile,os,hashlib,base64
 
 #获取当前日期，格式%Y-%m-%d %H:%M:%S
 def get_curr_date():
@@ -35,11 +35,30 @@ def url_join(par_url,sub_url):
         if not sub_url.startswith(("/")):
             sub_url = "/" + sub_url
     return par_url + sub_url
+# 获取md5代码
+def get_MD5_code(str):
+    hash_md5 = hashlib.md5()
+    # 计算
+    str = str.encode('utf-8', errors='ignore')
+    hash_md5.update(str)
+    # 获取计算结果(16进制字符串，32位字符)
+    md5_str = hash_md5.hexdigest()
+    # 打印结果
+    # print(md5_str)
+    return md5_str
 
+def get_base64():
+    res = base64.b64encode(str)
+    return res
+def from_base64(str):
+    res = base64.b64decode(str)
+    return res
 
 if __name__ == '__main__':
-    file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')
-    for i in file_paths:
-        print(i)
-
+    # file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')
+    # for i in file_paths:
+    #     print(i)
     # unzip_file("C:\\Users\\czc\\Desktop\\txt\\item\\item.zip","C:\\Users\\czc\\Desktop\\txt\\item\\bak")
+    # get_MD5_code("hello world")
+
+    print(from_base64("eUFsOVBPOXNBNE5LWWhjclhmQU9YeGxEOkRhcm1yQ2tlQTA0clY4dDh2QTRtVFhoTXZuN25FVXdlRTA3Smd2V2hFVnBHc3VrSw=="))

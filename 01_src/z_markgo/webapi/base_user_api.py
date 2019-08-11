@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,sql_tool
+from lib import param_tool,sql_tool,com_tool
 from webapi import baseRoute,app
 
 # 用户列表
@@ -30,8 +30,9 @@ def add_user():
     name = args.get("name")
     username = args.get("username")
     telephone = args.get("telephone")
-    #todo 将password转为md5编码
+    #将password转为md5编码
     password = args.get("password")
+    password = com_tool.get_MD5_code(password)
     user = SysUser(name=name, username=username, password=password, telephone=telephone)
     db.session.add(user)
     db.session.commit()
@@ -44,10 +45,33 @@ def update_user(id):
     if user is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
+    if "password" in args:
+        args.pop("password")
     #将参数加载进去
     param_tool.set_dict_parm(user,args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": user.id})
+
+# 修改密码
+@baseRoute.route('/users/<id>/password', methods=['PUT','PATCH'])
+def update_user_password(id):
+    user = SysUser.query.get(id)
+    if user is None :
+        return JsonResult.error("对象不存在，id=%s"%id)
+    args = request.get_json()
+    if "old_password" in args and user.password == com_tool.get_MD5_code(args["old_password"]) :
+        if "new_password" in args:
+            new_passwd = com_tool.get_MD5_code(args["new_password"])
+            user.password = new_passwd
+            db.session.commit()
+            return JsonResult.success("修改密码成功！", {"id": user.id})
+        else:
+            return JsonResult.error("修改密码失败，请输入新密码！")
+    else:
+        return JsonResult.error("修改密码失败，旧密码错误！")
+
+
+
 
 @baseRoute.route('/users/<id>', methods=['DELETE'])
 def del_users(id):

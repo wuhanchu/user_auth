@@ -39,7 +39,7 @@ def projects_user_list():
     project_id = request.args.get("project_id")
     name = request.args.get("user_name")
 
-    sql =r"""SELECT u.name, pi_count.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
+    sql =r"""SELECT u.id,u.name, pi_count.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
         ,ifnull(pi_count.inspection_sum,0) as inspection_sum,ifnull(pi_count.inspection_fail_sum,0) as inspection_fail_sum 
     FROM sys_user u left join (SELECT user_id,0 as mark_role ,count( pi.id ) mark_sum,
 		sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,

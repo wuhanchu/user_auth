@@ -2,7 +2,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    SECRET_KEY = 'z_markgo'
+    OAUTH2_REFRESH_TOKEN_GENERATOR: True
     SSL_DISABLE = False
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -21,7 +22,8 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
     JOBS = [
         # {  # 每隔30S执行一次
         #     'id': 'check_meet_state',

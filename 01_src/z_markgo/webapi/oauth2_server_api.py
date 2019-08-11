@@ -4,7 +4,8 @@ from flask import render_template, redirect, jsonify
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
-from lib.models import db, SysUser, OAuth2Client
+from lib.models import db, SysUser
+from lib.model_oauth import OAuth2Client
 from lib.oauth2 import authorization, require_oauth
 
 
@@ -20,18 +21,14 @@ def home():
     if request.method == 'POST':
         username = request.form.get('username')
         user = SysUser.query.filter_by(username=username).first()
-        if not user:
-            user = SysUser(username=username)
-            db.session.add(user)
-            db.session.commit()
         session['id'] = user.id
-        return redirect('/')
+        return redirect('/oauth')
     user = current_user()
     if user:
         clients = OAuth2Client.query.filter_by(user_id=user.id).all()
     else:
         clients = []
-    return render_template('home.html', user=user, clients=clients)
+    return render_template('oauth_index.html', user=user, clients=clients)
 
 
 @oauth_server.route('/logout')
@@ -85,11 +82,5 @@ def issue_token():
 
 @oauth_server.route('/revoke', methods=['POST'])
 def revoke_token():
-    return authorization.create_endpoint_response('revocation')
+    return authorization.create_endpoint_response('revocation',request)
 
-
-@oauth_server.route('/api/me')
-@require_oauth('profile')
-def api_me():
-    user = current_token.user
-    return jsonify(id=user.id, username=user.username)
