@@ -51,6 +51,14 @@ def project_items_get_info(id):
     obj = MarkProjectItem.query.get(id)
     return JsonResult.queryResult(obj)
 
+# 详细信息
+@markRoute.route('/project_items/<id>/wav_file', methods=['GET'])
+def project_items_wav_file(id):
+    obj = MarkProjectItem.query.get(id)
+    filepath = os.path.join(item_root_path, obj.filepath)
+    return send_file(filepath)
+
+
 #导入文件
 @markRoute.route('/project_items/upload', methods=['POST'])
 def project_items_upload():
@@ -72,13 +80,16 @@ def project_items_upload():
     #遍历文件
     item_paths = com_tool.enum_path_files(item_path)
     path_len = len(item_root_path)+1
+    #
+    project = MarkProject.query.get(project_id)
     #创建item条目
     for project_item_path in item_paths:
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
+        if project.type == "asr":
+            item.asr_txt = project.model_txt
         db.session.add(item)
     db.session.commit()
-    #判断是否要进行文本解析，如果需要就调用后台任务
-    project = MarkProject.query.get(project_id)
+    # 判断是否要进行文本解析，如果需要就调用后台任务
     if project.type == "asr":
         ai_service = AiService.query.get(project.ai_service)
         items = mark_dao.get_asr_items(project_id)

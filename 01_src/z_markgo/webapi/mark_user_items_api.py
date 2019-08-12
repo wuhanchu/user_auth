@@ -40,13 +40,13 @@ def user_items_list():
 @markRoute.route('/user_items/next_item', methods=['GET'])
 def next_item():
     project_id = request.args.get("project_id")
-    q = AiService.query.join(MarkProject, MarkProject.ai_service == AiService.id)
-    res = q.filter(project_id).all()
-    item = get_next_items(project_id,busi_tool.is_asr(res[0]))
-    if len(item) ==0:
-        return JsonResult.error("该项目已经标注完成了！")
-    else:
+    # q = AiService.query.join(MarkProject, MarkProject.ai_service == AiService.id)
+    # res = q.filter(project_id).all()
+    item = get_next_items(project_id)
+    if item :
         return JsonResult.queryResult(item)
+    else:
+        return JsonResult.error("该项目已经标注完成了！")
 
     # 情况1，全部转写完  有未标注数据， 没有未标注数据   最后一条数据被占用
     # 情况2，未转写完成  无标注数据
@@ -54,21 +54,14 @@ def next_item():
 #获取下一个标注数据
 #处理并发请求
 @synchronized(obj= "static")
-def get_next_items(project_id,is_asr):
-    project = None
-    q = MarkProjectItem.query.filter_by(project_id = project_id ).filter_by(status = 0)
-    if is_asr:
-        # 使用机转文本
-        q = q.filter(MarkProjectItem.asr_txt != None)
-    else:
-        #使用固定模板
-        project = MarkProject.query.get(id)
+def get_next_items(project_id):
+    q = MarkProjectItem.query.filter_by(status = 0).filter(MarkProjectItem.asr_txt != None)
+    q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
+    if param_tool.str_is_not_empty(project_id) :
+        q = q.filter(MarkProjectItem.project_id == project_id )
     items = q.order_by(MarkProjectItem.id).limit(1).all()
     if len(items) == 0:
-        return JsonResult.error("该项目已经标注完成了！")
+        return JsonResult.error("没有可标注项目！")
     else:
         item = items[0]
-        if project :
-            #如果使用固定模板，将固定文本设置进去
-            item.asr_txt = project.model_txt
-        return JsonResult.queryResult(item)
+        return item
