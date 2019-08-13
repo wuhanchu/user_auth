@@ -2,8 +2,9 @@
 
 import wave
 import numpy as np
-import matplotlib as plt
 import os
+
+MAX_EN = 600
 
 def get_wav_info(wav_path):
     with wave.open(wav_path, "rb") as f:
@@ -20,30 +21,76 @@ def check_wav_format(wav_path):
         return params.framerate
 
 # 音频切割
+def cut_wav(wave_data, begin,end,nchannels,sampwidth, framerate,save_path):
+    # print("cut_wav: %s----%s len:%s" % (begin,end,(end-begin)/16000))
+    file_name = os.path.join(save_path,"%s_%s.wav"%(begin,end))
+    temp_dataTemp = wave_data[begin:end]
+    temp_dataTemp.shape = 1, -1
+    temp_dataTemp = temp_dataTemp.astype(np.short)  # 打开WAV文档
+    with wave.open(r"" + file_name, "wb") as f:
+        # 配置声道数、量化位数和取样频率
+        f.setnchannels(nchannels)
+        f.setsampwidth(sampwidth)
+        f.setframerate(framerate)
+        # 将wav_data转换为二进制数据写入文件
+        f.writeframes(temp_dataTemp.tostring())
 
+    return file_name
+
+
+def check_avg(arr,begin,end):
+    avg_en = 0
+    for i in range(begin,end):
+        avg_en = avg_en + abs(arr[i])
+    avg_en = avg_en/(end-begin)
+    return avg_en
+
+# 根据音量进行断句
+def vad_cut(wave_path,save_path):
+    global MAX_EN
+    with wave.open(wave_path) as file:
+        nchannels, sampwidth, framerate, nframes = file.getparams()[:4]
+
+        sample_time = 1 / framerate  # 采样点的时间间隔
+        time = nframes / framerate  # 声音信号的长度
+        SAMPLE_STEP = int(framerate / 10)
+
+        str_data = file.readframes(nframes)
+        wave_data = np.fromstring(str_data, dtype=np.int16)
+    # 上一个切割的音频
+    items = []
+    last_wav = 0
+    begin = 0
+    ind = 0
+    # 静音检测次数
+    # val =check_avg(wave_data,0,SAMPLE_STEP * 5)
+    # print("背景音：%s"%val)
+    while begin < wave_data.shape[0] - SAMPLE_STEP * 3:
+        step = SAMPLE_STEP
+        if ind == 0:
+            step = SAMPLE_STEP * 3
+        if check_avg(wave_data, begin, begin + step) < MAX_EN:
+            ind = ind + 1
+        else:
+            if last_wav == 0 :
+                last_wav = 1
+                ind = 0
+            if (ind > 0):
+                path = cut_wav(wave_data, last_wav, begin, nchannels, sampwidth, framerate,save_path)
+                item = {"index": len(items) + 1, "start_time": last_wav, "end_time": begin, "path": path}
+                items.append(item)
+                last_wav = begin
+                ind = 0
+        begin = begin + step;
+    path = cut_wav(wave_data, last_wav, len(wave_data) - 1, nchannels, sampwidth, framerate,save_path)
+    item = {"index": len(items) + 1, "start_time": last_wav, "end_time": begin, "path": path}
+    items.append(item)
+    return items
 
 if __name__ == '__main__':
     wave_path = r"D:\gs.wav"
-    SAMPLE_STEP = 3
-    MAX_EN = 100
+    vad_cut(wave_path,r"D:\tmp")
 
-    file = wave.open(wave_path)
-    a = file.getparams().nframes  # 帧总数
-    f = file.getparams().framerate  # 采样频率
-    sample_time = 1 / f  # 采样点的时间间隔
-    time = a / f  # 声音信号的长度
 
-    str_data = file.readframes(a)
-    wave_data = np.fromstring(str_data, dtype=np.int16)
-    # for i in range(wave_data.shape[0]-SAMPLE_STEP):
-    #     avg_en = 0
-    #     for j in range(SAMPLE_STEP):
-    #         avg_en = avg_en + abs(wave_data[i + j])
-    #     avg_en = avg_en/SAMPLE_STEP
-    #     if avg_en < MAX_EN:
-    #         print(avg_en)
-
-    # print(audio_sequence)  # 声音信号每一帧的“大小”
-    x_seq = np.arange(0, time, sample_time)
 
 

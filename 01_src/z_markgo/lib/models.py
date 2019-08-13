@@ -1,9 +1,7 @@
 # coding: utf-8
-import time
 from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.orm import relationship
-
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 Base = db.Model
@@ -122,7 +120,6 @@ class SysUser(Base):
     def get_user_id(self):
         return self.id
 
-
 class MarkProjectItem(Base):
     __tablename__ = 'mark_project_items'
 
@@ -130,14 +127,15 @@ class MarkProjectItem(Base):
     project_id = Column(ForeignKey('mark_project.id'), index=True)
     filepath = Column(String(255))
     status = Column(INTEGER(1), server_default=text("'0'"))
-    asr_txt = Column(String(255))
-    mark_txt = Column(String(255))
+    asr_txt = Column(String(5000))
+    mark_txt = Column(String(5000))
     user_id = Column(ForeignKey('sys_user.id'), index=True)
     inspection_status = Column(INTEGER(1), server_default=text("'0'"))
     mark_time = Column(DateTime)
     assigned_time = Column(DateTime)
     inspection_time = Column(DateTime)
     inspection_person = Column(ForeignKey('sys_user.id'), index=True)
+    inspection_txt = Column(String(5000))
 
     sys_user = relationship('SysUser', primaryjoin='MarkProjectItem.inspection_person == SysUser.id')
     project = relationship('MarkProject')
@@ -154,6 +152,7 @@ class MarkProjectUser(Base):
 
     project = relationship('MarkProject')
     user = relationship('SysUser')
+
 
 class SysPermissionMenu(Base):
     __tablename__ = 'sys_permission_menu'

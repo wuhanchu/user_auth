@@ -1,5 +1,5 @@
 # 常用函数，时间格式，文件读写等。
-import datetime,zipfile,os,hashlib,base64
+import datetime,zipfile,os,hashlib,base64,random,time
 
 #获取当前日期，格式%Y-%m-%d %H:%M:%S
 def get_curr_date():
@@ -14,6 +14,11 @@ def unzip_file(src_file, dest_dir, password=None):
         zf.extractall(path=dest_dir, pwd=password)
     finally:
         zf.close()
+
+# 判断文件目录是否存在，不存在则创建
+def create_if_dir_no_exists(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
 #遍历目录（子目录），返回所有文件路径
 def enum_path_files(path):
@@ -54,11 +59,20 @@ def from_base64(str):
     res = base64.b64decode(str)
     return res
 
+def random_value():
+    t = time.time()
+    value = str(int(t*1000))
+    # int(random.uniform(10000, 100000))
+    return value
+
 if __name__ == '__main__':
     # file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')
     # for i in file_paths:
     #     print(i)
     # unzip_file("C:\\Users\\czc\\Desktop\\txt\\item\\item.zip","C:\\Users\\czc\\Desktop\\txt\\item\\bak")
     # get_MD5_code("hello world")
+    t = time.time()
 
-    print(from_base64("eUFsOVBPOXNBNE5LWWhjclhmQU9YeGxEOkRhcm1yQ2tlQTA0clY4dDh2QTRtVFhoTXZuN25FVXdlRTA3Smd2V2hFVnBHc3VrSw=="))
+    print(int(t))  # 毫秒级时间戳
+
+

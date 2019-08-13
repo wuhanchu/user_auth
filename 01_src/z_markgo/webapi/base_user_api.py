@@ -1,9 +1,13 @@
 # -*- coding:utf-8 -*-
 from flask import request, send_file,make_response,render_template
 from lib.models import *
+from lib.model_oauth import OAuth2Token
 from lib.JsonResult import JsonResult
+from lib import JsonResult as js
+
 from lib import param_tool,sql_tool,com_tool
 from webapi import baseRoute,app
+from lib.oauth2 import require_oauth
 
 # 用户列表
 @baseRoute.route('/users', methods=['GET'])
@@ -71,6 +75,22 @@ def update_user_password(id):
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
+@require_oauth('profile')
+@baseRoute.route('/current_user', methods=['GET'])
+def current_user():
+    authorization = request.headers.environ["HTTP_AUTHORIZATION"]
+    authorization = authorization.split(" ")
+    if len(authorization) == 2:
+        access_token = authorization[1]
+        user = SysUser.query.join(OAuth2Token,OAuth2Token.user_id == SysUser.id).filter(OAuth2Token.access_token==access_token).filter(OAuth2Token.revoked==0).first()
+        if user:
+            user = js.queryToDict(user)
+            print(user)
+            user.pop("password")
+            user.pop("del_fg")
+            user.pop("token")
+            return JsonResult.success("查询成功",user)
+    return None
 
 
 @baseRoute.route('/users/<id>', methods=['DELETE'])
