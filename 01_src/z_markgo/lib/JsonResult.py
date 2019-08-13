@@ -24,7 +24,7 @@ class JsonResult:
         return jsonify({'code': ERROR_CODE, 'msg': msg, 'data': None})
 
     def error(msg=None, result=None):
-        return jsonify({'code': SUCCESS_CODE, 'msg': msg, 'data': result})
+        return jsonify({'code': ERROR_CODE, 'msg': msg, 'data': result})
 
     def queryResult(result=None):
         return jsonify({'code': ERROR_CODE, 'msg': "调用成功", 'data': queryToDict(result)})

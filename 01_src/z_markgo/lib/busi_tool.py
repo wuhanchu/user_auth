@@ -26,14 +26,13 @@ def tc_asr(item_id,asr_url,filepath):
             if (res['errCode'] == '0'):
                 sub_item["txt"] = res['result']
                 sub_item.pop("path")
-                print(sub_item)
             else:
                 raise RuntimeError("asr解析失败！（item:%s）" % item_id)
-        json_items = json.dumps(sub_items)
-        logger.info("asr解析成功！（item:%s）" % item_id)
+        json_items = json.dumps(sub_items,ensure_ascii=False)
+        logger.info("asr解析成功！（items:%s）" % json_items)
         return item_id,json_items
     except Exception as e:
-        logger.error("asr解析失败！（item:%s）" % e)
+        logger.error("asr解析失败！%s" % e)
     finally:
         shutil.rmtree(tmp_path)
     return item_id,None
