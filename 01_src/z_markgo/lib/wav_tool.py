@@ -77,13 +77,13 @@ def vad_cut(wave_path,save_path):
                 ind = 0
             if (ind > 0):
                 path = cut_wav(wave_data, last_wav, begin, nchannels, sampwidth, framerate,save_path)
-                item = {"index": len(items) + 1, "start_time": last_wav, "end_time": begin, "path": path}
+                item = {"index": len(items) + 1, "start_time": int(last_wav*1000/framerate), "end_time": int(begin*1000/framerate), "path": path}
                 items.append(item)
                 last_wav = begin
                 ind = 0
         begin = begin + step;
     path = cut_wav(wave_data, last_wav, len(wave_data) - 1, nchannels, sampwidth, framerate,save_path)
-    item = {"index": len(items) + 1, "start_time": last_wav, "end_time": begin, "path": path}
+    item = {"index": len(items) + 1, "start_time": int(last_wav*1000/framerate), "end_time": int(begin*1000/framerate), "path": path}
     items.append(item)
     return items
 

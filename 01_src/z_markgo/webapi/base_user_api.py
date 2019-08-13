@@ -82,7 +82,8 @@ def current_user():
     authorization = authorization.split(" ")
     if len(authorization) == 2:
         access_token = authorization[1]
-        user = SysUser.query.join(OAuth2Token,OAuth2Token.user_id == SysUser.id).filter(OAuth2Token.access_token==access_token).filter(OAuth2Token.revoked==0).first()
+        q = SysUser.query.join(OAuth2Token,OAuth2Token.user_id == SysUser.id).filter(OAuth2Token.access_token==access_token).filter(OAuth2Token.revoked==0)
+        user = q.first()
         if user:
             user = js.queryToDict(user)
             print(user)
@@ -90,7 +91,7 @@ def current_user():
             user.pop("del_fg")
             user.pop("token")
             return JsonResult.success("查询成功",user)
-    return None
+    return JsonResult.error()
 
 
 @baseRoute.route('/users/<id>', methods=['DELETE'])
