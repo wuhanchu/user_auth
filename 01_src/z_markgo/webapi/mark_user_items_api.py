@@ -4,7 +4,7 @@ from lib.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool,busi_tool
 from webapi import markRoute
-from sqlalchemy import and_
+from sqlalchemy import and_,or_
 from lib.my_synchronized import synchronized
 from lib.oauth2 import require_oauth
 from dao import mark_dao
@@ -60,14 +60,14 @@ def next_item():
 def get_next_items(project_id):
     authorization = request.headers.environ["HTTP_AUTHORIZATION"]
     user = mark_dao.get_user_by_token(authorization)
-
-    q = MarkProjectItem.query.filter_by(status = 0).filter(MarkProjectItem.asr_txt != None)
+    q = MarkProjectItem.query.filter(MarkProjectItem.asr_txt != None)
+    q = q.filter(or_(MarkProjectItem.status == 0,and_(MarkProjectItem.user_id == user["id"], MarkProjectItem.status == 1)))
     q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
     if param_tool.str_is_not_empty(project_id) :
         q = q.filter(MarkProjectItem.project_id == project_id )
     item = q.order_by(MarkProjectItem.id).first()
     #更新标注状态
-    if item:
+    if item and item.status == 0:
         item.status=1;
         item.user_id = user["id"]
         db.session.commit()

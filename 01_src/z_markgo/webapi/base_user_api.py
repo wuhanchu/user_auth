@@ -73,17 +73,6 @@ def update_user_password(id):
     else:
         return JsonResult.error("修改密码失败，旧密码错误！")
 
-@baseRoute.route('/current_user', methods=['GET'])
-@require_oauth('profile')
-def current_user():
-    authorization = request.headers.environ["HTTP_AUTHORIZATION"]
-    user = mark_dao.get_user_by_token(authorization)
-    if user:
-        return JsonResult.success("查询成功",user)
-    else:
-        return JsonResult.error()
-
-
 @baseRoute.route('/users/<id>', methods=['DELETE'])
 def del_users(id):
     "删除用户"
