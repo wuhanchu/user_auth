@@ -2,6 +2,7 @@ from lib.models import *
 from lib import JsonResult
 import logging
 from webapi import app
+from lib.model_oauth import *
 
 logger = logging.getLogger('flask.app')
 #判断项目下是否有标注数据
@@ -45,6 +46,21 @@ def get_project_users(project_id):
     q = db.session.query(MarkProjectUser.user_id,MarkProjectUser.mark_role)
     q = q.filter(MarkProjectUser.project_id == project_id)
     return q.all()
+
+
+def get_user_by_token(authorization):
+    authorization = authorization.split(" ")
+    if len(authorization) == 2:
+        access_token = authorization[1]
+        q = SysUser.query.join(OAuth2Token, OAuth2Token.user_id == SysUser.id).filter(
+            OAuth2Token.access_token == access_token).filter(OAuth2Token.revoked == 0)
+        user = q.first()
+        if user:
+            user = JsonResult.queryToDict(user)
+            user.pop("password")
+            user.pop("del_fg")
+            user.pop("token")
+            return user
 
 if __name__ == '__main__':
     print(len(range(1,100,3)))

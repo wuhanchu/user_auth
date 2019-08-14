@@ -35,8 +35,10 @@ def xf_asr(asr_url,filepath):
     return None
 
 if __name__ == '__main__':
-    asr_url = "http://192.168.1.150:3998/"
-    filepath = r"C:\Users\czc\Desktop\txt\item\488_003.wav"
-    # filepath = r"D:\gs.wav"
+    asr_url = "http://39.105.193.154:15098/"
+    # asr_url = "http://192.168.1.150:3998/"
+    # asr_url = "http://dataknown.tpddns.cn:3998"
+    # filepath = r"C:\Users\czc\Desktop\txt\item\488_003.wav"
+    filepath = r"D:\gs.wav"
     res = tc_asr(asr_url, filepath)
     print(res)

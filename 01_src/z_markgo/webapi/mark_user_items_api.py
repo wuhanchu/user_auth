@@ -6,6 +6,8 @@ from lib import param_tool,com_tool,sql_tool,busi_tool
 from webapi import markRoute
 from sqlalchemy import and_
 from lib.my_synchronized import synchronized
+from lib.oauth2 import require_oauth
+from dao import mark_dao
 
 # 列表
 @markRoute.route('/user_items', methods=['GET'])
@@ -54,14 +56,19 @@ def next_item():
 #获取下一个标注数据
 #处理并发请求
 @synchronized(obj= "static")
+@require_oauth('profile')
 def get_next_items(project_id):
+    authorization = request.headers.environ["HTTP_AUTHORIZATION"]
+    user = mark_dao.get_user_by_token(authorization)
+
     q = MarkProjectItem.query.filter_by(status = 0).filter(MarkProjectItem.asr_txt != None)
     q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
     if param_tool.str_is_not_empty(project_id) :
         q = q.filter(MarkProjectItem.project_id == project_id )
-    items = q.order_by(MarkProjectItem.id).limit(1).all()
-    if len(items) == 0:
-        return JsonResult.error("没有可标注项目！")
-    else:
-        item = items[0]
-        return item
+    item = q.order_by(MarkProjectItem.id).first()
+    #更新标注状态
+    if item:
+        item.status=1;
+        item.user_id = user["id"]
+        db.session.commit()
+    return item

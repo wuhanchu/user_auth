@@ -1,13 +1,12 @@
 # -*- coding:utf-8 -*-
-from flask import request, send_file,make_response,render_template
+from flask import request
 from lib.models import *
 from lib.model_oauth import OAuth2Token
 from lib.JsonResult import JsonResult
-from lib import JsonResult as js
-
-from lib import param_tool,sql_tool,com_tool
+from lib import JsonResult as js,param_tool,sql_tool,com_tool
 from webapi import baseRoute,app
 from lib.oauth2 import require_oauth
+from dao import mark_dao
 
 # 用户列表
 @baseRoute.route('/users', methods=['GET'])
@@ -74,24 +73,15 @@ def update_user_password(id):
     else:
         return JsonResult.error("修改密码失败，旧密码错误！")
 
-
-@require_oauth('profile')
 @baseRoute.route('/current_user', methods=['GET'])
+@require_oauth('profile')
 def current_user():
     authorization = request.headers.environ["HTTP_AUTHORIZATION"]
-    authorization = authorization.split(" ")
-    if len(authorization) == 2:
-        access_token = authorization[1]
-        q = SysUser.query.join(OAuth2Token,OAuth2Token.user_id == SysUser.id).filter(OAuth2Token.access_token==access_token).filter(OAuth2Token.revoked==0)
-        user = q.first()
-        if user:
-            user = js.queryToDict(user)
-            print(user)
-            user.pop("password")
-            user.pop("del_fg")
-            user.pop("token")
-            return JsonResult.success("查询成功",user)
-    return JsonResult.error()
+    user = mark_dao.get_user_by_token(authorization)
+    if user:
+        return JsonResult.success("查询成功",user)
+    else:
+        return JsonResult.error()
 
 
 @baseRoute.route('/users/<id>', methods=['DELETE'])
@@ -103,3 +93,4 @@ def del_users(id):
     # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
+
