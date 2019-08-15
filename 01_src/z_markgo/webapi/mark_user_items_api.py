@@ -35,7 +35,10 @@ def user_items_list():
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    res, total = sql_tool.model_page(q,limit,offset)
+    sort = request.args.get('sort')
+    if sort == None:
+        sort = "-id"
+    res, total = sql_tool.model_page(q,limit,offset,sort)
     return JsonResult.res_page(res,total)
 
 #去标注，获取下一个标注数据

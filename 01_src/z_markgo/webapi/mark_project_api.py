@@ -25,11 +25,13 @@ def projects_list():
         sql = sql + " and p.name like '%" + name + "%'"
     if type is not None  and type != '':
         sql = sql + " and p.type = '" + type + "'"
-    sql = sql + " order by p.id "
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    res,total = sql_tool.mysql_page(db,sql,offset,limit)
+    sort = request.args.get('sort')
+    if param_tool.str_is_empty(sort):
+        store = "-id"
+    res,total = sql_tool.mysql_page(db,sql,offset,limit,sort)
     return JsonResult.res_page(res,total)
 
 # 详细信息

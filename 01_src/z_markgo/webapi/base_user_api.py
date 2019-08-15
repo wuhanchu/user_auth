@@ -18,7 +18,10 @@ def user_list():
     q = q.order_by(SysUser.name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    res,total = sql_tool.model_page(q,limit,offset)
+    sort = request.args.get('sort')
+    if sort == None:
+        sort = "-id"
+    res,total = sql_tool.model_page(q,limit,offset,sort)
     return JsonResult.res_page(res,total)
 
 # 详细用户信息

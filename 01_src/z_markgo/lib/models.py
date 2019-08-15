@@ -28,6 +28,7 @@ class MarkProject(Base):
     plan_time = Column(String(20))
     inspection_persent = Column(INTEGER(3))
     create_time = Column(DateTime)
+    asr_score = Column(Float(5))
     remarks = Column(String(2000))
 
 
@@ -136,6 +137,7 @@ class MarkProjectItem(Base):
     inspection_time = Column(DateTime)
     inspection_person = Column(ForeignKey('sys_user.id'), index=True)
     inspection_txt = Column(String(5000))
+    asr_score = Column(Float(5))
 
     sys_user = relationship('SysUser', primaryjoin='MarkProjectItem.inspection_person == SysUser.id')
     project = relationship('MarkProject')

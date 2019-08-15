@@ -38,29 +38,39 @@ def projects_update_users():
 def projects_user_list():
     project_id = request.args.get("project_id")
     name = request.args.get("user_name")
-
-    sql =r"""SELECT u.id,u.name, pi_count.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
+    sql =r"""select * from (SELECT u.id,u.name, pi_count.mark_role, ifnull(pi_count.mark_sum,0) as mark_sum,ifnull(pi_count.mark_today,0) as mark_today
         ,ifnull(pi_count.inspection_sum,0) as inspection_sum,ifnull(pi_count.inspection_fail_sum,0) as inspection_fail_sum 
-    FROM sys_user u left join (SELECT user_id,0 as mark_role ,count( pi.id ) mark_sum,
-		sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
-		sum( CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END ) inspection_sum,
-		sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
-	    FROM mark_project_items pi WHERE project_id = %s GROUP BY user_id 
-    union all SELECT inspection_person as user_id,1 as mark_role, count( pi.id ) mark_sum,  -- 质检总数
-        sum( CASE WHEN to_days( pi.inspection_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
-        0 inspection_sum,
-        sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
-    FROM mark_project_items pi WHERE project_id = %s GROUP BY inspection_person) 
-        as pi_count on u.id = pi_count.user_id where 1=1 """%(project_id,project_id)
+        FROM sys_user u join (
+            SELECT user_id,0 as mark_role ,sum(CASE WHEN status = 2 THEN 1 ELSE 0 END) mark_sum,
+            sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) and  status = 2 THEN 1 ELSE 0 END ) mark_today,
+            sum( CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END ) inspection_sum,
+            sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+            FROM mark_project_items pi WHERE project_id = %s GROUP BY user_id 
+        union all SELECT inspection_person as user_id,1 as mark_role, count( pi.id ) mark_sum,  -- 质检总数
+            sum( CASE WHEN to_days( pi.inspection_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
+            0 inspection_sum,
+            sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+        FROM mark_project_items pi WHERE project_id = %s GROUP BY inspection_person) 
+            as pi_count on u.id = pi_count.user_id 
+    union all 
+        select u.id,u.name, pu.mark_role, 0 as mark_sum, 0 as mark_today,0 as inspection_sum,0 as inspection_fail_sum 
+        FROM sys_user u join mark_project_user pu on u.id = pu.user_id and pu.project_id = %s
+        where u.id not in 
+        (select ifnull(user_id,"is_null") user_id from mark_project_items where status = 2 and project_id = pu.project_id
+        union select ifnull(inspection_person,"is_null") user_id from mark_project_items where project_id = pu.project_id )  
+        ) t where 1=1 """%(project_id,project_id,project_id)
 
 
     if name is not None and name != '':
-        sql = sql + "and u.name like '%" + name + "%'"
-    sql = sql + " order by u.name "
+        sql = sql + "and name like '%" + name + "%'"
+    sql = sql + " order by name "
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
-    res,total = sql_tool.mysql_page(db,sql,offset,limit)
+    sort = request.args.get('sort')
+    if param_tool.str_is_empty(sort):
+        store = "-id"
+    res,total = sql_tool.mysql_page(db,sql,offset,limit,sort)
     return JsonResult.res_page(res,total)
 
 #删除
