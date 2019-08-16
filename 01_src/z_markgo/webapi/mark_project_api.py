@@ -12,7 +12,7 @@ from lib.oauth2 import require_oauth
 @require_oauth('profile')
 def projects_list():
     sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks
-        ,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
+        ,p.asr_score,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
         (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
         group by p.id) pu on pu.pid = p.id join
         (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=2  then 1 else 0 end) 

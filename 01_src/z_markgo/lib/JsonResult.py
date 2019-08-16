@@ -74,7 +74,9 @@ def result_to_dict(results):
 
 def model_to_dict(model):  # 这段来自于参考资源
     for col in model.__table__.columns:
-        if isinstance(col.type, DateTime):
+        if getattr(model, col.name) == None:
+            value = None
+        elif isinstance(col.type, DateTime):
             value = convert_datetime(getattr(model, col.name))
         elif isinstance(col.type, Numeric):
             value = float(getattr(model, col.name))

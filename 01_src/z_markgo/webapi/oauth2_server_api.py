@@ -7,8 +7,8 @@ from authlib.oauth2 import OAuth2Error
 from lib.models import db, SysUser
 from lib.model_oauth import OAuth2Client
 from lib.oauth2 import authorization, require_oauth
-from dao import mark_dao
 from lib.JsonResult import JsonResult
+from lib import JsonResult as js
 
 def current_user():
     if 'id' in session:
@@ -88,9 +88,12 @@ def revoke_token():
 @oauth_server.route('/current_user', methods=['GET'])
 @require_oauth('profile')
 def current_user():
-    authorization = request.headers.environ["HTTP_AUTHORIZATION"]
-    user = mark_dao.get_user_by_token(authorization)
-    if user:
+    if current_token:
+        user = current_token.user
+        user = js.queryToDict(user)
+        user.pop("password")
+        user.pop("del_fg")
+        user.pop("token")
         return JsonResult.success("查询成功",user)
     else:
         return JsonResult.error()
