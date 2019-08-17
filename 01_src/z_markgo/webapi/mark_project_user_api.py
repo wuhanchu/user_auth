@@ -5,9 +5,11 @@ from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 from dao import mark_dao
+from lib.oauth2 import require_oauth
 
 # 批量添加员工，支持直接把项目中的人员名单覆盖
 @markRoute.route('/project_users', methods=['PUT'])
+@require_oauth('profile')
 def projects_update_users():
     args = request.get_json()
     project_id = args.get("project_id")
@@ -35,6 +37,7 @@ def projects_update_users():
     return JsonResult.success("更新项目用户成功！")
 
 @markRoute.route('/project_users', methods=['GET'])
+@require_oauth('profile')
 def projects_user_list():
     project_id = request.args.get("project_id")
     name = request.args.get("user_name")
@@ -75,6 +78,7 @@ def projects_user_list():
 
 #删除
 @markRoute.route('/project_users/<project_id>/<user_id>', methods=['DELETE'])
+@require_oauth('profile')
 def project_users_delete(project_id,user_id):
     q = MarkProjectUser.query
     obj = q.get((project_id,user_id))

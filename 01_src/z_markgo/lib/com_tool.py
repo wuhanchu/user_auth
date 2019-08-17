@@ -15,6 +15,22 @@ def unzip_file(src_file, dest_dir, password=None):
     finally:
         zf.close()
 
+def zip_dir(dirpath,outFullName):
+    """
+    压缩指定文件夹
+    :param dirpath: 目标文件夹路径
+    :param outFullName: 压缩文件保存路径+xxxx.zip
+    :return: 无
+    """
+    zip = zipfile.ZipFile(outFullName,"w",zipfile.ZIP_DEFLATED)
+    for path,dirnames,filenames in os.walk(dirpath):
+        # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
+        fpath = path.replace(dirpath,'')
+
+        for filename in filenames:
+            zip.write(os.path.join(path,filename),os.path.join(fpath,filename))
+    zip.close()
+
 # 判断文件目录是否存在，不存在则创建
 def create_if_dir_no_exists(dir):
     if not os.path.exists(dir):
@@ -64,6 +80,12 @@ def random_value():
     value = str(int(t*1000))
     # int(random.uniform(10000, 100000))
     return value
+
+def if_null(arg1,arg2):
+    if arg1:
+        return arg1
+    else:
+        return arg2
 
 if __name__ == '__main__':
     # file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')

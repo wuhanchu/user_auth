@@ -8,14 +8,17 @@ from webapi import markRoute,app
 from dao import mark_dao
 import os
 from sqlalchemy.orm import aliased
+from lib.oauth2 import require_oauth
+from authlib.flask.oauth2 import current_token
+
 
 item_root_path = busi_tool.get_item_root_path()
-print(item_root_path )
 if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
 
 # 列表
 @markRoute.route('/project_items', methods=['GET'])
+@require_oauth('profile')
 def project_items_list():
     project_id = request.args.get("project_id")
     filepath = request.args.get("filepath")
@@ -50,12 +53,14 @@ def project_items_list():
 
 # 详细信息
 @markRoute.route('/project_items/<id>', methods=['GET'])
+@require_oauth('profile')
 def project_items_get_info(id):
     obj = MarkProjectItem.query.get(id)
     return JsonResult.queryResult(obj)
 
 # 详细信息
 @markRoute.route('/project_items/<id>/wav_file', methods=['GET'])
+@require_oauth('profile')
 def project_items_wav_file(id):
     obj = MarkProjectItem.query.get(id)
     filepath = os.path.join(item_root_path, obj.filepath)
@@ -64,6 +69,7 @@ def project_items_wav_file(id):
 
 #导入文件
 @markRoute.route('/project_items/upload', methods=['POST'])
+@require_oauth('profile')
 def project_items_upload():
     project_id = request.form.get("project_id")
     zip_file = request.files.get("item_file")
@@ -104,23 +110,32 @@ def project_items_upload():
 
 # 更新
 @markRoute.route('/project_items/<id>', methods=['PUT','PATCH'])
+@require_oauth('profile')
 def project_items_update(id):
     obj = MarkProjectItem.query.get(id)
     if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    if args["mark_txt"] != None  :
+    if args["mark_txt"] != None :
         obj.mark_time = param_tool.get_curr_time()
-    if args["inspection_status"] != None :
+        obj.user_id = current_token.user.id
+        obj.mark_txt = args["mark_txt"]
+        obj.status = 2
+    elif args["inspection_txt"] != None :
         obj.inspection_time = param_tool.get_curr_time()
-
+        obj.inspection_person = current_token.user.id
+        # todo 判断是否通过
+        # obj.inspection_status = args["inspection_status"]
+        obj.inspection_txt = args["inspection_txt"]
+    else:
+        return JsonResult.success("参数错误！")
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
 #删除
 @markRoute.route('/project_items/<id>', methods=['DELETE'])
+@require_oauth('profile')
 def project_items_delete(id):
     obj = MarkProjectItem.query.get(id)
     if obj is None:
@@ -133,6 +148,7 @@ def project_items_delete(id):
 
 #批量删除
 @markRoute.route('/project_items', methods=['DELETE'])
+@require_oauth('profile')
 def project_items_delete_batch():
     args = request.args
     ids = args.get("ids").split(',');

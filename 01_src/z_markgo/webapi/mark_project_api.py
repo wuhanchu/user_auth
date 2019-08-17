@@ -1,18 +1,21 @@
 # -*- coding:utf-8 -*-
+import os
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool
+from lib import param_tool,com_tool,sql_tool,busi_tool
 from webapi import markRoute
 from dao import mark_dao
 from lib.oauth2 import require_oauth
 
+
+item_root_path = busi_tool.get_item_root_path()
 # 列表
 @markRoute.route('/projects', methods=['GET'])
 @require_oauth('profile')
 def projects_list():
     sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks
-        ,p.asr_score,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
+        ,p.asr_score,p.frame_rate,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
         (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
         group by p.id) pu on pu.pid = p.id join
         (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=2  then 1 else 0 end) 
@@ -36,12 +39,14 @@ def projects_list():
 
 # 详细信息
 @markRoute.route('/projects/<id>', methods=['GET'])
+@require_oauth('profile')
 def get_info(id):
     obj = MarkProject.query.get(id)
     return JsonResult.queryResult(obj)
 
 #添加
 @markRoute.route('/projects', methods=['POST'])
+@require_oauth('profile')
 def projects_add():
     obj = MarkProject()
     args = request.get_json()
@@ -54,6 +59,7 @@ def projects_add():
 
 # 更新
 @markRoute.route('/projects/<id>', methods=['PUT','PATCH'])
+@require_oauth('profile')
 def projects_update(id):
     obj = MarkProject.query.get(id)
     #todo 判断是否可以修改type（标注类型）
@@ -67,6 +73,7 @@ def projects_update(id):
 
 #删除
 @markRoute.route('/projects/<id>', methods=['DELETE'])
+@require_oauth('profile')
 def projects_delete(id):
     obj = MarkProject.query.get(id)
 
@@ -81,3 +88,18 @@ def projects_delete(id):
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 
+@markRoute.route('/projects/<id>/project_pkg', methods=['GET'])
+@require_oauth('profile')
+def export_project(id):
+    # 导出打包文件
+    list = MarkProjectItem.query.filter_by(project_id = id)
+    dir_path = os.path.join(item_root_path, id)
+    project = MarkProject.query.get(id)
+    txt_file = os.path.join(dir_path,"%s_标注文本.txt"%(project.name))
+    with open(txt_file, 'w') as f:
+        for item in list:
+            str = "%s %s\n"%(item.filepath,com_tool.if_null(item.inspection_txt,item.mark_txt))
+            f.write(str)
+    zip_file = os.path.join(item_root_path,"%s(%s)_标注信息.zip"%(project.name,project.id))
+    com_tool.zip_dir(dir_path,zip_file)
+    return send_file(zip_file)

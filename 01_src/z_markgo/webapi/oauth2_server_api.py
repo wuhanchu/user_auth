@@ -10,11 +10,6 @@ from lib.oauth2 import authorization, require_oauth
 from lib.JsonResult import JsonResult
 from lib import JsonResult as js
 
-def current_user():
-    if 'id' in session:
-        uid = session['id']
-        return SysUser.query.get(uid)
-    return None
 
 
 @oauth_server.route('/', methods=('GET', 'POST'))
