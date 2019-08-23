@@ -20,9 +20,9 @@ def tc_asr(item_id,asr_url,filepath):
         tmp_path = os.path.join(os.path.dirname(filepath),str(item_id)+"_tmp")
         com_tool.create_if_dir_no_exists(tmp_path)
         # 子音频文件信息
-        sub_items = wav_tool.vad_cut(filepath,tmp_path)
+        sub_items,framerate = wav_tool.vad_cut(filepath,tmp_path)
         for sub_item in sub_items:
-            res = asr_tool.tc_asr(asr_url,sub_item["path"])
+            res = asr_tool.tc_asr(asr_url,sub_item["path"],framerate)
             if (res['errCode'] == '0'):
                 sub_item["txt"] = res['result']
                 sub_item.pop("path")

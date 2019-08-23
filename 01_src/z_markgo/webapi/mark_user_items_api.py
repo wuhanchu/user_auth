@@ -90,7 +90,7 @@ def next_item():
     if item :
         return JsonResult.queryResult(item)
     else:
-        return JsonResult.error("该项目已经标注完成了！")
+        return JsonResult.error("没有未标注数据了！")
 
     # 情况1，全部转写完  有未标注数据， 没有未标注数据   最后一条数据被占用
     # 情况2，未转写完成  无标注数据
@@ -100,6 +100,7 @@ def next_item():
 def get_next_items(project_id):
     user = current_token.user
     q = MarkProjectItem.query.filter(MarkProjectItem.asr_txt != None)
+    q = q.join(MarkProjectUser,MarkProjectUser.project_id == MarkProjectItem.project_id).filter(MarkProjectUser.user_id == user.id )
     q = q.filter(or_(MarkProjectItem.status == 0,and_(MarkProjectItem.user_id == user.id, MarkProjectItem.status == 1)))
     q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
     if param_tool.str_is_not_empty(project_id) :
@@ -113,12 +114,12 @@ def get_next_items(project_id):
     return item
 
 
-#获取下一个标注数据
+#获取下一个质检数据
 @synchronized(obj= "static_inspection")
 def get_next_inspection_items(project_id):
     user = current_token.user
-    q = MarkProjectItem.query.filter(MarkProjectItem.asr_txt != None)
-    q = q.filter(MarkProjectItem.status == 2).filter(MarkProjectItem.inspection_status == 0)
+    q = MarkProjectItem.query.filter(MarkProjectItem.status == 2).filter(MarkProjectItem.inspection_status == 0)
+    q = q.join(MarkProjectUser, MarkProjectUser.project_id == MarkProjectItem.project_id).filter(MarkProjectUser.user_id == user.id)
     q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
     if param_tool.str_is_not_empty(project_id) :
         q = q.filter(MarkProjectItem.project_id == project_id )

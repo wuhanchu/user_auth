@@ -3,6 +3,7 @@ import requests,config
 import json,os
 from lib import com_tool
 from requests_toolbelt import MultipartEncoder
+import pandas as pd
 
 userid="13811002233"
 token= "12345678"
@@ -17,10 +18,13 @@ def client_post_mutipart_formdata_requests(request_url, datas ):
     return responsedata
 
 # 天聪asr
-def tc_asr(asr_url,filepath) :
+def tc_asr(asr_url,filepath,framerate=16000) :
     (fileDir, filename) = os.path.split(filepath)
+    my_user = userid
+    if framerate == 8000:
+        my_user = userid + "-8K"
     data = {
-        "userid": userid,
+        "userid": my_user,
         "token": token,
         "sid": "test123456",
         'file': (filename, open(filepath, 'rb'), 'application/wav')
@@ -35,10 +39,11 @@ def xf_asr(asr_url,filepath):
     return None
 
 if __name__ == '__main__':
-    asr_url = "http://39.105.193.154:15098/"
-    # asr_url = "http://192.168.1.150:3998/"
+    # asr_url = "http://39.105.193.154:15098/"
+    asr_url = "http://192.168.1.150:34568/"
     # asr_url = "http://dataknown.tpddns.cn:3998"
     # filepath = r"C:\Users\czc\Desktop\txt\item\488_003.wav"
-    filepath = r"D:\gs.wav"
-    res = tc_asr(asr_url, filepath)
+    filepath = r"C:\Users\czc\Desktop\txt\wav-8k\201805180003187692024.wav"
+    res = tc_asr(asr_url, filepath,8000)
     print(res)
+

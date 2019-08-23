@@ -4,7 +4,7 @@ import wave
 import numpy as np
 import os
 
-MAX_EN = 600
+MAX_EN = 1000
 
 def get_wav_info(wav_path):
     with wave.open(wav_path, "rb") as f:
@@ -63,12 +63,12 @@ def vad_cut(wave_path,save_path):
     begin = 0
     ind = 0
     # 静音检测次数
-    # val =check_avg(wave_data,0,SAMPLE_STEP * 5)
-    # print("背景音：%s"%val)
-    while begin < wave_data.shape[0] - SAMPLE_STEP * 3:
+    MAX_EN = check_avg(wave_data, 0, SAMPLE_STEP * 3)
+    print("静音音量：%s"%MAX_EN)
+    while begin < wave_data.shape[0] - SAMPLE_STEP * 4:
         step = SAMPLE_STEP
         if ind == 0:
-            step = SAMPLE_STEP * 3
+            step = SAMPLE_STEP * 4
         if check_avg(wave_data, begin, begin + step) < MAX_EN:
             ind = ind + 1
         else:
@@ -85,10 +85,11 @@ def vad_cut(wave_path,save_path):
     path = cut_wav(wave_data, last_wav, len(wave_data) - 1, nchannels, sampwidth, framerate,save_path)
     item = {"i": len(items) + 1, "st": int(last_wav*1000/framerate), "et": int(begin*1000/framerate), "path": path}
     items.append(item)
-    return items
+    return items,framerate
 
 if __name__ == '__main__':
-    wave_path = r"D:\gs.wav"
+    # wave_path = r"D:\gs.wav"
+    wave_path = r"C:\Users\czc\Desktop\txt\wav-8k\201805180003187692024.wav"
     vad_cut(wave_path,r"D:\tmp")
 
 
