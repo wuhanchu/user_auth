@@ -6,12 +6,12 @@ from lib import param_tool,com_tool,sql_tool,busi_tool,asr_tool
 from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute,app
 from dao import mark_dao
-import os
+import os,logging
 from sqlalchemy.orm import aliased
 from lib.oauth2 import require_oauth
 from authlib.flask.oauth2 import current_token
 
-
+logger = logging.getLogger('flask.app')
 item_root_path = busi_tool.get_item_root_path()
 if not os.path.exists(item_root_path):
     os.makedirs(item_root_path)
@@ -91,21 +91,27 @@ def project_items_upload():
     path_len = len(item_root_path)+1
     #
     project = MarkProject.query.get(project_id)
+    ai_service = AiService.query.get(project.ai_service)
+    exist_item_paths = mark_dao.get_item_paths(project_id)
+    logger.warn("exist_item_paths:%s"%str(exist_item_paths))
+    to_asr_items = []
     #创建item条目
     for project_item_path in item_paths:
+        if project_item_path[path_len:] in exist_item_paths:
+            logger.warn("相同路径：%s"% project_item_path[path_len:])
+            continue
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
-        if project.type == "asr":
+        if project.type != "asr":
             item.asr_txt = project.model_txt
         db.session.add(item)
+        to_asr_items.append(item)
     db.session.commit()
-    # 判断是否要进行文本解析，如果需要就调用后台任务
+    logger.warn("to_asr_items:%s" % str(to_asr_items))
     if project.type == "asr":
-        ai_service = AiService.query.get(project.ai_service)
-        items = mark_dao.get_asr_items(project_id)
-        for item in items:
-            filepath = os.path.join(item_root_path, item["filepath"])
-            dk_thread_pool.submit(busi_tool.tc_asr,mark_dao.update_asr_txt,item["id"],ai_service.service_url,filepath)
-
+        for item in to_asr_items:
+            filepath = os.path.join(item_root_path, item.filepath)
+            logger.warn("asr item_id：%s" % str(item.id))
+            dk_thread_pool.submit(busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
     return JsonResult.success("导入音频成功！总条数%s"%len(item_paths))
 
 # 更新
@@ -141,7 +147,10 @@ def project_items_delete(id):
     if obj is None:
         return JsonResult.error("对象不存在！", {"id": id})
     path = os.path.join(item_root_path,obj.filepath)
-    os.remove(path)
+    try:
+        os.remove(path)
+    except Exception:
+        logger.warn("文件不存在（%s）"%path)
     db.session.delete(obj)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})

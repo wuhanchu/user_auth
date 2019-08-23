@@ -75,7 +75,8 @@ def vad_cut(wave_path,save_path):
             if last_wav == 0 :
                 last_wav = 1
                 ind = 0
-            if (ind > 0):
+            if ind > 0 and (begin-last_wav)/SAMPLE_STEP>5 :
+                print("时长%s:%s" % ((begin - last_wav) / SAMPLE_STEP, (begin - last_wav) / SAMPLE_STEP > 5))  # 表示音频段大于5ms
                 path = cut_wav(wave_data, last_wav, begin, nchannels, sampwidth, framerate,save_path)
                 item = {"i": len(items) + 1, "st": int(last_wav*1000/framerate), "et": int(begin*1000/framerate), "path": path}
                 items.append(item)
@@ -89,8 +90,10 @@ def vad_cut(wave_path,save_path):
 
 if __name__ == '__main__':
     # wave_path = r"D:\gs.wav"
-    wave_path = r"C:\Users\czc\Desktop\txt\wav-8k\201805180003187692024.wav"
+    # wave_path = r"C:\Users\czc\Desktop\txt\item\488_001.wav"
+    wave_path = r"C:\Users\czc\Desktop\txt\wav-8k\201805180004181023655.wav"
     vad_cut(wave_path,r"D:\tmp")
+
 
 
 

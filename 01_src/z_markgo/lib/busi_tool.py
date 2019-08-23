@@ -17,7 +17,7 @@ def get_item_root_path():
 
 def tc_asr(item_id,asr_url,filepath):
     try:
-        tmp_path = os.path.join(os.path.dirname(filepath),str(item_id)+"_tmp")
+        tmp_path = os.path.join(get_item_root_path()+"_tmp",str(item_id))
         com_tool.create_if_dir_no_exists(tmp_path)
         # 子音频文件信息
         sub_items,framerate = wav_tool.vad_cut(filepath,tmp_path)
@@ -26,10 +26,14 @@ def tc_asr(item_id,asr_url,filepath):
             if (res['errCode'] == '0'):
                 sub_item["txt"] = res['result']
                 sub_item.pop("path")
+            # todo 处理报错问题
+            elif res['errCode'] == '-2':
+                sub_item["txt"] = res['result']
+                logger.warn("asr解析失败，%s！（path:%s）" %(str(res),sub_item["path"]))
+                sub_item.pop("path")
             else:
-                raise RuntimeError("asr解析失败！（item:%s）" % item_id)
+                raise RuntimeError("asr解析失败，%s！（path:%s）" %(str(res),sub_item["path"]))
         json_items = json.dumps(sub_items,ensure_ascii=False)
-        logger.info("asr解析成功！（items:%s）" % json_items)
         return item_id,json_items
     except Exception as e:
         logger.error("asr解析失败！%s" % e)
