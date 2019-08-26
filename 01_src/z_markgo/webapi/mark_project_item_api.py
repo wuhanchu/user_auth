@@ -123,12 +123,12 @@ def project_items_update(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     # 将参数加载进去
-    if args["mark_txt"] != None :
+    if "mark_txt" in args.keys() :
         obj.mark_time = param_tool.get_curr_time()
         obj.user_id = current_token.user.id
         obj.mark_txt = args["mark_txt"]
         obj.status = 2
-    elif args["inspection_txt"] != None :
+    elif "inspection_txt" in args.keys() :
         obj.inspection_time = param_tool.get_curr_time()
         obj.inspection_person = current_token.user.id
         # todo 判断是否通过

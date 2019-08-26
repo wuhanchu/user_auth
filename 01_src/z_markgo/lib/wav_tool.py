@@ -8,8 +8,9 @@ MAX_EN = 1000
 
 def get_wav_info(wav_path):
     with wave.open(wav_path, "rb") as f:
-        print(f.getparams())
-        return f.getparams()
+        params = f.getparams()
+        # print(params)
+    return params
 
 def check_wav_format(wav_path):
     params = get_wav_info(wav_path)

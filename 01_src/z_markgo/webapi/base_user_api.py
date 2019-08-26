@@ -7,11 +7,15 @@ from lib import JsonResult as js,param_tool,sql_tool,com_tool
 from webapi import baseRoute,app
 from lib.oauth2 import require_oauth
 from dao import mark_dao
+from sqlalchemy import func
 
 # 用户列表
 @baseRoute.route('/users', methods=['GET'])
+@require_oauth('profile')
 def user_list():
-    q = SysUser.query
+    q = db.session.query(SysUser.id,func.max(SysUser.name).label("name"),func.max(SysUser.username).label("username"),func.max(SysUser.telephone)\
+        .label("telephone"),func.max(SysUser.address).label("address"),func.group_concat(SysRole.name).label("roles"))\
+        .outerjoin(SysUserRole,SysUserRole.user_id == SysUser.id).outerjoin(SysRole,SysRole.id == SysUserRole.role_id).group_by(SysUser.id)
     name = request.args.get("name")
     if name is not None:
         q = q.filter(SysUser.name.like("%" + name + "%"))
@@ -26,11 +30,13 @@ def user_list():
 
 # 详细用户信息
 @baseRoute.route('/users/<id>', methods=['GET'])
+@require_oauth('profile')
 def get_user(id):
-    user = SysUser.query.get(id)
-    return JsonResult.queryResult(user)
+    obj = SysUser.query.get(id)
+    return JsonResult.queryResult(obj)
 
 @baseRoute.route('/users', methods=['POST'])
+# @require_oauth('profile')
 def add_user():
     args = request.get_json()
     name = args.get("name")
@@ -39,48 +45,51 @@ def add_user():
     #将password转为md5编码
     password = args.get("password")
     password = com_tool.get_MD5_code(password)
-    user = SysUser(name=name, username=username, password=password, telephone=telephone)
-    db.session.add(user)
+    obj = SysUser(name=name, username=username, password=password, telephone=telephone)
+    db.session.add(obj)
     db.session.commit()
-    return JsonResult.success("创建成功！", {"userid": user.id})
+    return JsonResult.success("创建成功！", {"userid": obj.id})
 
 # PUT:全部字段 ；PATCH:部分字段
 @baseRoute.route('/users/<id>', methods=['PUT','PATCH'])
+@require_oauth('profile')
 def update_user(id):
-    user = SysUser.query.get(id)
-    if user is None :
+    obj = SysUser.query.get(id)
+    if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     if "password" in args:
         args.pop("password")
     #将参数加载进去
-    param_tool.set_dict_parm(user,args)
+    param_tool.set_dict_parm(obj,args)
     db.session.commit()
-    return JsonResult.success("更新成功！",{"id": user.id})
+    return JsonResult.success("更新成功！",{"id": obj.id})
 
 # 修改密码
 @baseRoute.route('/users/<id>/password', methods=['PUT','PATCH'])
+@require_oauth('profile')
 def update_user_password(id):
-    user = SysUser.query.get(id)
-    if user is None :
+    obj = SysUser.query.get(id)
+    if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
-    if "old_password" in args and user.password == com_tool.get_MD5_code(args["old_password"]) :
+    if "old_password" in args and obj.password == com_tool.get_MD5_code(args["old_password"]) :
         if "new_password" in args:
             new_passwd = com_tool.get_MD5_code(args["new_password"])
-            user.password = new_passwd
+            obj.password = new_passwd
             db.session.commit()
-            return JsonResult.success("修改密码成功！", {"id": user.id})
+            return JsonResult.success("修改密码成功！", {"id": obj.id})
         else:
             return JsonResult.error("修改密码失败，请输入新密码！")
     else:
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 @baseRoute.route('/users/<id>', methods=['DELETE'])
+@require_oauth('profile')
 def del_users(id):
     "删除用户"
-    user = SysUser.query.get(id)
-    db.session.delete(user)
+    obj = SysUser.query.get(id)
+    db.session.delete(obj)
     # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
     # db.session.execute(sql)
     db.session.commit()

@@ -23,12 +23,13 @@ def tc_asr(asr_url,filepath,framerate=16000) :
     my_user = userid
     if framerate == 8000:
         my_user = userid + "-8K"
-    data = {
-        "userid": my_user,
-        "token": token,
-        "sid": "test123456",
-        'file': (filename, open(filepath, 'rb'), 'application/wav')
-    }
+    with open(filepath, 'rb') as f:
+        data = {
+            "userid": my_user,
+            "token": token,
+            "sid": "test123456",
+            'file': (filename, f, 'application/wav')
+        }
     res = client_post_mutipart_formdata_requests(com_tool.url_join(asr_url,"dotcasr"), data)
     res = json.loads(res)
     return res

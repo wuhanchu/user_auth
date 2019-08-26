@@ -33,7 +33,7 @@ def projects_list():
     limit = int(request.args.get('limit'))
     sort = request.args.get('sort')
     if param_tool.str_is_empty(sort):
-        store = "-id"
+        sort = "-id"
     res,total = sql_tool.mysql_page(db,sql,offset,limit,sort)
     return JsonResult.res_page(res,total)
 

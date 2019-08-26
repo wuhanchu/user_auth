@@ -30,6 +30,8 @@ class MarkProject(Base):
     create_time = Column(DateTime)
     asr_score = Column(Float(5))
     remarks = Column(String(2000))
+    roles = Column(String(500))
+    marks = Column(String(500))
 
 
 class SysMenu(Base):
@@ -91,7 +93,6 @@ class SysRole(Base):
 
     id = Column(INTEGER(11), primary_key=True)
     name = Column(String(64))
-    chinese_name = Column(String(64))
     description = Column(String(255))
     opr_by = Column(String(32))
     opr_at = Column(BIGINT(32))

@@ -1,14 +1,14 @@
-from webapi import oauth_server
 from flask import Blueprint, request, session
 from flask import render_template, redirect, jsonify
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
-from lib.models import db, SysUser
+from lib.models import db, SysUser,SysRole,SysUserRole
 from lib.model_oauth import OAuth2Client
 from lib.oauth2 import authorization, require_oauth
 from lib.JsonResult import JsonResult
 from lib import JsonResult as js
+from webapi import oauth_server
 
 
 
@@ -89,6 +89,8 @@ def current_user():
         user.pop("password")
         user.pop("del_fg")
         user.pop("token")
+        list = SysRole.query.join(SysUserRole, SysUserRole.role_id == SysRole.id).filter(SysUserRole.user_id == user["id"]).all()
+        user["roles"] = js.queryToDict(list)
         return JsonResult.success("查询成功",user)
     else:
         return JsonResult.error()
