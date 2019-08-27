@@ -19,7 +19,7 @@ def user_list():
     name = request.args.get("name")
     if name is not None:
         q = q.filter(SysUser.name.like("%" + name + "%"))
-    q = q.order_by(SysUser.name.desc())
+    # q = q.order_by(SysUser.name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     sort = request.args.get('sort')

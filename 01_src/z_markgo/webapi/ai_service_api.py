@@ -15,7 +15,7 @@ def aiservices_list():
         q = q.filter(AiService.name.like("%" + name + "%"))
     if type is not None  and type != '':
         q = q.filter_by(type = type)
-    q = q.order_by(AiService.name.desc())
+    # q = q.order_by(AiService.name.desc())
 
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
