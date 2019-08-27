@@ -12,20 +12,30 @@ def mysql_page(db,sql,offset,limit,sort=None):
     res = db.session.execute(page_sql).fetchall()
     return res,total
 
+def set_model_sort(query,sort):
+    if sort[0] == "-":
+        sort = sort[1:] + " desc "
+    query = query.order_by(sort)
+    # if sort[0] == "-":
+    #     sort = sort[1:]
+    #     asc = False
+    # for col in query.column_descriptions:
+    #     if col["name"] == sort:
+    #         if asc:
+    #             query = query.order_by(col["expr"].asc())
+    #         else:
+    #             query = query.order_by(col["expr"].desc())
+    #         break
+    return query
+
 #SQLAlchemy 对象分页查询
 def model_page(query,limit,offset,sort=None):
     total = query.count()
     asc = True
     if sort:
         if sort[0] == "-":
-            sort = sort[1:]
-            asc = False
-        for col in query.column_descriptions:
-            if col["name"] == sort:
-                if asc:
-                    query = query.order_by(col["expr"].asc())
-                else:
-                    query = query.order_by(col["expr"].desc())
-                break
+            sort = sort[1:] + " desc "
+        query = query.order_by(sort)
+        # query = set_model_sort(query,sort)
     res = query.offset(offset).limit(limit).all()
     return res,total

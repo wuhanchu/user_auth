@@ -27,7 +27,7 @@ class JsonResult:
         return jsonify({'code': ERROR_CODE, 'msg': msg, 'data': result})
 
     def queryResult(result=None):
-        return jsonify({'code': ERROR_CODE, 'msg': "调用成功", 'data': queryToDict(result)})
+        return jsonify({'code': SUCCESS_CODE, 'msg': "调用成功", 'data': queryToDict(result)})
 
     def res_page(list,total):
         result = {"total": total, "list": queryToDict(list)}

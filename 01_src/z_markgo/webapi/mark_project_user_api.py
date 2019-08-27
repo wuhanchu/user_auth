@@ -6,6 +6,7 @@ from lib import param_tool,com_tool,sql_tool
 from webapi import markRoute
 from dao import mark_dao
 from lib.oauth2 import require_oauth
+from sqlalchemy import func
 
 # 批量添加员工，支持直接把项目中的人员名单覆盖
 @markRoute.route('/project_users', methods=['PUT'])
@@ -75,6 +76,20 @@ def projects_user_list():
         store = "-id"
     res,total = sql_tool.mysql_page(db,sql,offset,limit,sort)
     return JsonResult.res_page(res,total)
+
+
+@markRoute.route('/user_projects/<user_id>', methods=['GET'])
+@require_oauth('profile')
+def user_projects_list(user_id):
+    q = db.session.query(MarkProjectUser.project_id,MarkProject.name.label("project_name"),MarkProjectUser.user_id,MarkProjectUser.mark_role)\
+        .join(MarkProject,MarkProject.id == MarkProjectUser.project_id).filter(MarkProjectUser.user_id == user_id)
+    sort = request.args.get('sort')
+
+    if sort == None:
+        sort = "-project_id"
+    q = sql_tool.set_model_sort(q,sort)
+    list = q.all()
+    return JsonResult.queryResult(list)
 
 #删除
 @markRoute.route('/project_users/<project_id>/<user_id>', methods=['DELETE'])
