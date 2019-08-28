@@ -15,7 +15,6 @@ def synchronized(func=None, obj=None):
                 return func(*args, **kwargs)
             finally:
                 lock.release()
-
         return wrapper
     if obj is not None:
         cur_id = id(obj)
@@ -35,8 +34,6 @@ def synchronized(func=None, obj=None):
                     return func(*args, **kwargs)
                 finally:
                     current_lock.release()
-
             return wrapper
-
         return decorator
 

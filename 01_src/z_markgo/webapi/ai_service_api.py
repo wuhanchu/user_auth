@@ -63,9 +63,6 @@ def aiservices_delete(id):
     obj = AiService.query.get(id)
     db.session.delete(obj)
     #todo 判断是否有标注数据
-    #todo 删除项目用户分配信息
-    # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
-    # db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 
