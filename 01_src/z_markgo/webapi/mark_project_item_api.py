@@ -2,7 +2,7 @@
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool,busi_tool,asr_tool
+from lib import param_tool,com_tool,sql_tool,busi_tool,asr_score_tool
 from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute,app
 from dao import mark_dao
@@ -132,8 +132,10 @@ def project_items_update(id):
         obj.inspection_time = param_tool.get_curr_time()
         obj.inspection_person = current_token.user.id
         # todo 判断是否通过
-        # obj.inspection_status = args["inspection_status"]
         obj.inspection_txt = args["inspection_txt"]
+        obj.inspection_status = 1
+        if busi_tool.mark_score(obj.mark_txt,obj.inspection_txt) < 0.9 :
+            obj.inspection_status = 2
     else:
         return JsonResult.success("参数错误！")
     db.session.commit()
