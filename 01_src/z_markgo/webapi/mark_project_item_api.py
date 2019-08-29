@@ -131,7 +131,7 @@ def project_items_update(id):
     elif "inspection_txt" in args.keys() :
         obj.inspection_time = param_tool.get_curr_time()
         obj.inspection_person = current_token.user.id
-        # todo 判断是否通过
+        # 判断是否通过
         obj.inspection_txt = args["inspection_txt"]
         obj.inspection_status = 1
         if busi_tool.mark_score(obj.mark_txt,obj.inspection_txt) < 0.9 :

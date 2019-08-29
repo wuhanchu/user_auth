@@ -30,6 +30,7 @@ class MarkProject(Base):
     create_time = Column(DateTime)
     asr_score = Column(Float(5))
     remarks = Column(String(2000))
+    frame_rate = Column(INTEGER(2))
     roles = Column(String(500))
     marks = Column(String(500))
 
