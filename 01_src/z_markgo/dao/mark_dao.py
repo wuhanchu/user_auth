@@ -15,7 +15,7 @@ def user_mark_count(project_id ,user_id=None):
 
 #查询所有未加载的
 def get_asr_items(project_id):
-    q = MarkProjectItem.query.filter_by(project_id=project_id).filter(MarkProjectItem.asr_txt is not None)
+    q = MarkProjectItem.query.filter_by(project_id=project_id).filter(MarkProjectItem.asr_txt.is_(None))
     list = q.all()
     list = JsonResult.queryToDict(list)
     return list

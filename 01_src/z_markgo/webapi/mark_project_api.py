@@ -14,13 +14,13 @@ item_root_path = busi_tool.get_item_root_path()
 @markRoute.route('/projects', methods=['GET'])
 @require_oauth('profile')
 def projects_list():
-    sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks
-        ,p.asr_score,p.frame_rate,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
-        (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
-        group by p.id) pu on pu.pid = p.id join
-        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=3  then 1 else 0 end) 
-        sum_mark_items from mark_project p left join mark_project_items pi on pi.project_id  = p.id group by p.id) 
-        pi on pi.pid = p.id where 1=1 """
+    sql =r"""select p.id,p.name,p.status,p.model_txt,p.ai_service,p.type,p.plan_time,p.inspection_persent,p.create_time,p.remarks,p.asr_score,p.frame_rate,ifnull(pu.sum_user,0) as sum_user
+			,ifnull(pi.sum_items,0) as sum_items ,ifnull(pi.sum_mark_items,0) as sum_mark_items,ifnull(pi.sum_inspection_items,0) as sum_inspection_items
+	from mark_project p left join
+		(SELECT project_id as pid,count(user_id) as sum_user FROM  mark_project_user group by project_id) pu on pu.pid = p.id 
+	left join (select it.project_id as pid,count(id) as sum_items,sum(case when it.status=2 then 1 else 0 end) as sum_mark_items,
+			sum(case when it.inspection_status in (2,3) then 1 else 0 end) as sum_inspection_items 
+		from mark_project_items it group by project_id) pi on pi.pid = p.id where 1=1 """
 
     name = request.args.get("name")
     type = request.args.get("type")
