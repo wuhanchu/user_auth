@@ -29,7 +29,7 @@ def tc_asr(item_id,asr_url,filepath):
             # todo 处理报错问题
             elif res['errCode'] == '-2':
                 sub_item["txt"] = res['result']
-                logger.warn("asr解析失败，%s！（path:%s）" %(str(res),sub_item["path"]))
+                logger.warning("asr解析失败，%s！（path:%s）" %(str(res),sub_item["path"]))
                 sub_item.pop("path")
             else:
                 raise RuntimeError("asr解析失败，%s！（path:%s）" %(str(res),sub_item["path"]))

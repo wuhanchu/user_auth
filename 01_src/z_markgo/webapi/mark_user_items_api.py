@@ -85,7 +85,7 @@ def next_item():
     project_id = request.args.get("project_id")
     type = request.args.get("type")
     print("-----print-----------type:%s"%type)
-    logger.warn("------log----------type:%s"%type)
+    logger.debug("------log----------type:%s"%type)
 
     if type == "1":
         item = get_next_items(project_id)

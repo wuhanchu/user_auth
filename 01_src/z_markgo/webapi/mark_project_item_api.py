@@ -94,12 +94,12 @@ def project_items_upload():
     project = MarkProject.query.get(project_id)
     ai_service = AiService.query.get(project.ai_service)
     exist_item_paths = mark_dao.get_item_paths(project_id)
-    logger.warn("exist_item_paths:%s"%str(exist_item_paths))
+    logger.debug("exist_item_paths:%s"%str(exist_item_paths))
     to_asr_items = []
     #创建item条目
     for project_item_path in item_paths:
         if project_item_path[path_len:] in exist_item_paths:
-            logger.warn("相同路径：%s"% project_item_path[path_len:])
+            logger.warning("相同路径：%s"% project_item_path[path_len:])
             continue
         item = MarkProjectItem(project_id = project_id,filepath = project_item_path[path_len:])
         if project.type != "asr":
@@ -107,11 +107,11 @@ def project_items_upload():
         db.session.add(item)
         to_asr_items.append(item)
     db.session.commit()
-    logger.warn("to_asr_items:%s" % str(to_asr_items))
+    logger.debug("to_asr_items:%s" % str(to_asr_items))
     if project.type == "asr":
         for item in to_asr_items:
             filepath = os.path.join(item_root_path, item.filepath)
-            logger.warn("asr item_id：%s" % str(item.id))
+            logger.debug("asr item_id：%s" % str(item.id))
             dk_thread_pool.submit(busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
     return JsonResult.success("导入音频成功！总条数%s"%len(item_paths))
 
@@ -123,7 +123,6 @@ def project_items_update(id):
     if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
-    logger.warn("args =%s" %str(args))
     # 将参数加载进去
     if "mark_txt" in args.keys() :
         obj.mark_time = param_tool.get_curr_time()
@@ -164,7 +163,7 @@ def project_items_delete(id):
     try:
         os.remove(path)
     except Exception:
-        logger.warn("文件不存在（%s）"%path)
+        logger.warning("文件不存在（%s）"%path)
     db.session.delete(obj)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
@@ -182,7 +181,7 @@ def project_items_delete_batch():
         try:
             os.remove(path)
         except:
-            app.logger.warn("文件没找到：%s"%path)
+            app.logger.warning("文件没找到：%s"%path)
         db.session.delete(obj)
 
     db.session.commit()
@@ -196,7 +195,6 @@ def call_project_asr(project_id):
     list = mark_dao.get_asr_items(project_id)
     for item in list:
         filepath = os.path.join(item_root_path, item["filepath"])
-        logger.warn("asr item_id：%s" % str(item["id"]))
         dk_thread_pool.submit(busi_tool.tc_asr, mark_dao.update_asr_txt, item["id"], ai_service.service_url, filepath)
     return JsonResult.success("调用asr转写成功！总条数%s" % len(list))
 
