@@ -58,9 +58,9 @@ def user_inspections_list():
     project_id = request.args.get("project_id")
 
     q = db.session.query(MarkProjectItem.id,MarkProjectItem.project_id,MarkProjectItem.inspection_person,MarkProject.name,MarkProjectItem.filepath,
-        MarkProjectItem.status,MarkProjectItem.inspection_status,MarkProjectItem.mark_time,SysUser.name.label("marker_name") )\
+        MarkProjectItem.status,MarkProjectItem.inspection_status,MarkProjectItem.mark_time,MarkProjectItem.inspection_time,SysUser.name.label("marker_name") )\
         .join(MarkProject,MarkProject.id == MarkProjectItem.project_id ).join(SysUser,MarkProjectItem.user)
-    q = q.filter(MarkProjectItem.inspection_person == user.id).filter(MarkProjectItem.inspection_status.in_((1,2)))
+    q = q.filter(MarkProjectItem.inspection_person == user.id).filter(MarkProjectItem.inspection_status.in_((2,3)))
     if param_tool.str_is_not_empty(project_id):
         q = q.filter(MarkProjectItem.project_id == project_id)
 
@@ -111,11 +111,13 @@ def get_next_items(project_id):
     if param_tool.str_is_not_empty(project_id) :
         q = q.filter(MarkProjectItem.project_id == project_id )
     item = q.order_by(MarkProjectItem.asr_txt.desc()).order_by(MarkProjectItem.id).first()
+    logger.warn("-----------next_item:%s"%str(q))
     # if True:
     #     raise RuntimeError("next_item sql : %s"%str(q) )
     #更新标注状态
     if item and item.status == 0:
         item.status=1;
+        item.assigned_time = param_tool.get_curr_time()
         item.user_id = user.id
         db.session.commit()
     return item
@@ -125,12 +127,14 @@ def get_next_items(project_id):
 @synchronized(obj= "static_inspection")
 def get_next_inspection_items(project_id):
     user = current_token.user
-    q = MarkProjectItem.query.filter(MarkProjectItem.status == 2).filter(MarkProjectItem.inspection_status == 0)
+    q = MarkProjectItem.query.filter(MarkProjectItem.status == 2).filter(MarkProjectItem.inspection_status.in_((0,1)))\
+        .filter(or_(MarkProjectItem.inspection_person.is_(None),MarkProjectItem.inspection_person == user.id))
     q = q.join(MarkProjectUser, MarkProjectUser.project_id == MarkProjectItem.project_id).filter(MarkProjectUser.user_id == user.id)
     q = q.join(MarkProject, MarkProject.id == MarkProjectItem.project_id).filter(MarkProject.status==0)
     if param_tool.str_is_not_empty(project_id) :
         q = q.filter(MarkProjectItem.project_id == project_id )
     item = q.order_by(MarkProjectItem.id).first()
+    logger.warn("-----------next_inspection_items:%s" % str(q))
     #更新标注状态
     if item and item.status == 0:
         item.inspection_status=1;

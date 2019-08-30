@@ -123,6 +123,7 @@ def project_items_update(id):
     if obj is None :
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
+    logger.warn("args =%s" %str(args))
     # 将参数加载进去
     if "mark_txt" in args.keys() :
         obj.mark_time = param_tool.get_curr_time()
@@ -137,11 +138,11 @@ def project_items_update(id):
         obj.inspection_status = 2
         op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = busi_tool.mark_score(obj.mark_txt,obj.inspection_txt)
         accuracy = 1 - (m / len(s1.replace(" ", '')))
-        if  accuracy < 0.9 :
+        if  accuracy < 0.98 :
             obj.inspection_status = 3
         obj.inspection_result = json.dumps({ "accuracy":accuracy,"op": op, "op2": op2,"s1": s1, "s2": s2,"I_COUNT_PCT": I_COUNT_PCT,
             "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT},ensure_ascii=False)
-    elif  "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'  ):
+    elif  "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'):
         # 数据异常
         obj.status = args["status"]
         if "remark" in args.keys():
@@ -187,14 +188,6 @@ def project_items_delete_batch():
     db.session.commit()
     return JsonResult.success("批量删除成功！")
 
-@markRoute.route('/project_items/<id>/txt_compare', methods=['GET'])
-@require_oauth('profile')
-def txt_compare(id):
-    obj = MarkProjectItem.query.get(id)
-    op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = busi_tool.mark_score(obj.mark_txt, obj.inspection_txt)
-    accuracy = 1 - (m / len(s1.replace(" ", '')))
-    return JsonResult.success("调用成功！",{ "accuracy":accuracy,"op": op, "op2": op2,"s1": s1, "s2": s2,"I_COUNT_PCT": I_COUNT_PCT,
-                                      "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT})
 @markRoute.route('/project_items/item_asr/<project_id>', methods=['GET'])
 @require_oauth('profile')
 def call_project_asr(project_id):
