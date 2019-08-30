@@ -30,7 +30,7 @@ def tc_asr(asr_url,filepath,framerate=16000) :
             "sid": "test123456",
             'file': (filename, f, 'application/wav')
         }
-    res = client_post_mutipart_formdata_requests(com_tool.url_join(asr_url,"dotcasr"), data)
+        res = client_post_mutipart_formdata_requests(com_tool.url_join(asr_url,"dotcasr"), data)
     res = json.loads(res)
     return res
 

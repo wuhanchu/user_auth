@@ -33,6 +33,7 @@ class MarkProject(Base):
     frame_rate = Column(INTEGER(2))
     roles = Column(String(500))
     marks = Column(String(500))
+    inspection_result = Column(String(5000))
 
 
 class SysMenu(Base):
@@ -140,6 +141,8 @@ class MarkProjectItem(Base):
     inspection_person = Column(ForeignKey('sys_user.id'), index=True)
     inspection_txt = Column(String(5000))
     asr_score = Column(Float(5))
+    remark = Column(String(500))
+
 
     sys_user = relationship('SysUser', primaryjoin='MarkProjectItem.inspection_person == SysUser.id')
     project = relationship('MarkProject')

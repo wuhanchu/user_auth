@@ -48,12 +48,12 @@ def projects_user_list():
             SELECT user_id,0 as mark_role ,sum(CASE WHEN status = 2 THEN 1 ELSE 0 END) mark_sum,
             sum( CASE WHEN to_days( pi.mark_time ) = to_days( CURDATE( ) ) and  status = 2 THEN 1 ELSE 0 END ) mark_today,
             sum( CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END ) inspection_sum,
-            sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+            sum( CASE WHEN pi.inspection_status =3 THEN 1 ELSE 0 END ) inspection_fail_sum 
             FROM mark_project_items pi WHERE project_id = %s GROUP BY user_id 
         union all SELECT inspection_person as user_id,1 as mark_role, count( pi.id ) mark_sum,  -- 质检总数
             sum( CASE WHEN to_days( pi.inspection_time ) = to_days( CURDATE( ) ) THEN 1 ELSE 0 END ) mark_today,
             0 inspection_sum,
-            sum( CASE WHEN pi.inspection_status =2 THEN 1 ELSE 0 END ) inspection_fail_sum 
+            sum( CASE WHEN pi.inspection_status =3 THEN 1 ELSE 0 END ) inspection_fail_sum 
         FROM mark_project_items pi WHERE project_id = %s GROUP BY inspection_person) 
             as pi_count on u.id = pi_count.user_id 
     union all 

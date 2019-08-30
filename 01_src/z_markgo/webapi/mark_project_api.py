@@ -18,7 +18,7 @@ def projects_list():
         ,p.asr_score,p.frame_rate,pu.sum_user,pi.sum_items,pi.sum_mark_items from mark_project p join
         (SELECT p.id pid,count(pu.project_id) as sum_user FROM mark_project p left join mark_project_user pu on pu.project_id  = p.id
         group by p.id) pu on pu.pid = p.id join
-        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=2  then 1 else 0 end) 
+        (select p.id pid,count(pi.id) sum_items,sum(case when pi.status=1 and pi.inspection_status !=3  then 1 else 0 end) 
         sum_mark_items from mark_project p left join mark_project_items pi on pi.project_id  = p.id group by p.id) 
         pi on pi.pid = p.id where 1=1 """
 
@@ -91,15 +91,16 @@ def projects_delete(id):
 @markRoute.route('/projects/<id>/project_pkg', methods=['GET'])
 @require_oauth('profile')
 def export_project(id):
-    # 导出打包文件
-    list = MarkProjectItem.query.filter_by(project_id = id)
+    # 导出打包文件  去掉文件导出功能
+    # list = MarkProjectItem.query.filter_by(project_id = id)
     dir_path = os.path.join(item_root_path, id)
     project = MarkProject.query.get(id)
-    txt_file = os.path.join(dir_path,"%s_标注文本.txt"%(project.name))
-    with open(txt_file, 'w') as f:
-        for item in list:
-            str = "%s %s\n"%(item.filepath,com_tool.if_null(item.inspection_txt,item.mark_txt))
-            f.write(str)
+    # txt_file = os.path.join(dir_path,"%s_标注文本.txt"%(project.name))
+    # with open(txt_file, 'w') as f:
+    #     for item in list:
+    #         str = "%s %s\n"%(item.filepath,com_tool.if_null(item.inspection_txt,item.mark_txt))
+    #         f.write(str)
     zip_file = os.path.join(item_root_path,"%s(%s)_标注信息.zip"%(project.name,project.id))
     com_tool.zip_dir(dir_path,zip_file)
     return send_file(zip_file)
+

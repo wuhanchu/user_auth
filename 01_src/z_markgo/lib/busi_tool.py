@@ -1,6 +1,6 @@
 ## 这个文件主要保存业务相关函数
 import os,logging,json,shutil
-from lib import asr_tool,wav_tool,com_tool,asr_score_tool
+from lib import asr_tool,wav_tool,com_tool,txt_compare
 
 logger = logging.getLogger('flask.app')
 
@@ -37,6 +37,7 @@ def tc_asr(item_id,asr_url,filepath):
         return item_id,json_items
     except Exception as e:
         logger.error("asr解析失败！%s" % e)
+        raise e
     finally:
         shutil.rmtree(tmp_path)
     return item_id,None
@@ -53,9 +54,9 @@ def mark_score(mark_txt,inspection_txt):
     print(inspection_txt)
     print(mark_txt)
 
-    op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = asr_score_tool.med_classic_gui(mark_txt,inspection_txt)
-    accuracy = 1 - (m / len(s1.replace(" ", '')))
-    return accuracy
+    op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = txt_compare.med_classic_gui(mark_txt, inspection_txt)
+    # accuracy = 1 - (m / len(s1.replace(" ", '')))
+    return op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT
 
 if __name__ == '__main__':
     mark_txt = r"""[{"i":1,"st":3000,"et":6000,"txt":"test1"},{"i":2,"st":7000,"et":9000,"txt":"test1"},{"i":3,"st":10000,"et":13000,"txt":"test1"},{"i":4,"st":10000,"et":13000,"txt":"test1"},{"i":5,"st":10000,"et":13000,"txt":"test1"}]"""

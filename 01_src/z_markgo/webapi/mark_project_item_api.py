@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
+
 from flask import request, send_file,make_response,render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool,busi_tool,asr_score_tool
+from lib import param_tool,com_tool,sql_tool,busi_tool,txt_compare
 from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute,app
 from dao import mark_dao
-import os,logging
+import os,logging,json
 from sqlalchemy.orm import aliased
 from lib.oauth2 import require_oauth
 from authlib.flask.oauth2 import current_token
@@ -133,11 +134,21 @@ def project_items_update(id):
         obj.inspection_person = current_token.user.id
         # 判断是否通过
         obj.inspection_txt = args["inspection_txt"]
-        obj.inspection_status = 1
-        if busi_tool.mark_score(obj.mark_txt,obj.inspection_txt) < 0.9 :
-            obj.inspection_status = 2
+        obj.inspection_status = 2
+        op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = busi_tool.mark_score(obj.mark_txt,obj.inspection_txt)
+        accuracy = 1 - (m / len(s1.replace(" ", '')))
+        if  accuracy < 0.9 :
+            obj.inspection_status = 3
+        obj.inspection_result = json.dumps({ "accuracy":accuracy,"op": op, "op2": op2,"s1": s1, "s2": s2,"I_COUNT_PCT": I_COUNT_PCT,
+            "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT},ensure_ascii=False)
+    elif  "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'  ):
+        # 数据异常
+        obj.status = args["status"]
+        if "remark" in args.keys():
+            obj.remark = args["remark"]
     else:
         return JsonResult.success("参数错误！")
+
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
@@ -175,3 +186,25 @@ def project_items_delete_batch():
 
     db.session.commit()
     return JsonResult.success("批量删除成功！")
+
+@markRoute.route('/project_items/<id>/txt_compare', methods=['GET'])
+@require_oauth('profile')
+def txt_compare(id):
+    obj = MarkProjectItem.query.get(id)
+    op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = busi_tool.mark_score(obj.mark_txt, obj.inspection_txt)
+    accuracy = 1 - (m / len(s1.replace(" ", '')))
+    return JsonResult.success("调用成功！",{ "accuracy":accuracy,"op": op, "op2": op2,"s1": s1, "s2": s2,"I_COUNT_PCT": I_COUNT_PCT,
+                                      "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT})
+@markRoute.route('/project_items/item_asr/<project_id>', methods=['GET'])
+@require_oauth('profile')
+def call_project_asr(project_id):
+    project = MarkProject.query.get(project_id)
+    ai_service = AiService.query.get(project.ai_service)
+    list = mark_dao.get_asr_items(project_id)
+    for item in list:
+        filepath = os.path.join(item_root_path, item["filepath"])
+        logger.warn("asr item_id：%s" % str(item["id"]))
+        dk_thread_pool.submit(busi_tool.tc_asr, mark_dao.update_asr_txt, item["id"], ai_service.service_url, filepath)
+    return JsonResult.success("调用asr转写成功！总条数%s" % len(list))
+
+

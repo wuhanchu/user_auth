@@ -10,6 +10,9 @@ from lib.oauth2 import require_oauth
 from dao import mark_dao
 from lib.oauth2 import require_oauth
 from authlib.flask.oauth2 import current_token
+import logging
+
+logger = logging.getLogger('flask.app')
 
 # 标注列表
 @markRoute.route('/user_items', methods=['GET'])
@@ -81,6 +84,8 @@ def user_inspections_list():
 def next_item():
     project_id = request.args.get("project_id")
     type = request.args.get("type")
+    print("-----print-----------type:%s"%type)
+    logger.warn("------log----------type:%s"%type)
 
     if type == "1":
         item = get_next_items(project_id)

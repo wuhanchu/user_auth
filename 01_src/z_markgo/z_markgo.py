@@ -47,4 +47,4 @@ if __name__ == '__main__':
     #添加定时任务模块 -- end
 
     #启动web服务
-    app.run('0.0.0.0', port=5000)
+    app.run('0.0.0.0', port=5002)

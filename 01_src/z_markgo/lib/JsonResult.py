@@ -12,16 +12,10 @@ ERROR_CODE = -1
 class JsonResult:
 
     def custom(code=None, msg=None, result=None):
-        return jsonify({'code': code, 'msg': msg, 'data': None})
-
-    def success(msg=None):
-        return jsonify({'code': SUCCESS_CODE, 'msg': msg, 'data': None})
+        return jsonify({'code': code, 'msg': msg, 'data': result})
 
     def success(msg=None, result=None):
         return jsonify({'code': SUCCESS_CODE, 'msg': msg, 'data': result})
-
-    def error(msg=None):
-        return jsonify({'code': ERROR_CODE, 'msg': msg, 'data': None})
 
     def error(msg=None, result=None):
         return jsonify({'code': ERROR_CODE, 'msg': msg, 'data': result})
