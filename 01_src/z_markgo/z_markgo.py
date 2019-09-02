@@ -7,7 +7,8 @@ from lib.models import db
 from lib.oauth2 import config_oauth
 from flask_apscheduler import APScheduler
 # 加载配置文件
-
+import os
+os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 def init_config(config_name):
     # 加载config参数
@@ -51,4 +52,5 @@ if __name__ == '__main__':
     #添加定时任务模块 -- end
 
     # 启动web服务
+
     app.run('0.0.0.0', port=5002)
