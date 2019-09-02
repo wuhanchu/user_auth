@@ -141,7 +141,7 @@ class MarkProjectItem(Base):
     inspection_txt = Column(String(5000))
     asr_score = Column(Float(5))
     remark = Column(String(500))
-    inspection_result = Column(String(5000))
+    inspection_result = Column(Text)
 
     sys_user = relationship('SysUser', primaryjoin='MarkProjectItem.inspection_person == SysUser.id')
     project = relationship('MarkProject')

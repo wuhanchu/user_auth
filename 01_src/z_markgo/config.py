@@ -1,6 +1,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config:
     SECRET_KEY = 'z_markgo'
     OAUTH2_REFRESH_TOKEN_GENERATOR: True
@@ -15,15 +16,16 @@ class Config:
     LOG_FILE_BACKUP_COUNT = 10
 
     @staticmethod
-    def init_app(cls,app):
+    def init_app(cls, app):
         app.config.from_object(cls)
         # pass
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@192.168.1.150:3306/z_markgo?charset=utf8'
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
     JOBS = [
         # {  # 每隔30S执行一次
         #     'id': 'check_meet_state',
@@ -50,9 +52,6 @@ class DevelopmentConfig(Config):
         file_handler_info.setFormatter(formatter)
         # file_handler_info.setLevel(logging.INFO)
         app.logger.addHandler(file_handler_info)
-
-
-
 
 
 class TestingConfig(Config):

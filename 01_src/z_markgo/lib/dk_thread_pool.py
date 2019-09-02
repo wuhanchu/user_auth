@@ -2,14 +2,17 @@
 # python中批量的计算操作不适合用多线程
 from concurrent.futures import ThreadPoolExecutor
 
+
 class dk_thread_pool(object):
     '工作线程池'
-    executor = ThreadPoolExecutor(max_workers=8)
-    def submit(self,func,call_back,*args):
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    def submit(self, func, call_back, *args):
         # 任务池加载任务
-        task = self.executor.submit(func,*args)
+        task = self.executor.submit(func, *args)
         if call_back:
             task.add_done_callback(call_back)
+
 
 # 单例模式
 dk_thread_pool = dk_thread_pool()
