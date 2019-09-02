@@ -7,3 +7,4 @@ Authlib>=0.11
 PyMySQL==0.9.3
 requests==2.20.1
 requests_toolbelt==0.8.0
+pandas==0.24.2

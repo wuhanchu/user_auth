@@ -14,6 +14,7 @@ class Config:
     LOG_FILE_MAX_BYTES = 100 * 1024 * 1024
     # 轮转数量是 10 个
     LOG_FILE_BACKUP_COUNT = 10
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
     @staticmethod
     def init_app(cls, app):
@@ -24,7 +25,8 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@dataknown.tpddns.cn:50306/z_markgo?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI') or 'mysql+pymysql://root:root@dataknown.tpddns.cn:50306/z_markgo?charset=utf8'
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
     JOBS = [
         # {  # 每隔30S执行一次
