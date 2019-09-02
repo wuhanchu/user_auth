@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 class dk_thread_pool(object):
     '工作线程池'
-    executor = ThreadPoolExecutor(max_workers=4)
+    executor = ThreadPoolExecutor(max_workers=2)
 
     def submit(self, func, call_back, *args):
         # 任务池加载任务
