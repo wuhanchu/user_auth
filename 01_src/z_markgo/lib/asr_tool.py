@@ -5,7 +5,6 @@ import json
 import os
 from lib import com_tool
 from requests_toolbelt import MultipartEncoder
-import pandas as pd
 from webapi import app
 
 userid = "13811002233"
