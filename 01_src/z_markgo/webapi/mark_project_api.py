@@ -42,7 +42,7 @@ FROM
 		it.project_id AS pid,
 		count( id ) AS sum_items,
 		sum( CASE WHEN it.STATUS = - 1 THEN 1 ELSE 0 END ) AS sum_error_items,
-		count( IF( it.asr_txt is null, 0,1 )) AS sum_asr_items,
+		sum( IF( it.asr_txt is null, 0,1 )) AS sum_asr_items,
 		sum( CASE WHEN it.STATUS = 2 THEN 1 ELSE 0 END ) AS sum_mark_items,
 		sum( CASE WHEN it.inspection_status IN ( 2, 3 ) THEN 1 ELSE 0 END ) AS sum_inspection_items 
 	FROM
