@@ -27,7 +27,10 @@ def unzip_file(src_file, dest_dir, password=None):
         for fn in zf.namelist():
             extracted_path = Path(zf.extract(fn, dest_dir))
             if extracted_path.exists() and not (fn.startswith(".") or r"/." in fn or r"\." in fn):
-                extracted_path.rename(dest_dir+"/"+fn.encode('cp437').decode('utf-8','ignore'))
+                try:
+                    extracted_path.rename(dest_dir+"/"+fn.encode('cp437').decode('utf-8'))
+                except:
+                    extracted_path.rename(dest_dir+"/"+fn.encode('cp437').decode('gbk','ignore'))
     finally:
         zf.close()
 
