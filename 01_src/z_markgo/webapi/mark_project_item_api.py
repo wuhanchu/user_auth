@@ -32,7 +32,7 @@ def project_items_list():
 
     InspectionPerson = aliased(SysUser)
     q = db.session.query(MarkProjectItem.id, MarkProjectItem.project_id, MarkProjectItem.filepath, MarkProjectItem.status, MarkProjectItem.asr_txt,
-                         MarkProjectItem.mark_txt, MarkProjectItem.user_id, MarkProjectItem.inspection_status, MarkProjectItem.mark_time, MarkProjectItem.assigned_time, MarkProjectItem.inspection_time, MarkProjectItem.inspection_txt, MarkProjectItem.inspection_person, SysUser.name.label(
+                         MarkProjectItem.mark_txt, MarkProjectItem.user_id, MarkProjectItem.inspection_status, MarkProjectItem.mark_time, MarkProjectItem.assigned_time, MarkProjectItem.inspection_time, MarkProjectItem.inspection_txt, MarkProjectItem.inspection_person, MarkProjectItem.remark, SysUser.name.label(
                              "mark_person_name"), InspectionPerson.name.label("inspection_person_name")
                          ).outerjoin(SysUser, MarkProjectItem.user)\
         .outerjoin(InspectionPerson, MarkProjectItem.sys_user)
