@@ -38,7 +38,7 @@ def tc_asr(asr_url, filepath, framerate=16000):
         }
         res = client_post_mutipart_formdata_requests(
             com_tool.url_join(asr_url, "dotcasr"), data)
-    app.logger.info("tc_asr res" + str(res))
+    # app.logger.info("tc_asr res" + str(res))
 
     res = json.loads(res)
     return res

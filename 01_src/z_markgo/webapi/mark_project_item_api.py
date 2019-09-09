@@ -121,7 +121,8 @@ def project_items_upload():
     if project.type == "asr":
         for item in to_asr_items:
             filepath = os.path.join(item_root_path, item.filepath)
-            logger.debug("asr item_id：%s" % str(item.id))
+
+            # logger.debug("asr item_id：%s" % str(item.id))
             dk_thread_pool.submit(
                 busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
     return JsonResult.success("导入音频成功！总条数%s" % len(item_paths))
