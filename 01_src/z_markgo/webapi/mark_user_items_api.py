@@ -153,8 +153,8 @@ def get_next_inspection_items(project_id):
     from mark_project t1
              left join mark_project_items t2 on t1.id = t2.project_id
     where t1.status = 0
-    group by t1.id, t1.status, t1.inspection_persent
-    having sum(if(t2.status >= 2, 1, 0)) / count(t1.id) < (IFNULL(t1.inspection_persent,100) / 100);
+    group by t1.id, t1.name, t1.status, t1.inspection_persent
+    having  sum(if(t2.inspection_status >= 2, 1, 0)) / count(t2.id) < (IFNULL(t1.inspection_persent,100) / 100);
     """
     project_id_list = db.session.execute(project_list_sql)
     project_id_list = [row[0] for row in project_id_list]
