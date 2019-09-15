@@ -4,7 +4,7 @@
 - 运行docker容器:
 
 ```docker
-docker run -d -p 15002:5002 --name z_markgo_1 -e SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@dataknown.tpddns.cn/z_markgo?charset=utf8' -v ~/tmp/z_markgo_items:/opt/z_markgo_items z_markgo
+docker run -d -p 15002:5002 --name z_markgo_1 -e SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@dataknown.tpddns.cn:50306/z_markgo?charset=utf8' -v ~/tmp/z_markgo_items:/opt/z_markgo_items z_markgo
 
 - SQLALCHEMY_DATABASE_URI 数据库链接URL
 - /opt/z_markgo_items 是文件的上传路径，需要映射到宿主机，例子中映射到了 ～/tmp/z_markgo_items
