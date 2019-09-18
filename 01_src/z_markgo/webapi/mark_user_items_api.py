@@ -165,7 +165,7 @@ def get_next_inspection_items(project_id):
 
 
     item = q.order_by(MarkProjectItem.id).first()
-    logger.warn("-----------next_inspection_items:%s" % str(q))
+    logger.warning("-----------next_inspection_items:%s" % str(q))
 
     # 更新质检状态
     if item and item.inspection_person is None:
