@@ -2,3 +2,4 @@
 *.pyc
 01_src/z_markgo_items/*
 01_src/z_markgo/logs/z_markgo.log
+/.idea
