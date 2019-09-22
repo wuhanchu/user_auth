@@ -2,7 +2,8 @@ import datetime
 from config import config
 from flask import render_template
 from webapi import app, DEFAULT_MODULES, base_user_api, mark_project_api, tools_api, ai_service_api, \
-    mark_project_item_api, mark_project_user_api, mark_user_items_api, oauth2_server_apifrom webapi.base import role_api
+    mark_project_item_api, mark_project_user_api, mark_user_items_api, oauth2_server_api
+from webapi.base import role_api
 from lib.models import db
 from lib.oauth2 import config_oauth
 from flask_apscheduler import APScheduler
