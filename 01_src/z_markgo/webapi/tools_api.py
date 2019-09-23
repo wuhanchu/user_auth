@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 from flask import request, send_file, make_response, render_template
+import re,sys,os
 
 from lib import param_tool, com_tool, sql_tool, busi_tool, txt_compare
 from webapi import baseRoute, app
@@ -13,8 +14,18 @@ from lib.JsonResult import JsonResult
 @require_oauth('profile')
 def report():
     args = request.get_json()
+
+    base_text = args.get("base_text")
+    check_text = args.get("check_text")
+
+    base_text = re.sub('[,.，。 \n?!？！]', '', base_text)
+    base_text = txt_compare.num_to_char(base_text)
+
+    check_text = re.sub('[,.，。 \n?!？！]', '', check_text)
+    check_text = txt_compare.num_to_char(check_text)
+
     op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT = txt_compare.med_classic_gui(
-        args.get("base_text"), args.get("check_text"))
+        base_text, check_text)
     accuracy = 1 - (m / len(s1.replace(" ", '')))
 
     return JsonResult.success("处理成功！", {"accuracy": accuracy, "op": op, "op2": op2, "s1": s1, "s2": s2,
