@@ -3,7 +3,7 @@
 from flask import request, send_file, make_response, render_template
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool, com_tool, sql_tool, busi_tool, txt_compare
+from lib import param_tool, com_tool, sql_tool, busi_tool, com_tool,ffmpeg_tool
 from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute, app
 from dao import mark_dao
@@ -121,7 +121,12 @@ def project_items_upload():
     if project.type == "asr":
         for item in to_asr_items:
             filepath = os.path.join(item_root_path, item.filepath)
-
+            file_dir, shotname, ext = com_tool.get_file_path_name_ext(filepath)
+            if ext != ".wav" or ext != ".wav":
+                wav_filepath = os.path.join(file_dir,shotname+".wav")
+                ffmpeg_tool.ffmpeg(filepath,wav_filepath)
+                os.remove(filepath) #删除旧文件
+                filepath = wav_filepath
             # logger.debug("asr item_id：%s" % str(item.id))
             dk_thread_pool.submit(
                 busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)

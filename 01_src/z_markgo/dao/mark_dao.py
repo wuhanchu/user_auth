@@ -43,8 +43,6 @@ def get_all_asr_items():
 def update_asr_txt(res):
     if not res or not res._result[0] or not res._result[1]:
         return
-
-    app.logger.info("update_asr_txt res" + str(res))
     with app.app_context():
 
         item_id = res._result[0]

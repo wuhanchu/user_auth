@@ -16,6 +16,15 @@ def get_curr_date():
     curr_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # 日期格式化
     return curr_date
 
+def get_file_path_name_ext(file_path):
+    """
+    获取文件路径， 文件名， 后缀名
+    :param file_path:
+    :return:
+    """
+    filepath, tmpfilename = os.path.split(file_path)
+    shotname, extension = os.path.splitext(tmpfilename)
+    return filepath, shotname, extension
 
 # 解压单个文件到目标文件夹
 def unzip_file(src_file, dest_dir, password=None):
@@ -127,3 +136,5 @@ if __name__ == '__main__':
     t = time.time()
 
     print(int(t))  # 毫秒级时间戳
+
+    print(get_file_path_name_ext("C:\\Users\\czc\\Desktop\\txt\\item\\item.zip"))

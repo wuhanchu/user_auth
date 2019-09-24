@@ -1,26 +1,29 @@
 # -*- coding:utf-8 -*-
-import numpy as np
-import re,sys,os
+import numpy as np,chardet
+import re, sys, os
+
 
 def num_to_char(num):
     """数字转中文"""
-    num=str(num)
-    num = num.replace("1_","幺")
-    new_str=""
-    num_dict={"0":u"零","1":u"一","2":u"二","3":u"三","4":u"四","5":u"五","6":u"六","7":u"七","8":u"八","9":u"九"}
-    listnum=list(num)
+    num = str(num)
+    num = num.replace("1_", "幺")
+    new_str = ""
+    num_dict = {"0": u"零", "1": u"一", "2": u"二", "3": u"三", "4": u"四", "5": u"五", "6": u"六", "7": u"七", "8": u"八",
+                "9": u"九"}
+    listnum = list(num)
     # print(listnum)
-    shu=[]
+    shu = []
     for i in listnum:
         # print(num_dict[i])
         try:
-            tmp= num_dict[i]
+            tmp = num_dict[i]
         except:
             tmp = i
         shu.append(tmp)
-    new_str="".join(shu)
+    new_str = "".join(shu)
     # print(new_str)
     return new_str
+
 
 def init(s1, s2):
     m = np.empty((len(s1) + 1, len(s2) + 1))
@@ -149,10 +152,14 @@ def med_classic_gui(s1, s2):
     return op2, m, s1, op, s2, I_COUNT_PCT, D_COUNT_PCT, S_COUNT_PCT
 
 
-#批量计算：单文件多行
-def batch_row_classice(ref_file,hyp_file):
+# 批量计算：单文件多行
+def batch_row_classice(ref_file, hyp_file):
     TOTAL_STRING_LENGTH = 0
-    TOTAL_accuracy = 0
+    TOTAL_accuracy = 0  # 准确率
+    TOTAL_I_COUNT_PCT = 0  # 插入率
+    TOTAL_D_COUNT_PCT = 0  # 删除率
+    TOTAL_S_COUNT_PCT = 0  # 替换率
+
     # ref = open(ref_file, 'r',encoding='UTF-8').read()  # realtexts
     # hyp = open(hyp_file, 'r',encoding='UTF-8').read()  # asrtexts
 
@@ -172,39 +179,73 @@ def batch_row_classice(ref_file,hyp_file):
 
             TOTAL_STRING_LENGTH = TOTAL_STRING_LENGTH + len(ref)
             TOTAL_accuracy = TOTAL_accuracy + accuracy * len(ref)
+            TOTAL_I_COUNT_PCT = TOTAL_I_COUNT_PCT + I_COUNT_PCT * len(ref)
+            TOTAL_D_COUNT_PCT = TOTAL_D_COUNT_PCT + D_COUNT_PCT * len(ref)
+            TOTAL_S_COUNT_PCT = TOTAL_S_COUNT_PCT + S_COUNT_PCT * len(ref)
 
-            print({"accuracy": accuracy, "ref": ref, "hyp": hyp, "op": op, "op2": op2, "s1": s1, "s2": s2,
-                   "I_COUNT_PCT": I_COUNT_PCT,
-                   "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT})
+            print({"准确率": accuracy, "ref": ref, "hyp": hyp, "op": op, "op2": op2, "s1": s1, "s2": s2,
+                   "插入率": I_COUNT_PCT, "删除率": D_COUNT_PCT, "替换率": S_COUNT_PCT})
 
-    print("总字数:%s ,平均准确率：%s" % (TOTAL_STRING_LENGTH, TOTAL_accuracy / TOTAL_STRING_LENGTH))
+    print("总字数:%s ,平均准确率：%s ，平均插入率：%s ，平均删除率：%s，平均替换率：%s " % (TOTAL_STRING_LENGTH, TOTAL_accuracy / TOTAL_STRING_LENGTH,
+                                                              TOTAL_I_COUNT_PCT / TOTAL_STRING_LENGTH,
+                                                              TOTAL_D_COUNT_PCT / TOTAL_STRING_LENGTH,
+                                                              TOTAL_S_COUNT_PCT / TOTAL_STRING_LENGTH))
 
-#遍历目录（子目录），返回所有文件路径
+
+# 遍历目录（子目录），返回所有文件路径
 def enum_path_files(path):
     path_len = len(path)
     file_paths = []
     if not os.path.isdir(path):
-        print('Error:"',path,'" is not a directory or does not exist.')
+        print('Error:"', path, '" is not a directory or does not exist.')
         return
     list_dirs = os.walk(path)
     for root, dirs, files in list_dirs:
         for f in files:
-            file_paths.append(os.path.join(root,f)[path_len+1:])
+            file_paths.append(os.path.join(root, f)[path_len + 1:])
     return file_paths
 
-#批量计算：单行多文件
-def batch_file_classice(ref_file_dir,hyp_file_dir):
+# 标准化文件编码
+def standardized_file_encode(path):
+    with open(path, "rb") as f:
+        data = f.read()
+    if len(data) == 0:
+        return
+    res = chardet.detect(data)
+    if res["encoding"] == "GB2312":
+        res["encoding"] = "GBK"
+    with open(os.path.join(path), "w", encoding="utf-8") as file:
+        line = str(data, encoding = res["encoding"])
+        line = line.replace("\n","").replace("\r","")
+        file.write(line)
+
+def standardized_mark_file(path,filename):
+    new_filename = filename.replace("_inspection","").replace("_mark","")
+    if new_filename != filename :
+        os.rename(os.path.join(path,filename),os.path.join(path,new_filename))
+    return path,new_filename
+
+# 批量计算：单行多文件
+def batch_file_classice(ref_file_dir, hyp_file_dir):
     TOTAL_STRING_LENGTH = 0
     TOTAL_accuracy = 0
+    TOTAL_I_COUNT_PCT = 0  # 插入率
+    TOTAL_D_COUNT_PCT = 0  # 删除率
+    TOTAL_S_COUNT_PCT = 0  # 替换率
+    res = []
 
     file_paths = enum_path_files(ref_file_dir)
     for file_path in file_paths:
         print(file_path)
-        ref = open(os.path.join(ref_file_dir,file_path), 'r', encoding='UTF-8').read()
-        hyp = open(os.path.join(hyp_file_dir,file_path), 'r', encoding='UTF-8').read()
+        ref_file_dir, file_path = standardized_mark_file(ref_file_dir, file_path)
+        standardized_file_encode(os.path.join(ref_file_dir, file_path))
+        ref = open(os.path.join(ref_file_dir, file_path), 'r', encoding="utf-8").read()
+        standardized_file_encode(os.path.join(hyp_file_dir, file_path))
+        hyp_path = os.path.join(hyp_file_dir, file_path)
+        hyp = open(hyp_path, 'r', encoding="utf-8").read()
 
-        ref = re.sub('[,.，。 \n?!？！]', '', ref)
-        hyp = re.sub('[,.，。 \n?!？！]', '', hyp)
+        ref = re.sub('[,.，。 \n\t?!？！]', '', ref)
+        hyp = re.sub('[,.，。 \n\t?!？！]', '', hyp)
         ref = num_to_char(ref)
         hyp = num_to_char(hyp)
 
@@ -213,25 +254,43 @@ def batch_file_classice(ref_file_dir,hyp_file_dir):
 
         TOTAL_STRING_LENGTH = TOTAL_STRING_LENGTH + len(ref)
         TOTAL_accuracy = TOTAL_accuracy + accuracy * len(ref)
+        TOTAL_I_COUNT_PCT = TOTAL_I_COUNT_PCT + I_COUNT_PCT * len(ref)
+        TOTAL_D_COUNT_PCT = TOTAL_D_COUNT_PCT + D_COUNT_PCT * len(ref)
+        TOTAL_S_COUNT_PCT = TOTAL_S_COUNT_PCT + S_COUNT_PCT * len(ref)
 
-        print({"accuracy": accuracy, "ref": ref, "hyp": hyp, "op": op, "op2": op2, "s1": s1, "s2": s2,
-               "I_COUNT_PCT": I_COUNT_PCT,
-               "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT})
+        res.append({"filename": os.path.basename(file_path),"accuracy": accuracy,"I_COUNT_PCT": I_COUNT_PCT, "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT})
+        print({"准确率": accuracy, "ref": ref, "hyp": hyp, "op": op, "op2": op2, "s1": s1, "s2": s2,
+               "插入率": I_COUNT_PCT, "删除率": D_COUNT_PCT, "替换率": S_COUNT_PCT})
 
-    print("总字数:%s ,平均准确率：%s" % (TOTAL_STRING_LENGTH, TOTAL_accuracy / TOTAL_STRING_LENGTH))
-
-
+    res.append({"filename":"汇总","accuracy": TOTAL_accuracy / TOTAL_STRING_LENGTH, "I_COUNT_PCT": TOTAL_I_COUNT_PCT / TOTAL_STRING_LENGTH,
+                "D_COUNT_PCT": TOTAL_D_COUNT_PCT / TOTAL_STRING_LENGTH, "S_COUNT_PCT": TOTAL_S_COUNT_PCT / TOTAL_STRING_LENGTH})
+    print("总字数:%s ,平均准确率：%s ，平均插入率：%s ，平均删除率：%s，平均替换率：%s " % (TOTAL_STRING_LENGTH, TOTAL_accuracy / TOTAL_STRING_LENGTH,
+                                                              TOTAL_I_COUNT_PCT / TOTAL_STRING_LENGTH,
+                                                              TOTAL_D_COUNT_PCT / TOTAL_STRING_LENGTH,
+                                                              TOTAL_S_COUNT_PCT / TOTAL_STRING_LENGTH))
+    return res
 
 if __name__ == "__main__":
+        # standardized_file_encode(r"F:\Z-ASR\ths脱敏录音撰写\14181_143023.txt")
+    print(r"""
+===========================================
+用法举例：
+单文件对比：python txt_compare.pyc C:\Users\czc\Desktop\txt\txt_comp\mark_out.txt C:\Users\czc\Desktop\txt\dir_comp\lei_out.txt
+多文件对比：python txt_compare.pyc C:\Users\czc\Desktop\txt\dir_comp\mark_108 C:\Users\czc\Desktop\txt\dir_comp\asr_108
+===========================================     
+
+    """)
+
     # 读取文件
-    # if len(sys.argv)<2:
-    #     print("需要2个参数!")
-    # else:
-    if True:
-        # ref_file_path = sys.argv[1]
-        # hyp_file_path = sys.argv[2]
-        ref_file_path = r"C:\Users\czc\Desktop\txt\dir_comp\mark_108"
-        hyp_file_path = r"C:\Users\czc\Desktop\txt\dir_comp\asr_108"
+    if len(sys.argv) < 2:
+        print("传参错误，需要2个参数：人工标注文本路径  机转文本路径 ")
+    else:
+        ref_file_path = sys.argv[1]
+        hyp_file_path = sys.argv[2]
+        print("人工标注文本路径：%s \n机转文本路径:%s " % (ref_file_path, hyp_file_path))
+
+        # ref_file_path = r"C:\Users\czc\Desktop\txt\dir_comp\mark_108"
+        # hyp_file_path = r"C:\Users\czc\Desktop\txt\dir_comp\asr_108"
 
         # ref_file_path = r"C:\Users\czc\Desktop\txt\txt_comp\mark_out.txt"
         # hyp_file_path = r"C:\Users\czc\Desktop\txt\txt_comp\lei_out.txt"
@@ -239,12 +298,8 @@ if __name__ == "__main__":
         print("param: %s , %s" % (ref_file_path, hyp_file_path))
 
         if os.path.isdir(ref_file_path):
-            batch_file_classice(ref_file_path,hyp_file_path)
+            batch_file_classice(ref_file_path, hyp_file_path)
         elif os.path.isfile(ref_file_path):
-            batch_row_classice(ref_file_path,hyp_file_path)
+            batch_row_classice(ref_file_path, hyp_file_path)
         else:
             print("参数错误，文件或目录不存在")
-
-
-
-

@@ -78,7 +78,7 @@ def vad_cut(wave_path, save_path):
     ind = 0
     # 静音检测次数
     MAX_EN = check_avg(wave_data, 0, SAMPLE_STEP * 3)
-    print("静音音量：%s" % MAX_EN)
+    # print("静音音量：%s" % MAX_EN)
     while begin < wave_data.shape[0] - SAMPLE_STEP * 4:
         step = SAMPLE_STEP
         if ind == 0:

@@ -18,7 +18,6 @@ def init_config(config_name):
 
 @app.route('/', methods=['GET'])
 def index():
-    app.logger.info("my first logging")
     return app.send_static_file('index.html')
 
 
