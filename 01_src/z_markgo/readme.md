@@ -1,5 +1,12 @@
 # 项目标注狗
 
+## 环境要求
+	操作系统：linux/windows
+	数据库：mysql5.6+
+	依赖程序：
+		python3.6+及相关扩展包(requirements.txt)
+		ffmpeg(需能在命令行下直接执行ffmpeg命令，该程序主要用于音频转码)
+	
 ## 框架说明：
 1. config.py 数据库，日志等相关配置信息
 2. webapi目录：接口相关文件所在目录，
