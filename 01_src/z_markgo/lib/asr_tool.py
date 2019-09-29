@@ -21,9 +21,20 @@ def client_post_mutipart_formdata_requests(request_url, datas):
     # 返回请求响应报文
     return responsedata
 
+# 性别识别
+def verifysex(filepath,my_asr_url):
+    (fileDir, filename) = os.path.split(filepath)
+    data = {
+        "userid": str(userid),
+        "token": str(token),
+        'file': (filename, open(filepath, 'rb'), 'application/wav')
+    }
+    # print("语音长度：%s"%len(file_bytes))
+    res = client_post_mutipart_formdata_requests(my_asr_url + "verifysex" , data)
+    res = json.loads(res)
+    return res["sex"]
+
 # 天聪asr
-
-
 def tc_asr(asr_url, filepath, framerate=16000):
     (fileDir, filename) = os.path.split(filepath)
     my_user = userid
@@ -39,8 +50,8 @@ def tc_asr(asr_url, filepath, framerate=16000):
         res = client_post_mutipart_formdata_requests(
             com_tool.url_join(asr_url, "dotcasr"), data)
     # app.logger.info("tc_asr res" + str(res))
-
     res = json.loads(res)
+    res["sex"] = verifysex(filepath,asr_url)
     return res
 
 # 讯飞asr

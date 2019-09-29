@@ -122,7 +122,7 @@ def project_items_upload():
         for item in to_asr_items:
             filepath = os.path.join(item_root_path, item.filepath)
             file_dir, shotname, ext = com_tool.get_file_path_name_ext(filepath)
-            if ext != ".wav" or ext != ".wav":
+            if ext != ".wav" or ext != ".WAV":
                 wav_filepath = os.path.join(file_dir,shotname+".wav")
                 ffmpeg_tool.ffmpeg(filepath,wav_filepath)
                 os.remove(filepath) #删除旧文件
