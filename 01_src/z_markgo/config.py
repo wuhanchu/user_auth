@@ -27,7 +27,7 @@ class DevelopmentConfig(Config):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'SQLALCHEMY_DATABASE_URI') or 'mysql+pymysql://root:root@dataknown.tpddns.cn:50306/z_markgo?charset=utf8'
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
+     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:czc@localhost:3306/z_markgo?charset=utf8'
     JOBS = [
         # {  # 每隔30S执行一次
         #     'id': 'check_meet_state',
