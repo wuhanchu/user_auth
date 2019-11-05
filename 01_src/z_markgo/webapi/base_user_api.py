@@ -47,7 +47,12 @@ def add_user():
     password = com_tool.get_MD5_code(password)
     obj = SysUser(name=name, username=username, password=password, telephone=telephone)
     db.session.add(obj)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception:
+        print("hi")
+        return JsonResult.error("创建失败，用户名重复！", {"username": username})
+
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
 # PUT:全部字段 ；PATCH:部分字段

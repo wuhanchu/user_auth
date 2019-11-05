@@ -4,9 +4,11 @@ from lib.models import AiService,db
 from lib.JsonResult import JsonResult
 from lib import param_tool,com_tool,sql_tool
 from webapi import baseRoute
+from lib.oauth2 import require_oauth
 
 # 列表
 @baseRoute.route('/aiservices', methods=['GET'])
+@require_oauth('profile')
 def aiservices_list():
     q = AiService.query
     name = request.args.get("name")
