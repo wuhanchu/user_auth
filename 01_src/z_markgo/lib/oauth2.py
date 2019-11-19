@@ -78,8 +78,8 @@ class _BearerTokenValidator(BearerTokenValidator):
         uri = token_request.uri
         method = token_request.method
         # todo 暂时关闭证书验证
-        # if not register_tool.check_licfile():
-        #     raise BusiError("License not found or invalid!",'证书无效，请联系管理员更新!',code=403)
+        if not register_tool.check_licfile():
+            raise BusiError("License not found or invalid!",'证书无效，请联系管理员更新!',code=403)
         if uri.startswith("/oauth/current_user"):
             return token
         if not permission_context.check_permission(_req.url_rule.rule,method,self.get_usr_roles(token.user_id)):
