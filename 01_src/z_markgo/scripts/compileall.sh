@@ -17,11 +17,11 @@ for file in $(find . -name '*.pyc');
 do
     mv $file $(echo $file | sed 's/\.cpython-36//g'| sed 's/__pycache__\///g');	
 done
-find -name "__pycache__" -exec rm -rf {} \;
-find -name "*.py" -exec rm -rf {} \;
+find -name "__pycache__" | awk '{print "rm -rf "$1}'|sh
+find -name "*.py" | awk '{print "rm -rf "$1}'|sh
 echo "代码编译完成！"
 echo "开始生成docker 镜像！"
-docker build . -t z_markgo:1.0.3
-echo "生成docker 镜像：z_markgo:1.0.3！"
+docker build . -t z_markgo:1.0.2
+echo "生成docker 镜像：z_markgo:1.0.2！"
 rm -rf z_markgo_cp
 echo "删除临时文件z_markgo_cp！"
