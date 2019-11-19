@@ -73,15 +73,17 @@ require_oauth = ResourceProtector()
 
 class _BearerTokenValidator(BearerTokenValidator):
     def __call__(self, *args, **kwargs):
+        #登录验证
         token = BearerTokenValidator.__call__(self,*args, **kwargs)
         token_request = args[2]
         uri = token_request.uri
         method = token_request.method
-        # todo 暂时关闭证书验证
+        # 证书验证
         if not register_tool.check_licfile():
             raise BusiError("License not found or invalid!",'证书无效，请联系管理员更新!',code=403)
         if uri.startswith("/oauth/current_user"):
             return token
+        # 权限验证
         if not permission_context.check_permission(_req.url_rule.rule,method,self.get_usr_roles(token.user_id)):
             raise BusiError("Permission denied!",'API has not access permission <%s>:%s'%(method,uri),code=403)
         return token
