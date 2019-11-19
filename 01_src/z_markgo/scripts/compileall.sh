@@ -2,6 +2,7 @@
 set -e
 #复制代码到
 echo "复制代码到../z_markgo_cp"
+rm -rf ../z_markgo_cp
 cp -r ../z_markgo ../z_markgo_cp
 cd ../z_markgo_cp
 echo "复制代码成功！"
