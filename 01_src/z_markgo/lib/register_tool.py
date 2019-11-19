@@ -27,7 +27,8 @@ def check_license(lic_info):
             return False, "机器码不匹配"
         if res["dueTime"] !=None and datetime.datetime.strptime(res["dueTime"], '%Y-%m-%d').date() < datetime.datetime.now().date():
             return False,"证书已过期,有效期截止：%s"%res["dueTime"]
-        return True, "已注册，有效期%s"%res["dueTime"]
+        res.pop("machineInfo")
+        return True, res
     except:
         return False,"证书解析错误"
 
@@ -64,12 +65,12 @@ def check_licfile():
 
 
 if __name__ == '__main__':
-    machineInfo = "cTwjfC7aNVPCKBtySIX3l6lqFqt6orfVGUZl/2yBAddmu8RqehIQaT6R5rclSJBPSxydg1pSh71oj1bPejpLy97CXDDxro8MwHuC0ppLBexNJ610tG/U9JQc/AhKxl+ekqvtRvQthk4244OLLsVneDR9Q3zqFyk/tVlK8YLgzC+jopE/OHSwJb4aCj/pSt6TJ/6VK7VlRFAvAEwSzK8sGHbo/ywJ+O7+nUyizyFS8FegDchFLVlmitUEoWx7TsA45To6ke/HAUOAhwVgwAejlgtGkRpOrIC3pmBZ0R3JTVgggL+cQW1fjkwu19YmFZMDFFb5YfipEscLMm9gTv2jsg=="
+    machineInfo = "eFWsX0J6dCpgxF+HN3iQCAGY9/HL+PSfoQ3YQA/BD9kFQRrjE5K2LjR/J7yw80M2YwTbQkXVKOWRIcLBFiOhnUKn3oBHr5c+f05rvl6Q49XtDF0MErloTL3LVnsNLEP3sHxHlQrCg44TvK91+rJs4TKzNV+bQSzdxXRD4c6Y7iuSmD/lWoHKyuDVceHvq+w278mCsbc88k++j9kF47nPwr8T4b6hILsTeNJg5or9h+fQ1zrHAdRRINTO4VZAPlHE6Qp5BuP/OvFErslelxpYWkcWwUrdYWZmw+7MkIek19BmeNXbXDh8J8RLNmb8xrVZxOLv8OiLZy/30a73SpRvtw=="
     # machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
     # print(machineInfo)
     # machineInfo = rsa_tool.pri_decrypt(machineInfo)
     # print(str(machineInfo,"utf-8"))
-    create_license(machineInfo,"2020-11-11","测试公司")
+    create_license(machineInfo,"2020-11-30","测试公司")
 
     # s = "你好"
     # print(s.encode("utf-8"))
