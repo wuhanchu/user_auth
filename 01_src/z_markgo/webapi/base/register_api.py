@@ -27,14 +27,14 @@ def license_info():
         with open("./license") as lic :
             lic_info = lic.read()
             lic_info = base64.b64decode(lic_info)
-            is_enable,lic_info = register_tool.check_license(lic_info)
+            is_enable,msg = register_tool.check_license(lic_info)
             if is_enable:
-                return JsonResult.success("证书有效！", lic_info)
+                return JsonResult.success("证书有效！",msg)
             else:
                 res = {
                     "machineInfo": register_tool.get_machineInfo(),
                 }
-                return JsonResult.error("%，请联系相关销售进行申请证书！"%res , res)
+                return JsonResult.error("%，请联系相关销售进行申请证书！"%msg , res)
 
     else:
         res = {

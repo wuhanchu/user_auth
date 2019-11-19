@@ -27,9 +27,9 @@ def check_license(lic_info):
             return False, "机器码不匹配"
         if res["dueTime"] !=None and datetime.datetime.strptime(res["dueTime"], '%Y-%m-%d').date() < datetime.datetime.now().date():
             return False,"证书已过期,有效期截止：%s"%res["dueTime"]
-        return True, res
+        return True, "已注册，有效期%s"%res["dueTime"]
     except:
-        return False,None
+        return False,"证书解析错误"
 
 def create_license(machineInfo,dueTime,customName):
     machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
