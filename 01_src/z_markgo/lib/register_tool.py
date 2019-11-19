@@ -24,7 +24,10 @@ def check_license(lic_info):
         res = json.loads(lic_info)
         # 机器码不匹配
         if res["machineInfo"] != get_machineInfo():
-            return False, "机器码不匹配"
+            print("机器码不匹配")
+            print(rsa_tool.pri_decrypt(get_netcard()))
+            print(rsa_tool.pri_decrypt(res["machineInfo"]))
+        #     return False, "机器码不匹配"
         if res["dueTime"] !=None and datetime.datetime.strptime(res["dueTime"], '%Y-%m-%d').date() < datetime.datetime.now().date():
             return False,"证书已过期,有效期截止：%s"%res["dueTime"]
         return True, res
@@ -64,7 +67,7 @@ def check_licfile():
 
 
 if __name__ == '__main__':
-    machineInfo = "exT2ezZxK7uKS4yZgCnWIZhIEyy3DjeHJKCyPAnfxEX0XJ0X/YbeQpSw7AZdK5WP9FQt2XVn/41aMKmSIKDF7GacQyXBBaOQX92F1aRz00UAEtWBlAuXDrYB8lR/COXMB7RZZGbWICY+zlSp7HBQa1daJzJ2UcFMcwImAx0C2WfQ4yHCTGRURy+6+Fxj8OOR3AJDk8IY9xNbZ2FZ2m57tPn0ptFYOOaNs0Q5XCf+riEDgXF3lV8JtDpu7fTbDevnvyH1wxRgsnMp54h4qeooL0NegTRmAzKqr/oFhWGRt3fUk8jJ+xTPyCahMNMJf4lbqju09ALS9io3808/QYjGQg=="
+    machineInfo = "cTwjfC7aNVPCKBtySIX3l6lqFqt6orfVGUZl/2yBAddmu8RqehIQaT6R5rclSJBPSxydg1pSh71oj1bPejpLy97CXDDxro8MwHuC0ppLBexNJ610tG/U9JQc/AhKxl+ekqvtRvQthk4244OLLsVneDR9Q3zqFyk/tVlK8YLgzC+jopE/OHSwJb4aCj/pSt6TJ/6VK7VlRFAvAEwSzK8sGHbo/ywJ+O7+nUyizyFS8FegDchFLVlmitUEoWx7TsA45To6ke/HAUOAhwVgwAejlgtGkRpOrIC3pmBZ0R3JTVgggL+cQW1fjkwu19YmFZMDFFb5YfipEscLMm9gTv2jsg=="
     # machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
     # print(machineInfo)
     # machineInfo = rsa_tool.pri_decrypt(machineInfo)
