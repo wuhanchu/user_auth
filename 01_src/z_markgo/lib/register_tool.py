@@ -23,11 +23,8 @@ def check_license(lic_info):
         lic_info = rsa_tool.pub_decrypt(lic_info)
         res = json.loads(lic_info)
         # 机器码不匹配
-        if res["machineInfo"] != get_machineInfo():
-            print("机器码不匹配")
-            print(rsa_tool.pri_decrypt(get_netcard()))
-            print(rsa_tool.pri_decrypt(res["machineInfo"]))
-        #     return False, "机器码不匹配"
+        if res["machineInfo"] != get_netcard():
+            return False, "机器码不匹配"
         if res["dueTime"] !=None and datetime.datetime.strptime(res["dueTime"], '%Y-%m-%d').date() < datetime.datetime.now().date():
             return False,"证书已过期,有效期截止：%s"%res["dueTime"]
         return True, res

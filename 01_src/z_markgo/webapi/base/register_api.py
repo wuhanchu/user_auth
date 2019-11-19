@@ -17,7 +17,7 @@ def license_upload():
             f.write(license)
         return JsonResult.success("注册成功")
     else:
-        return JsonResult.error("注册失败，证书格式错误")
+        return JsonResult.error("注册失败，%s"%info)
 
 # 证书控制 - 查看证书信息
 @baseRoute.route('/register/license', methods=['GET'])
