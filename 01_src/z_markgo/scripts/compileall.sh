@@ -19,5 +19,5 @@ find -name "__pycache__" -exec rm -rf {} \;
 find -name "*.py" -exec rm -rf {} \;
 echo "代码编译完成！"
 echo "开始生成docker 镜像！"
-docker build . -t z_markgo:1.0.2
-echo "生成docker 镜像：z_markgo:1.0.2！"
+docker build . -t z_markgo:1.0.3
+echo "生成docker 镜像：z_markgo:1.0.3！"
