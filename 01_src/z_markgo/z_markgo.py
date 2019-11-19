@@ -53,4 +53,4 @@ if __name__ == '__main__':
 
     # 启动web服务
 
-    app.run('0.0.0.0', port=5002)
+    app.run('0.0.0.0',use_reloader=False, port=5002)
