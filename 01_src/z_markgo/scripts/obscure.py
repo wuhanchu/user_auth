@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     file_paths = enum_path_files(path)
     for file in file_paths:
-        if file.endwith(".py"):
+        if file.endswith(".py"):
             print("change: %s"%file)
             change(file,file)
 
