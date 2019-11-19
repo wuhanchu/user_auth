@@ -3,7 +3,7 @@ from flask import render_template, redirect, jsonify
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
-from lib.models import db, SysUser,SysRole,SysUserRole
+from dao.model_user import db, SysUser,SysRole,SysUserRole
 from lib.model_oauth import OAuth2Client
 from lib.oauth2 import authorization, require_oauth
 from lib.JsonResult import JsonResult

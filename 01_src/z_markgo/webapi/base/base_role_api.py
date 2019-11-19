@@ -1,11 +1,13 @@
 # -*- coding:utf-8 -*-
 import time
 from flask import request
-from lib.models import *
+from lib import sql_tool,param_tool,permission_context
 from lib.JsonResult import JsonResult
-from lib import param_tool,sql_tool,com_tool
+from dao.model_user import *
+from lib.models import db
 from webapi import baseRoute
 from lib.oauth2 import require_oauth
+
 
 # 角色列表
 @baseRoute.route('/roles', methods=['GET'])
@@ -95,3 +97,32 @@ def update_user_roles(user_id):
     [db.session.delete(user_role) for user_role in user_roles]
     db.session.commit()
     return JsonResult.success("更新用户角色成功！")
+
+
+@baseRoute.route('/role_permissions/<role_id>', methods=['GET'])
+@require_oauth('profile')
+def role_permissions_list(role_id):
+    q = SysPermission.query.join(SysPermissionRole,SysPermissionRole.permission_id == SysPermission.id)\
+        .filter(SysPermissionRole.role_id == role_id)
+    list = q.all()
+    return JsonResult.queryResult(list)
+
+@baseRoute.route('/role_permissions/<role_id>', methods=['PUT'])
+@require_oauth('profile')
+def update_role_permissions(role_id):
+    args = request.get_json()
+    permission_ids = args.get("permission_ids")
+    role_permissions = SysPermissionRole.query.filter(SysPermissionRole.role_id == role_id).all()
+    for permission_id in permission_ids:
+        # 判断数据库中是否已经存在该用户
+        selected = [pr for pr in role_permissions if  pr.permission_id == permission_id]
+        if len(selected) == 0:
+            role_permission = SysPermissionRole(role_id=role_id, permission_id=permission_id)
+            db.session.add(role_permission)
+        else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
+            role_permissions.remove(selected[0])
+    # 删除已经不存在的数据
+    [db.session.delete(role_permission) for role_permission in role_permissions]
+    db.session.commit()
+    permission_context.load_permission()
+    return JsonResult.success("更新角色权限成功！")

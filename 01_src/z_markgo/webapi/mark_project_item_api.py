@@ -114,22 +114,20 @@ def project_items_upload():
                                filepath=project_item_path[path_len:])
         if project.type != "asr":
             item.asr_txt = project.model_txt
-        db.session.add(item)
-        to_asr_items.append(item)
-    db.session.commit()
-    logger.debug("to_asr_items:%s" % str(to_asr_items))
-    if project.type == "asr":
-        for item in to_asr_items:
+        else:
             filepath = os.path.join(item_root_path, item.filepath)
             file_dir, shotname, ext = com_tool.get_file_path_name_ext(filepath)
             if ext != ".wav" and ext != ".WAV":
-                wav_filepath = os.path.join(file_dir,shotname+".wav")
-                ffmpeg_tool.ffmpeg(filepath,wav_filepath)
-                os.remove(filepath) #删除旧文件
+                item.filepath = item.filepath + ".wav"
+                wav_filepath = filepath + ".wav"
+                ffmpeg_tool.ffmpeg(filepath, wav_filepath)
+                os.remove(filepath)  # 删除旧文件
                 filepath = wav_filepath
-            # logger.debug("asr item_id：%s" % str(item.id))
+                logger.debug("asr item_id：%s" % str(item.id))
             dk_thread_pool.submit(
                 busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
+        db.session.add(item)
+    db.session.commit()
     return JsonResult.success("导入音频成功！总条数%s" % len(item_paths))
 
 # 更新
@@ -213,7 +211,6 @@ def project_items_delete_batch():
 
 
 @markRoute.route('/project_items/item_asr/<project_id>', methods=['GET'])
-@require_oauth('profile')
 def call_project_asr(project_id):
     project = MarkProject.query.get(project_id)
     ai_service = AiService.query.get(project.ai_service)

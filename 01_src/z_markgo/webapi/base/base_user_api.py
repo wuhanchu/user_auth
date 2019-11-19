@@ -1,19 +1,18 @@
 # -*- coding:utf-8 -*-
 from flask import request
-from lib.models import *
-from lib.model_oauth import OAuth2Token
+from lib.models import db
+from dao.model_user import *
 from lib.JsonResult import JsonResult
-from lib import JsonResult as js,param_tool,sql_tool,com_tool
+from lib import param_tool,sql_tool,com_tool
 from webapi import baseRoute,app
 from lib.oauth2 import require_oauth
-from dao import mark_dao
 from sqlalchemy import func
 
 # 用户列表
 @baseRoute.route('/users', methods=['GET'])
 @require_oauth('profile')
 def user_list():
-    q = db.session.query(SysUser.id,func.max(SysUser.name).label("name"),func.max(SysUser.username).label("username"),func.max(SysUser.telephone)\
+    q = db.session.query(SysUser.id,func.max(SysUser.name).label("name"),func.max(SysUser.loginid).label("loginid"),func.max(SysUser.telephone)\
         .label("telephone"),func.max(SysUser.address).label("address"),func.group_concat(SysRole.name).label("roles"))\
         .outerjoin(SysUserRole,SysUserRole.user_id == SysUser.id).outerjoin(SysRole,SysRole.id == SysUserRole.role_id).group_by(SysUser.id)
     name = request.args.get("name")
@@ -36,22 +35,21 @@ def get_user(id):
     return JsonResult.queryResult(obj)
 
 @baseRoute.route('/users', methods=['POST'])
-# @require_oauth('profile')
+@require_oauth('profile')
 def add_user():
+    obj = SysUser()
     args = request.get_json()
-    name = args.get("name")
-    username = args.get("username")
-    telephone = args.get("telephone")
-    #将password转为md5编码
+    # 将参数加载进去
+    param_tool.set_dict_parm(obj, args)
     password = args.get("password")
     password = com_tool.get_MD5_code(password)
-    obj = SysUser(name=name, username=username, password=password, telephone=telephone)
+    obj.password = password
     db.session.add(obj)
     try:
         db.session.commit()
     except Exception:
         print("hi")
-        return JsonResult.error("创建失败，用户名重复！", {"username": username})
+        return JsonResult.error("创建失败，用户名重复！", {"loginid": loginid})
 
     return JsonResult.success("创建成功！", {"userid": obj.id})
 

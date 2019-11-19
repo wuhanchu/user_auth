@@ -1,5 +1,6 @@
 from authlib.flask.oauth2 import AuthorizationServer, ResourceProtector
-from lib import com_tool
+from lib import com_tool,permission_context,JsonResult as js,register_tool
+from lib.busi_exception import BusiError
 from authlib.flask.oauth2.sqla import (
     create_query_client_func,
     create_save_token_func,
@@ -7,10 +8,13 @@ from authlib.flask.oauth2.sqla import (
     create_bearer_token_validator,
 )
 from authlib.oauth2.rfc6749 import grants
+from authlib.oauth2 import OAuth2Error
+from authlib.oauth2.rfc6750 import BearerTokenValidator
 from werkzeug.security import gen_salt
-from .models import db, SysUser
-from .model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
-
+from lib.models import db
+from lib.model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
+from dao.model_user import SysUser
+from flask import request as _req
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def create_authorization_code(self, client, user, request):
@@ -37,12 +41,13 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         db.session.commit()
 
     def authenticate_user(self, authorization_code):
-        return SysUser.query.get(authorization_code.user_id)
+        return None
+        # return SysUser.query.get(authorization_code.user_id)
 
 
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
-        user = SysUser.query.filter_by(username=username).first()
+        user = SysUser.query.filter_by(loginid=username).first()
         # 校验密码
         if user.password == com_tool.get_MD5_code(password):
             return user
@@ -66,6 +71,35 @@ authorization = AuthorizationServer(
 )
 require_oauth = ResourceProtector()
 
+class _BearerTokenValidator(BearerTokenValidator):
+    def __call__(self, *args, **kwargs):
+        token = BearerTokenValidator.__call__(self,*args, **kwargs)
+        token_request = args[2]
+        uri = token_request.uri
+        method = token_request.method
+        # todo 暂时关闭证书验证
+        # if not register_tool.check_licfile():
+        #     raise BusiError("License not found or invalid!",'证书无效，请联系管理员更新!',code=403)
+        if uri.startswith("/oauth/current_user"):
+            return token
+        if not permission_context.check_permission(_req.url_rule.rule,method,self.get_usr_roles(token.user_id)):
+            raise BusiError("Permission denied!",'API has not access permission <%s>:%s'%(method,uri),code=403)
+        return token
+    def get_usr_roles(self,user_id):
+        sql = "select role_id from sys_user_role where user_id =%s "%(user_id)
+        res = db.session.execute(sql).fetchall()
+        role_list = js.queryToDict(res)
+        role_list = [ str(role['role_id']) for role in role_list]
+        return role_list
+    def authenticate_token(self, token_string):
+        q = db.session.query(OAuth2Token)
+        return q.filter_by(access_token=token_string).first()
+
+    def request_invalid(self, request):
+        return False
+
+    def token_revoked(self, token):
+        return token.revoked
 
 def config_oauth(app):
     authorization.init_app(app)
@@ -81,6 +115,8 @@ def config_oauth(app):
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
     authorization.register_endpoint(revocation_cls)
 
+
     # protect resource
-    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
-    require_oauth.register_token_validator(bearer_cls())
+    require_oauth.register_token_validator(_BearerTokenValidator())
+    # bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
+    # require_oauth.register_token_validator(bearer_cls())

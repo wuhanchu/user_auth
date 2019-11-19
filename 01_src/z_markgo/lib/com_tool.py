@@ -103,7 +103,7 @@ def get_MD5_code(str):
     return md5_str
 
 
-def get_base64():
+def get_base64(str):
     res = base64.b64encode(str)
     return res
 
@@ -128,13 +128,4 @@ def if_null(arg1, arg2):
 
 
 if __name__ == '__main__':
-    # file_paths = enum_path_files(r'E:\workspace_python\z_markgo\01_src\z_markgo_items\2')
-    # for i in file_paths:
-    #     print(i)
-    # unzip_file("C:\\Users\\czc\\Desktop\\txt\\item\\item.zip","C:\\Users\\czc\\Desktop\\txt\\item\\bak")
-    # get_MD5_code("hello world")
-    t = time.time()
-
-    print(int(t))  # 毫秒级时间戳
-
-    print(get_file_path_name_ext("C:\\Users\\czc\\Desktop\\txt\\item\\item.zip"))
+    print(from_base64("asdfad"))
