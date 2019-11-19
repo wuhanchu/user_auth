@@ -1,6 +1,6 @@
 #复制代码到
 echo "复制代码到../z_margo_cp"
-cp ../z_markgo ../z_margo_cp
+cp -r ../z_markgo ../z_margo_cp
 cd ../z_margo_cp
 find -name "__pycache__" -exec rm -rf {} \;
 echo "复制代码成功！"
