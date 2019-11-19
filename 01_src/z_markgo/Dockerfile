@@ -25,4 +25,4 @@ RUN echo 'https://mirrors.aliyun.com/alpine/v3.9/main/' >/etc/apk/repositories &
 
 COPY "./" "./"
 
-CMD [ "python3", "./z_markgo.py"]
+CMD [ "python3", "./z_markgo.pyc"]
