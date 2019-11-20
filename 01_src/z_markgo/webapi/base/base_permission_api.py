@@ -1,5 +1,5 @@
 from flask import request, send_file,make_response,render_template
-from dao.model_user import *
+from dao.base_model import *
 from lib.models import db
 from lib.JsonResult import JsonResult
 from lib import param_tool
@@ -65,7 +65,6 @@ def del_permission(id):
 
 
 @baseRoute.route('/permission_sql', methods=['GET'])
-@require_oauth("profile")
 def permission_sql():
     str = ''
     is_exit = 0
@@ -85,7 +84,6 @@ def permission_sql():
     return str
 
 @baseRoute.route('/permission_eoapi',methods=['GET'])
-@require_oauth("profile")
 def permission_eoapi():
     data = {
     "baseInfo": {

@@ -26,27 +26,11 @@ class SysMenu(Base):
 
 class SysParam(Base):
     __tablename__ = 'sys_param'
-
-    PARAM_CODE = Column(String(60), primary_key=True)
-    PARAM_NAME = Column(String(120), nullable=False)
-    PARAM_GROUP = Column(String(120))
-    PARAM_VALUE = Column(String(2000), nullable=False)
-    PARAM_TYPE = Column(String(60), nullable=False)
-    NOTE = Column(String(256))
-
-
-class SysParamCode(Base):
-    __tablename__ = 'sys_param_code'
-
-    id = Column(INTEGER(11), primary_key=True)
-    name = Column(String(50), nullable=False)
-    value = Column(String(50), nullable=False)
-    type = Column(String(50), nullable=False)
-    remark = Column(String(250))
-    opr_by = Column(String(32))
-    opr_at = Column(BIGINT(32))
-    del_fg = Column(TINYINT(1))
-
+    param_code = Column(String(60), primary_key=True)
+    param_name = Column(String(120), nullable=False)
+    param_value = Column(String(2000), nullable=False)
+    param_type = Column(String(60), nullable=False)
+    note = Column(String(256))
 
 class SysPermission(Base):
     __tablename__ = 'sys_permission'

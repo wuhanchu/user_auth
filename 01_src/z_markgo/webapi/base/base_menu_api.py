@@ -1,5 +1,5 @@
 from flask import request, send_file,make_response,render_template
-from dao.model_user import *
+from dao.base_model import *
 from lib.models import db
 from lib.JsonResult import JsonResult
 from lib import param_tool
