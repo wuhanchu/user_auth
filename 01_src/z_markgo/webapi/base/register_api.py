@@ -34,7 +34,7 @@ def license_info():
                 res = {
                     "machineInfo": register_tool.get_machineInfo(),
                 }
-                return JsonResult.error("%，请联系相关销售进行申请证书！"%msg , res)
+                return JsonResult.error("%s ，请联系相关销售进行申请证书！"%msg , res)
 
     else:
         res = {
