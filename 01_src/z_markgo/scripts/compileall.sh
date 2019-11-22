@@ -23,5 +23,5 @@ echo "代码编译完成！"
 echo "开始生成docker 镜像！"
 docker build . -t z_markgo:1.0.1
 echo "生成docker 镜像：z_markgo:1.0.1！"
-rm -rf z_markgo_cp
+rm -rf ../z_markgo_cp
 echo "删除临时文件z_markgo_cp！"
