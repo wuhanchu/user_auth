@@ -1,4 +1,4 @@
-
+SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
@@ -123,4 +123,5 @@ INSERT INTO `sys_user` VALUES (1, 'admin', 'admin', 'admin', 1, 'admin', '21232f
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (1, 1, 1);
+
 SET FOREIGN_KEY_CHECKS = 1;
