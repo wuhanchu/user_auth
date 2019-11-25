@@ -14,17 +14,17 @@ INSERT INTO `sys_permission` VALUES (1, '上传待标注数据', NULL, '/api/v1/
 INSERT INTO `sys_permission` VALUES (2, '下一条标注数据', NULL, '/api/v1/mark/user_items/next_item', NULL, NULL, NULL, NULL, 'GET', 'project_user_item_get_next');
 INSERT INTO `sys_permission` VALUES (5, '比对报告', NULL, '/api/v1/tools/report', NULL, NULL, NULL, NULL, 'POST', 'tool_report');
 INSERT INTO `sys_permission` VALUES (6, '质检数据列表', NULL, '/api/v1/mark/user_inspections', NULL, NULL, NULL, NULL, 'GET', 'project_user_inspection_get');
-INSERT INTO `sys_permission` VALUES (7, '标注数据管理-添加', NULL, '/api/v1/mark/project_items', NULL, NULL, NULL, NULL, 'GET', 'project_item_add');
+INSERT INTO `sys_permission` VALUES (7, '标注数据管理-添加', NULL, '/api/v1/mark/project_items', NULL, NULL, NULL, NULL, 'GET', 'project_item_post');
 INSERT INTO `sys_permission` VALUES (8, '标注数据管理-批量删除', NULL, '/api/v1/mark/project_items', NULL, NULL, NULL, NULL, 'DELETE', 'project_item_get');
 INSERT INTO `sys_permission` VALUES (9, '项目人员管理-更新项目人员', NULL, '/api/v1/mark/project_users', NULL, NULL, NULL, NULL, 'PUT', 'project_user_put');
 INSERT INTO `sys_permission` VALUES (10, '项目人员管理-人员列表', NULL, '/api/v1/mark/project_users', NULL, NULL, NULL, NULL, 'GET', 'project_user_get');
 INSERT INTO `sys_permission` VALUES (11, '我的标注/质检-列表', NULL, '/api/v1/mark/user_items', NULL, NULL, NULL, NULL, 'GET', 'project_user_item_get');
 INSERT INTO `sys_permission` VALUES (12, '项目管理-列表', NULL, '/api/v1/mark/projects', NULL, NULL, NULL, NULL, 'GET', 'project_get');
-INSERT INTO `sys_permission` VALUES (13, '项目管理-添加项目', NULL, '/api/v1/mark/projects', NULL, NULL, NULL, NULL, 'POST', 'project_add');
+INSERT INTO `sys_permission` VALUES (13, '项目管理-添加项目', NULL, '/api/v1/mark/projects', NULL, NULL, NULL, NULL, 'POST', 'project_post');
 INSERT INTO `sys_permission` VALUES (17, '权限管理-列表', NULL, '/api/v1/permissions', NULL, NULL, NULL, NULL, 'GET', 'sys_permission_get');
-INSERT INTO `sys_permission` VALUES (18, '权限管理-添加', NULL, '/api/v1/permissions', NULL, NULL, NULL, NULL, 'POST', 'sys_permission_add');
+INSERT INTO `sys_permission` VALUES (18, '权限管理-添加', NULL, '/api/v1/permissions', NULL, NULL, NULL, NULL, 'POST', 'sys_permission_post');
 INSERT INTO `sys_permission` VALUES (19, 'AI服务管理-列表', NULL, '/api/v1/aiservices', NULL, NULL, NULL, NULL, 'GET', 'sys_aiservice_get');
-INSERT INTO `sys_permission` VALUES (20, 'AI服务管理-添加', NULL, '/api/v1/aiservices', NULL, NULL, NULL, NULL, 'POST', 'sys_aiservice_add');
+INSERT INTO `sys_permission` VALUES (20, 'AI服务管理-添加', NULL, '/api/v1/aiservices', NULL, NULL, NULL, NULL, 'POST', 'sys_aiservice_post');
 INSERT INTO `sys_permission` VALUES (21, '用户管理-列表', NULL, '/api/v1/users', NULL, NULL, NULL, NULL, 'GET', 'sys_user_put');
 INSERT INTO `sys_permission` VALUES (22, '用户管理-更新', NULL, '/api/v1/users', NULL, NULL, NULL, NULL, 'POST', 'sys_user_post');
 INSERT INTO `sys_permission` VALUES (25, '角色管理-列表', NULL, '/api/v1/roles', NULL, NULL, NULL, NULL, 'GET', 'sys_role_get');
@@ -56,6 +56,7 @@ INSERT INTO `sys_permission` VALUES (54, '用户管理-删除用户', NULL, '/ap
 INSERT INTO `sys_permission` VALUES (58, '角色管理-详情', NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'GET', 'sys_role_get_by_id');
 INSERT INTO `sys_permission` VALUES (59, '角色管理-更新角色', NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'PUT', 'sys_role_put');
 INSERT INTO `sys_permission` VALUES (60, NULL, NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'DELETE', 'sys_role_delete');
+COMMIT;
 
 -- ----------------------------
 -- Records of sys_permission_role
