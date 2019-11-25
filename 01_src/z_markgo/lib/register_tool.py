@@ -41,7 +41,7 @@ def create_license(machineInfo,dueTime,customName):
         "registTime": datetime.datetime.now().strftime('%Y-%m-%d'),
         "dueTime":dueTime,
         "customName": customName,
-        "productName":"会议系统（z_meeting）",
+        "productName":"标注狗（z_markgo）",
     }
     lic = json.dumps(lic)
     print(lic)
@@ -65,12 +65,12 @@ def check_licfile():
 
 
 if __name__ == '__main__':
-    machineInfo = "eFWsX0J6dCpgxF+HN3iQCAGY9/HL+PSfoQ3YQA/BD9kFQRrjE5K2LjR/J7yw80M2YwTbQkXVKOWRIcLBFiOhnUKn3oBHr5c+f05rvl6Q49XtDF0MErloTL3LVnsNLEP3sHxHlQrCg44TvK91+rJs4TKzNV+bQSzdxXRD4c6Y7iuSmD/lWoHKyuDVceHvq+w278mCsbc88k++j9kF47nPwr8T4b6hILsTeNJg5or9h+fQ1zrHAdRRINTO4VZAPlHE6Qp5BuP/OvFErslelxpYWkcWwUrdYWZmw+7MkIek19BmeNXbXDh8J8RLNmb8xrVZxOLv8OiLZy/30a73SpRvtw=="
+    machineInfo = " H1LpRCmh+2liKtxPtjUhAhcHg73A6NFPnXhVGn6vpw90nAUPtDTsdnV0shpY9EGX2YH8AiVAN7PgMfPfo3HaAKTEa44v7bNWFioGd3SfBusaQqiVD30QVU507u8a8W0zAe2khNbcc7R7G8gaRGaYiiwAOCF1eZVo4l+7NIqOcmwpjgxGZoihyRPtL5bA42yzd/4jpKnmLM3Xc1itJAOG49ZiP7nv2XoJd5rVh2EtKz7LB6HlHo47/Y3CwSo4dSZPWXfsPoEnr5Itg9cGfBgB2lwrlxdct+KFlCiU+gqy2JsVep+VgWHnkhnJsZbOIs2hftyxlZ1G4E45QfxyLUvpaw=="
     # machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
     # print(machineInfo)
     # machineInfo = rsa_tool.pri_decrypt(machineInfo)
     # print(str(machineInfo,"utf-8"))
-    create_license(machineInfo,"2020-11-30","测试公司")
+    create_license(machineInfo,"2020-11-30","测试85")
 
     # s = "你好"
     # print(s.encode("utf-8"))

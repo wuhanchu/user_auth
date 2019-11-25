@@ -6,3 +6,4 @@
 01_src/z_markgo/test/test.py
 *.bak
 01_src/z_markgo/license
+*.lic

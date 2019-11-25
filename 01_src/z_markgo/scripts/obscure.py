@@ -35,7 +35,10 @@ if __name__ == '__main__':
     file_paths = enum_path_files(path)
     for file in file_paths:
         if file.endswith(".py"):
-            print("change: %s"%file)
-            change(file,file)
+            if file.startswith("webapi"):
+                print("跳过: %s" % file)
+            else:
+                print("change: %s"%file)
+                change(file,file)
 
 print('finished!')
