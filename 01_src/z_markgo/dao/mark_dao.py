@@ -44,13 +44,14 @@ def update_asr_txt(res):
     if not res or not res._result[0] or not res._result[1]:
         return
     with app.app_context():
-
+        logger.debug("更新asr结果到数据库，item_id:%s,asr_txt:%s" %(res._result[0],res._result[1]))
         item_id = res._result[0]
         asr_txt = res._result[1]
         if asr_txt:
             # 更新到数据库
             item_model = MarkProjectItem.query.get(item_id)
             item_model.asr_txt = asr_txt
+            item_model.status
             db.session.commit()
 
 # 获取已存储的item文件路径

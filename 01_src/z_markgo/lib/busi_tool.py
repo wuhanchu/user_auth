@@ -36,6 +36,7 @@ def tc_asr(item_id, asr_url, filepath):
             if (res['errCode'] == '0'):
                 sub_item["txt"] = res['result']
                 sub_item.pop("path")
+                logger.debug("asr解析完成，path:%s" % sub_item["path"])
             # todo 处理报错问题
             elif res['errCode'] == '-2':
                 sub_item["txt"] = res['result']

@@ -124,7 +124,7 @@ def project_items_upload():
                 ffmpeg_tool.ffmpeg(filepath, wav_filepath)
                 os.remove(filepath)  # 删除旧文件
                 filepath = wav_filepath
-                logger.debug("asr item_id：%s" % str(item.id))
+            logger.debug("asr item_id：%s" % str(item.id))
             dk_thread_pool.submit(
                 busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
         db.session.add(item)
