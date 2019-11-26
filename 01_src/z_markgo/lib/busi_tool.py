@@ -35,8 +35,8 @@ def tc_asr(item_id, asr_url, filepath):
             res = asr_tool.tc_asr(asr_url, sub_item["path"], framerate)
             if (res['errCode'] == '0'):
                 sub_item["txt"] = res['result']
-                sub_item.pop("path")
                 logger.debug("asr解析完成，path:%s" % sub_item["path"])
+                sub_item.pop("path")
             # todo 处理报错问题
             elif res['errCode'] == '-2':
                 sub_item["txt"] = res['result']

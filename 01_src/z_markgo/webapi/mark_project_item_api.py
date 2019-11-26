@@ -124,11 +124,9 @@ def project_items_upload():
                 ffmpeg_tool.ffmpeg(filepath, wav_filepath)
                 os.remove(filepath)  # 删除旧文件
                 filepath = wav_filepath
-            logger.debug("asr item_id：%s" % str(item.id))
-            dk_thread_pool.submit(
-                busi_tool.tc_asr, mark_dao.update_asr_txt, item.id, ai_service.service_url, filepath)
         db.session.add(item)
     db.session.commit()
+    call_project_asr(project_id)
     return JsonResult.success("导入音频成功！总条数%s" % len(item_paths))
 
 # 更新
@@ -218,6 +216,7 @@ def call_project_asr(project_id):
     list = mark_dao.get_asr_items(project_id)
     for item in list:
         filepath = os.path.join(item_root_path, item["filepath"])
+        logger.debug("将asr任务加入任务线程列表")
         dk_thread_pool.submit(busi_tool.tc_asr, mark_dao.update_asr_txt,
                               item["id"], ai_service.service_url, filepath)
     return JsonResult.success("调用asr转写成功！总条数%s" % len(list))
