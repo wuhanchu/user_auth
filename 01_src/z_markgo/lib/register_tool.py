@@ -5,10 +5,14 @@ def get_netcard():
     netcard_info = []
     info = psutil.net_if_addrs()
     for k, v in info.items():
-        if v[0].address != '127.0.0.1':
-            netcard_info.append(v[0].address)
-            if len(netcard_info)>0:
-                break
+        for i in range(len(v)):
+            #print("family:%s, addr:%s，netmask=%s ,ptp=%s"%(v[i].family,v[i].address,v[i].netmask,v[i].ptp))
+            if str(v[i].family).endswith("AF_LINK") or str(v[i].family).endswith("AF_PACKET"):
+                if(v[i].address != "00:00:00:00:00:00"):
+                    netcard_info.append(v[i].address)
+        if len(netcard_info)>0:
+            break
+        #print("--------------------------")
     return ",".join(netcard_info)
 
 def get_machineInfo():
@@ -65,16 +69,17 @@ def check_licfile():
 
 
 if __name__ == '__main__':
-    machineInfo = " H1LpRCmh+2liKtxPtjUhAhcHg73A6NFPnXhVGn6vpw90nAUPtDTsdnV0shpY9EGX2YH8AiVAN7PgMfPfo3HaAKTEa44v7bNWFioGd3SfBusaQqiVD30QVU507u8a8W0zAe2khNbcc7R7G8gaRGaYiiwAOCF1eZVo4l+7NIqOcmwpjgxGZoihyRPtL5bA42yzd/4jpKnmLM3Xc1itJAOG49ZiP7nv2XoJd5rVh2EtKz7LB6HlHo47/Y3CwSo4dSZPWXfsPoEnr5Itg9cGfBgB2lwrlxdct+KFlCiU+gqy2JsVep+VgWHnkhnJsZbOIs2hftyxlZ1G4E45QfxyLUvpaw=="
+    # machineInfo = "JzO09kRMIq6JCdLazQJ3gnJJGnxqs1fYzgn2vru41IguxsFkCV4NgAlCTguYjsG3h9MfW7yttWvTu9eGyxKm/1xUrbPE45yISfutrUx3K+xRfPfHiVR8NiGepD3uBDIOD6GQ97SsSb3oFFeYidLd5+x76+5OPlu8jnSFljJeltpdr0hGrqO0S74HfRuYB+EXwEJ6Tj9L4r8I4Wf5EUcEuMbeQGUcEJgQiIxjtKaePM26DTZK3pLPUtWMYmijMAaIoP1wPcIEfHaWvuFCi+wCJFYONxn+CONFhrwU49dNKWxj343T7NzZD3U8dLjDkaMoKQRNRCxwjKYiexhGImU9Wg=="
     # machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
     # print(machineInfo)
     # machineInfo = rsa_tool.pri_decrypt(machineInfo)
     # print(str(machineInfo,"utf-8"))
-    create_license(machineInfo,"2020-11-30","测试85")
-
+    # create_license(machineInfo,"2020-01-30","江海测试")
+    print (get_netcard())
     # s = "你好"
     # print(s.encode("utf-8"))
     # print(str(s.encode("utf-8"),"utf-8"))
     # s_b64 =  str(base64.b64encode(s.encode("utf-8")),"utf-8")
     # print(s_b64)
     # print(str(base64.b64decode(s_b64.encode("utf-8")),"utf-8"))
+
