@@ -56,6 +56,15 @@ INSERT INTO `sys_permission` VALUES (54, '用户管理-删除用户', NULL, '/ap
 INSERT INTO `sys_permission` VALUES (58, '角色管理-详情', NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'GET', 'sys_role_get_by_id');
 INSERT INTO `sys_permission` VALUES (59, '角色管理-更新角色', NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'PUT', 'sys_role_put');
 INSERT INTO `sys_permission` VALUES (60, NULL, NULL, '/api/v1/roles/<id>', NULL, NULL, NULL, NULL, 'DELETE', 'sys_role_delete');
+INSERT INTO `sys_permission` VALUES (61, NULL, NULL, '/api/v1/role_permission_groups/<role_id>', NULL, NULL, NULL, NULL, 'GET', NULL);
+INSERT INTO `sys_permission` VALUES (62, NULL, NULL, '/api/v1/role_permission_groups/<role_id>', NULL, NULL, NULL, NULL, 'PUT', NULL);
+INSERT INTO `sys_permission` VALUES (63, NULL, NULL, '/api/v1/group_permissions/<permission_group_id>', NULL, NULL, NULL, NULL, 'PUT', NULL);
+INSERT INTO `sys_permission` VALUES (64, NULL, NULL, '/api/v1/permission_menus/<pid>', NULL, NULL, NULL, NULL, 'GET', NULL);
+INSERT INTO `sys_permission` VALUES (65, NULL, NULL, '/api/v1/permission_menus/<id>', NULL, NULL, NULL, NULL, 'PATCH', NULL);
+INSERT INTO `sys_permission` VALUES (66, NULL, NULL, '/api/v1/permission_group/<id>', NULL, NULL, NULL, NULL, 'GET', NULL);
+INSERT INTO `sys_permission` VALUES (67, NULL, NULL, '/api/v1/permission_group/<id>', NULL, NULL, NULL, NULL, 'PATCH', NULL);
+INSERT INTO `sys_permission` VALUES (68, NULL, NULL, '/api/v1/permission_group/<id>', NULL, NULL, NULL, NULL, 'DELETE', NULL);
+INSERT INTO `sys_permission` VALUES (69, NULL, NULL, '/api/v1/permissions/<id>', NULL, NULL, NULL, NULL, 'PATCH', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -107,6 +116,7 @@ INSERT INTO `sys_permission_role` VALUES (227, 1, 54);
 INSERT INTO `sys_permission_role` VALUES (228, 1, 58);
 INSERT INTO `sys_permission_role` VALUES (229, 1, 59);
 INSERT INTO `sys_permission_role` VALUES (230, 1, 60);
+
 
 -- ----------------------------
 -- Records of sys_role
