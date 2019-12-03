@@ -11,7 +11,7 @@
  Target Server Version : 50643
  File Encoding         : 65001
 
- Date: 03/12/2019 15:08:18
+ Date: 03/12/2019 15:11:59
 */
 
 SET NAMES utf8mb4;
@@ -233,6 +233,21 @@ CREATE TABLE `sys_permission_group`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Table structure for sys_permission_group_rel
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_permission_group_rel`;
+CREATE TABLE `sys_permission_group_rel`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_id` int(11) NULL DEFAULT NULL,
+  `permission_group_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_perssion_id`(`permission_id`) USING BTREE,
+  INDEX `fk_permission_group_id`(`permission_group_id`) USING BTREE,
+  CONSTRAINT `fk_permission_group_id` FOREIGN KEY (`permission_group_id`) REFERENCES `sys_permission_group` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_perssion_id` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 74 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
 -- Table structure for sys_permission_group_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission_group_role`;
@@ -261,21 +276,6 @@ CREATE TABLE `sys_permission_menu`  (
   CONSTRAINT `sys_permission_menu_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `sys_menu` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `sys_permission_menu_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限菜单表\r\n' ROW_FORMAT = Compact;
-
--- ----------------------------
--- Table structure for sys_perssion_group_rel
--- ----------------------------
-DROP TABLE IF EXISTS `sys_perssion_group_rel`;
-CREATE TABLE `sys_perssion_group_rel`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `permission_id` int(11) NULL DEFAULT NULL,
-  `permission_group_id` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_perssion_id`(`permission_id`) USING BTREE,
-  INDEX `fk_permission_group_id`(`permission_group_id`) USING BTREE,
-  CONSTRAINT `fk_permission_group_id` FOREIGN KEY (`permission_group_id`) REFERENCES `sys_permission_group` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_perssion_id` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 74 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sys_role
