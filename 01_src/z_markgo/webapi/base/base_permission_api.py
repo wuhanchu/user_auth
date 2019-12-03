@@ -69,14 +69,14 @@ def permission_sql():
     str = ''
     is_exit = 0
     sql_list = []
-    sql = 'insert into sys_permission(url,method) values(\'%s\',\'%s\');\n'
+    sql = 'insert into sys_permission(url,method) values(\'%s\',\'%s\') WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE url=\'%s\' and method=\'%s\' );\n'
     rules = app.url_map.iter_rules()
     for rule in rules:
         for ele in rule.methods:
             if ele!='HEAD' and ele!= 'OPTIONS' and is_exit!=1:
                 if rule.rule.find("users")>0 and ele == "PUT" :
                     print(rule.rule)
-                sql_list.append(sql%(rule.rule,ele))
+                sql_list.append(sql%(rule.rule,ele,rule.rule,ele))
                 is_exit = 1
         is_exit = 0
     for i in range(len(sql_list)-1):

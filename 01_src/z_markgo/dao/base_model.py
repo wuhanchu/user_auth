@@ -8,7 +8,7 @@ Base = db.Model
 
 
 class SysPermissionGroup(Base):
-    __tablename__ = ' sys_permission_group'
+    __tablename__ = 'sys_permission_group'
 
     id = Column(INTEGER(11), primary_key=True)
     group_name = Column(String(255))
