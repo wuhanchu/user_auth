@@ -11,10 +11,10 @@ from lib.oauth2 import require_oauth
 @require_oauth('profile')
 def permission_group_list():
     q = SysPermissionGroup.query
-    name = request.args.get("name")
+    name = request.args.get("group_name")
     if name is not None:
-        q = q.filter(SysPermissionGroup.name.like("%" + name + "%"))
-    q = q.order_by(SysPermissionGroup.name.desc())
+        q = q.filter(SysPermissionGroup.group_name.like("%" + name + "%"))
+    q = q.order_by(SysPermissionGroup.group_name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     sort = request.args.get('sort')
