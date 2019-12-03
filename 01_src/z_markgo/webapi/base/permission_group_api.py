@@ -44,7 +44,7 @@ def add_permission_group():
     return JsonResult.success("创建成功！", {"id": obj.id})
 
 # 更新， PUT:全部字段 ；PATCH:部分字段
-@baseRoute.route('/permission_group/<id>', methods=['PUT','PATCH'])
+@baseRoute.route('/permission_group/<id>', methods=['PUT'])
 @require_oauth('profile')
 def update_permission_group(id):
     obj = SysPermissionGroup.query.get(id)
@@ -67,7 +67,14 @@ def del_permission_group(id):
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 
-
+@baseRoute.route('/group_permissions/<permission_group_id>', methods=['GET'])
+@require_oauth('profile')
+def get_group_permissions(permission_group_id):
+    q = SysPermission.query.join(SysPerssionGroupRel,
+                                 SysPerssionGroupRel.permission_id == SysPermission.id) \
+        .filter(SysPerssionGroupRel.permission_group_id == permission_group_id)
+    list = q.all()
+    return JsonResult.queryResult(list)
 
 @baseRoute.route('/group_permissions/<permission_group_id>', methods=['PUT'])
 @require_oauth('profile')

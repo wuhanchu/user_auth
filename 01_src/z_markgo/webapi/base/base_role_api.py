@@ -46,7 +46,7 @@ def add_role():
     return JsonResult.success("创建成功！", {"id": obj.id})
 
 # PUT:全部字段 ；PATCH:部分字段
-@baseRoute.route('/roles/<id>', methods=['PUT','PATCH'])
+@baseRoute.route('/roles/<id>', methods=['PUT'])
 @require_oauth('profile')
 def update_role(id):
     obj = SysRole.query.get(id)

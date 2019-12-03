@@ -69,7 +69,7 @@ def permission_sql():
     str = ''
     is_exit = 0
     sql_list = []
-    sql = 'insert into sys_permission(url,method) values(\'%s\',\'%s\') WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE url=\'%s\' and method=\'%s\' );\n'
+    sql = 'insert into sys_permission(url,method) select \'%s\' as url,\'%s\' as method from dual WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE url=\'%s\' and method=\'%s\' );\n'
     rules = app.url_map.iter_rules()
     for rule in rules:
         for ele in rule.methods:

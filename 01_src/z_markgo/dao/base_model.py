@@ -97,7 +97,7 @@ class SysPermissionGroupRole(Base):
 
     id = Column(INTEGER(11), primary_key=True)
     role_id = Column(ForeignKey('sys_role.id'), index=True)
-    permission_group_id = Column(ForeignKey(' sys_permission_group.id'), index=True)
+    permission_group_id = Column(ForeignKey('sys_permission_group.id'), index=True)
 
     permission_group = relationship('SysPermissionGroup')
     role = relationship('SysRole')
@@ -119,7 +119,7 @@ class SysPerssionGroupRel(Base):
 
     id = Column(INTEGER(11), primary_key=True)
     permission_id = Column(ForeignKey('sys_permission.id'), index=True)
-    permission_group_id = Column(ForeignKey(' sys_permission_group.id'), index=True)
+    permission_group_id = Column(ForeignKey('sys_permission_group.id'), index=True)
 
     permission_group = relationship('SysPermissionGroup')
     permission = relationship('SysPermission')
