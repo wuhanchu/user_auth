@@ -91,8 +91,10 @@ def current_user():
         user.pop("token")
         sql = """
             select p.name,p.url,p.method,p.key ,group_concat(r.id) as role_id,group_concat(r.name) as role_name from sys_permission p 
-                join sys_permission_role pr on p.id = pr.permission_id 
-                join sys_role r on r.id = pr.role_id
+                join sys_perssion_group_rel rel on rel.permission_id = p.id
+								join sys_permission_group_role gr on gr.permission_group_id = rel.permission_group_id
+								-- join sys_permission_role pr on p.id = pr.permission_id 
+                join sys_role r on r.id = gr.role_id
                 join sys_user_role ur on r.id = ur.role_id
             where ur.user_id = '%s'
             group by p.name,p.url,p.method,p.key
