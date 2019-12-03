@@ -86,6 +86,7 @@ class SysUser(Base):
     opr_by = Column(String(32))
     opr_at = Column(BIGINT(32))
     del_fg = Column(TINYINT(1))
+    
     def get_user_id(self):
         return self.id
 
