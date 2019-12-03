@@ -12,6 +12,7 @@ class SysPermissionGroup(Base):
 
     id = Column(INTEGER(11), primary_key=True)
     group_name = Column(String(255))
+    key = Column(String(255))
 
 class SysMenu(Base):
     __tablename__ = 'sys_menu'
