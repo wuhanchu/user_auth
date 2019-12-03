@@ -70,9 +70,9 @@ def del_permission_group(id):
 @baseRoute.route('/group_permissions/<permission_group_id>', methods=['GET'])
 @require_oauth('profile')
 def get_group_permissions(permission_group_id):
-    q = SysPermission.query.join(SysPerssionGroupRel,
-                                 SysPerssionGroupRel.permission_id == SysPermission.id) \
-        .filter(SysPerssionGroupRel.permission_group_id == permission_group_id)
+    q = SysPermission.query.join(SysPermissionGroupRel,
+                                 SysPermissionGroupRel.permission_id == SysPermission.id) \
+        .filter(SysPermissionGroupRel.permission_group_id == permission_group_id)
     list = q.all()
     return JsonResult.queryResult(list)
 
@@ -81,12 +81,12 @@ def get_group_permissions(permission_group_id):
 def update_group_permissions(permission_group_id):
     args = request.get_json()
     permission_ids = args.get("permission_ids")
-    group_permissions = SysPerssionGroupRel.query.filter(SysPerssionGroupRel.permission_group_id == permission_group_id).all()
+    group_permissions = SysPermissionGroupRel.query.filter(SysPermissionGroupRel.permission_group_id == permission_group_id).all()
     for permission_id in permission_ids:
         # 判断数据库中是否已经存在该用户
         selected = [pr for pr in group_permissions if  pr.permission_id == permission_id]
         if len(selected) == 0:
-            role_permission = SysPerssionGroupRel(permission_group_id=permission_group_id, permission_id=permission_id)
+            role_permission = SysPermissionGroupRel(permission_group_id=permission_group_id, permission_id=permission_id)
             db.session.add(role_permission)
         else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
             group_permissions.remove(selected[0])

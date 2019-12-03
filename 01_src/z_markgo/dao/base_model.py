@@ -114,8 +114,8 @@ class SysPermissionMenu(Base):
     permission = relationship('SysPermission')
 
 
-class SysPerssionGroupRel(Base):
-    __tablename__ = 'sys_perssion_group_rel'
+class SysPermissionGroupRel(Base):
+    __tablename__ = 'sys_permission_group_rel'
 
     id = Column(INTEGER(11), primary_key=True)
     permission_id = Column(ForeignKey('sys_permission.id'), index=True)

@@ -11,7 +11,7 @@
  Target Server Version : 50643
  File Encoding         : 65001
 
- Date: 22/11/2019 15:03:11
+ Date: 03/12/2019 15:08:18
 */
 
 SET NAMES utf8mb4;
@@ -27,8 +27,7 @@ CREATE TABLE `ai_service`  (
   `service_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '服务地址',
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '标注类型：取值 asr：语音识别 ；ocr：图像识别',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'AI服务' ROW_FORMAT = Compact;
-
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'AI服务' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for mark_project
@@ -50,8 +49,7 @@ CREATE TABLE `mark_project`  (
   `roles` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色信息',
   `marks` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '标签信息',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 142 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '标注项目' ROW_FORMAT = Compact;
-
+) ENGINE = InnoDB AUTO_INCREMENT = 152 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '标注项目' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for mark_project_items
@@ -81,7 +79,7 @@ CREATE TABLE `mark_project_items`  (
   CONSTRAINT `fk_item_project` FOREIGN KEY (`project_id`) REFERENCES `mark_project` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_project1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_item_project2` FOREIGN KEY (`inspection_person`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4117 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '语音标注条目' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 4235 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '语音标注条目' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for mark_project_user
@@ -170,7 +168,7 @@ CREATE TABLE `oauth2_token`  (
   INDEX `user_id`(`user_id`) USING BTREE,
   INDEX `ix_oauth2_token_refresh_token`(`refresh_token`) USING BTREE,
   CONSTRAINT `oauth2_token_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 857 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 909 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -221,7 +219,33 @@ CREATE TABLE `sys_permission`  (
   `method` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '1，get，2.post，3.put；4，delete',
   `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '关联菜单字段',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 61 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统权限表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统权限表' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for sys_permission_group
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_permission_group`;
+CREATE TABLE `sys_permission_group`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '关联菜单字段',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for sys_permission_group_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_permission_group_role`;
+CREATE TABLE `sys_permission_group_role`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NULL DEFAULT NULL,
+  `permission_group_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `FK_Reference_6`(`role_id`) USING BTREE,
+  INDEX `FK_Reference_8`(`permission_group_id`) USING BTREE,
+  CONSTRAINT `sys_permission_group_role_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `sys_permission_group_role_ibfk_2` FOREIGN KEY (`permission_group_id`) REFERENCES `sys_permission_group` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 186 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限角色表\r\n' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sys_permission_menu
@@ -239,19 +263,19 @@ CREATE TABLE `sys_permission_menu`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限菜单表\r\n' ROW_FORMAT = Compact;
 
 -- ----------------------------
--- Table structure for sys_permission_role
+-- Table structure for sys_perssion_group_rel
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_permission_role`;
-CREATE TABLE `sys_permission_role`  (
+DROP TABLE IF EXISTS `sys_perssion_group_rel`;
+CREATE TABLE `sys_perssion_group_rel`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `role_id` int(11) NULL DEFAULT NULL,
   `permission_id` int(11) NULL DEFAULT NULL,
+  `permission_group_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `FK_Reference_6`(`role_id`) USING BTREE,
-  INDEX `FK_Reference_8`(`permission_id`) USING BTREE,
-  CONSTRAINT `sys_permission_role_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `sys_permission_role_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 185 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限角色表\r\n' ROW_FORMAT = Compact;
+  INDEX `fk_perssion_id`(`permission_id`) USING BTREE,
+  INDEX `fk_permission_group_id`(`permission_group_id`) USING BTREE,
+  CONSTRAINT `fk_permission_group_id` FOREIGN KEY (`permission_group_id`) REFERENCES `sys_permission_group` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_perssion_id` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 74 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -267,7 +291,6 @@ CREATE TABLE `sys_role`  (
   `del_fg` tinyint(1) NULL DEFAULT NULL COMMENT '删除标识',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = Compact;
-
 
 -- ----------------------------
 -- Table structure for sys_user

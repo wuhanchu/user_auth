@@ -102,8 +102,8 @@ def update_user_roles(user_id):
 @baseRoute.route('/role_permissions/<role_id>', methods=['GET'])
 @require_oauth('profile')
 def role_permissions_list(role_id):
-    q = SysPermission.query.join(SysPerssionGroupRel,SysPerssionGroupRel.permission_id == SysPermission.id)\
-        .join(SysPermissionGroupRole,SysPermissionGroupRole.permission_group_id == SysPerssionGroupRel.permission_group_id)\
+    q = SysPermission.query.join(SysPermissionGroupRel,SysPermissionGroupRel.permission_id == SysPermission.id)\
+        .join(SysPermissionGroupRole,SysPermissionGroupRole.permission_group_id == SysPermissionGroupRel.permission_group_id)\
         .filter(SysPermissionGroupRole.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
