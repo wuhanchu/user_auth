@@ -28,7 +28,7 @@ def load_permission():
     permission_map = {}
     with app.app_context():
         sql = """select p.name,p.url,p.method ,group_concat(r.id) as role_ids,group_concat(r.name) as role_names from sys_permission p 
-                    join sys_perssion_group_rel gr on gr.permission_id = p.id
+                    join sys_permission_group_rel gr on gr.permission_id = p.id
                     join sys_permission_group_role pr on gr.permission_group_id = pr.permission_group_id 
                     join sys_role r on r.id = pr.role_id
                 group by p.name,p.url,p.method
