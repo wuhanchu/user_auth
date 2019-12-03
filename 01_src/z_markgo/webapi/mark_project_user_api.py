@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-from flask import request, send_file, make_response, render_template
+from flask import request
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool, com_tool, sql_tool
+from lib import sql_tool, param_tool
 from webapi import markRoute, app
 from dao import mark_dao
 from lib.oauth2 import require_oauth
-from sqlalchemy import func
+
 
 # 批量添加员工，支持直接把项目中的人员名单覆盖
 

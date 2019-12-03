@@ -5,7 +5,7 @@ from authlib.flask.oauth2 import current_token
 from flask import request
 from sqlalchemy import and_, or_
 
-from lib import param_tool, sql_tool
+from lib import sql_tool, param_tool
 from lib.JsonResult import JsonResult
 from lib.models import *
 from dao.base_model import SysUser

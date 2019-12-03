@@ -4,7 +4,7 @@ from flask import render_template
 from webapi import app, DEFAULT_MODULES, mark_project_api, tools_api, ai_service_api, \
     mark_project_item_api, mark_project_user_api, mark_user_items_api
 from webapi.base import base_user_api,base_menu_api,base_permission_api,base_permission_menu_api,\
-    base_role_api,oauth2_server_api,register_api
+    base_role_api,oauth2_server_api,register_api,permission_group_api
 from lib.models import db
 from lib.oauth2 import config_oauth
 from flask_apscheduler import APScheduler

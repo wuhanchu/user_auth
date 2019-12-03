@@ -1,10 +1,11 @@
-from flask import request, send_file,make_response,render_template
+from flask import request
 from dao.base_model import *
 from lib.models import db
 from lib.JsonResult import JsonResult
 from lib import param_tool
 from lib.oauth2 import require_oauth
-from webapi import baseRoute,app
+from webapi import baseRoute
+
 
 # 菜单列表
 @baseRoute.route('/menus', methods=['GET'])
@@ -48,7 +49,7 @@ def update_menu(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     #将参数加载进去
-    param_tool.set_dict_parm(menu,args)
+    param_tool.set_dict_parm(menu, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": menu.id})
 
@@ -67,12 +68,12 @@ def del_menu(id):
 @require_oauth("profile")
 def search_users_menu(id):
     "查找用户拥有的菜单"
-    q = db.session.query(*SysUser.__table__.columns._all_columns,
-                         SysPermissionMenu.menu_id.label("menu_id")).\
-        join(SysUserRole, SysUser.id == SysUserRole.user_id).\
-        join(SysPermissionRole, SysUserRole.role_id == SysPermissionRole.role_id).\
-        join(SysPermissionMenu, SysPermissionRole.permission_id == SysPermissionMenu.permission_id).\
-        filter(SysUser.id == id)
-    result = q.all()
-    db.session.commit()
-    return JsonResult.queryResult(result)
+    # q = db.session.query(*SysUser.__table__.columns._all_columns,
+    #                      SysPermissionMenu.menu_id.label("menu_id")).\
+    #     join(SysUserRole, SysUser.id == SysUserRole.user_id).\
+    #     join(SysPermissionRole, SysUserRole.role_id == SysPermissionRole.role_id).\
+    #     join(SysPermissionMenu, SysPermissionRole.permission_id == SysPermissionMenu.permission_id).\
+    #     filter(SysUser.id == id)
+    # result = q.all()
+    # db.session.commit()
+    return JsonResult.queryResult("未实现")

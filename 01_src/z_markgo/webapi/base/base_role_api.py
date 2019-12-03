@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import time
 from flask import request
-from lib import sql_tool,param_tool,permission_context
+from lib import sql_tool, permission_context, param_tool
 from lib.JsonResult import JsonResult
 from dao.base_model import *
 from lib.models import db
@@ -56,7 +56,7 @@ def update_role(id):
     if "password" in args:
         args.pop("password")
     #将参数加载进去
-    param_tool.set_dict_parm(obj,args)
+    param_tool.set_dict_parm(obj, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
@@ -102,27 +102,28 @@ def update_user_roles(user_id):
 @baseRoute.route('/role_permissions/<role_id>', methods=['GET'])
 @require_oauth('profile')
 def role_permissions_list(role_id):
-    q = SysPermission.query.join(SysPermissionRole,SysPermissionRole.permission_id == SysPermission.id)\
-        .filter(SysPermissionRole.role_id == role_id)
+    q = SysPermission.query.join(SysPerssionGroupRel,SysPerssionGroupRel.permission_id == SysPermission.id)\
+        .join(SysPermissionGroupRole,SysPermissionGroupRole.permission_group_id == SysPerssionGroupRel.permission_group_id)\
+        .filter(SysPermissionGroupRole.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
 
-@baseRoute.route('/role_permissions/<role_id>', methods=['PUT'])
-@require_oauth('profile')
-def update_role_permissions(role_id):
+@baseRoute.route('/role_permission_groups/<role_id>', methods=['PUT'])
+# @require_oauth('profile')
+def update_role_permission_groups(role_id):
     args = request.get_json()
-    permission_ids = args.get("permission_ids")
-    role_permissions = SysPermissionRole.query.filter(SysPermissionRole.role_id == role_id).all()
-    for permission_id in permission_ids:
+    role_permission_group_ids = args.get("role_permission_group_ids")
+    role_permission_groups = SysPermissionGroupRole.query.filter(SysPermissionGroupRole.role_id == role_id).all()
+    for permission_group_id in role_permission_group_ids:
         # 判断数据库中是否已经存在该用户
-        selected = [pr for pr in role_permissions if  pr.permission_id == permission_id]
+        selected = [pr for pr in role_permission_groups if  pr.permission_group_id == permission_group_id]
         if len(selected) == 0:
-            role_permission = SysPermissionRole(role_id=role_id, permission_id=permission_id)
-            db.session.add(role_permission)
+            role_permission_group = SysPermissionGroupRole(role_id=role_id, permission_group_id=permission_group_id)
+            db.session.add(role_permission_group)
         else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
-            role_permissions.remove(selected[0])
+            role_permission_groups.remove(selected[0])
     # 删除已经不存在的数据
-    [db.session.delete(role_permission) for role_permission in role_permissions]
+    [db.session.delete(role_permission_group) for role_permission_group in role_permission_groups]
     db.session.commit()
     permission_context.load_permission()
     return JsonResult.success("更新角色权限成功！")

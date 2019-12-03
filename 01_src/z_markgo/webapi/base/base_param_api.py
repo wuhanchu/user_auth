@@ -1,9 +1,10 @@
 
-from flask import request, send_file,make_response,render_template
+from flask import request
 from dao.models import *
 from lib.JsonResult import JsonResult
 from lib import param_tool
-from webapi import baseRoute,app
+from webapi import baseRoute
+
 
 # 列表
 @baseRoute.route('/param', methods=['GET'])
@@ -45,7 +46,7 @@ def update_param(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     #将参数加载进去
-    param_tool.set_dict_parm(obj,args)
+    param_tool.set_dict_parm(obj, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 

@@ -1,4 +1,4 @@
-from flask import request, send_file,make_response,render_template
+from flask import request
 from dao.base_model import *
 from lib.models import db
 from lib.JsonResult import JsonResult
@@ -48,7 +48,7 @@ def update_permission(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     #将参数加载进去
-    param_tool.set_dict_parm(permission,args)
+    param_tool.set_dict_parm(permission, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": permission.id})
 
@@ -169,7 +169,7 @@ def permission_eoapi():
                 json_model.append(json.dumps(data))
                 is_exit = 1
         is_exit = 0
-    with open('C:/Users/lmh/Desktop/api2eolinker.json', 'a', encoding='utf-8') as f:
+    with open('C:/Users/czc/Desktop/api2eolinker.json', 'a', encoding='utf-8') as f:
         f.write('[')
         for i in range(len(json_model)):
             f.write(json_model[i])

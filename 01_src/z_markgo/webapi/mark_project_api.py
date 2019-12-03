@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 import os
-from flask import request, send_file, make_response, render_template
+from flask import request, send_file
 from lib.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool, com_tool, sql_tool, busi_tool
+from lib import com_tool, sql_tool, busi_tool, param_tool
 from webapi import markRoute
 from dao import mark_dao
 from lib.oauth2 import require_oauth

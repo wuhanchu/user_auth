@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
-from flask import request, send_file,make_response,render_template
+from flask import request
 from lib.models import AiService,db
 from lib.JsonResult import JsonResult
-from lib import param_tool,com_tool,sql_tool
+from lib import com_tool, sql_tool, param_tool
 from webapi import baseRoute
 from lib.oauth2 import require_oauth
 
@@ -55,7 +55,7 @@ def aiservices_update(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     #将参数加载进去
-    param_tool.set_dict_parm(obj,args)
+    param_tool.set_dict_parm(obj, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 

@@ -5,7 +5,6 @@ model = """
 from flask import request, send_file,make_response,render_template
 from dao.models import *
 from lib.JsonResult import JsonResult
-from lib import param_tool
 from webapi import baseRoute,app
 
 # 列表
@@ -86,4 +85,4 @@ def auto_create_models(model_name,ModelName):
 
 
 if __name__ == '__main__':
-    auto_create_models('param','SysParam')
+    auto_create_models('Permission_group','SysPermissionGroup')

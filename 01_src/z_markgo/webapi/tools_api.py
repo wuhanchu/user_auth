@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 
-from flask import request, send_file, make_response, render_template
-import re,sys,os
+from flask import request
+import re
 
-from lib import param_tool, com_tool, sql_tool, busi_tool, txt_compare
-from webapi import baseRoute, app
+from lib import txt_compare
+from webapi import baseRoute
 from lib.oauth2 import require_oauth
 
 from lib.JsonResult import JsonResult

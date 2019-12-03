@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
-from flask import request, send_file,make_response,render_template
+from flask import request
 from dao.base_model import *
 from lib.models import db
 from lib.JsonResult import JsonResult
 from lib import param_tool
-from webapi import baseRoute,app
+from webapi import baseRoute
 from lib.oauth2 import require_oauth
 
 #权限菜单列表
@@ -50,7 +50,7 @@ def update_permission_menu(id):
         return JsonResult.error("对象不存在，id=%s"%id)
     args = request.get_json()
     #将参数加载进去
-    param_tool.set_dict_parm(permission_menu,args)
+    param_tool.set_dict_parm(permission_menu, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": permission_menu.id})
 

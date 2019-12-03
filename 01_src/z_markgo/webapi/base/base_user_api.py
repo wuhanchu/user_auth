@@ -1,10 +1,9 @@
 # -*- coding:utf-8 -*-
 from flask import request
-from lib.models import db
 from dao.base_model import *
 from lib.JsonResult import JsonResult
-from lib import param_tool,sql_tool,com_tool
-from webapi import baseRoute,app
+from lib import sql_tool, com_tool, param_tool
+from webapi import baseRoute
 from lib.oauth2 import require_oauth
 from sqlalchemy import func
 
@@ -64,7 +63,7 @@ def update_user(id):
     if "password" in args:
         args.pop("password")
     #将参数加载进去
-    param_tool.set_dict_parm(obj,args)
+    param_tool.set_dict_parm(obj, args)
     db.session.commit()
     return JsonResult.success("更新成功！",{"id": obj.id})
 
