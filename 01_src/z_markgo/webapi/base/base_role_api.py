@@ -108,6 +108,15 @@ def role_permissions_list(role_id):
     list = q.all()
     return JsonResult.queryResult(list)
 
+
+@baseRoute.route('/role_permission_groups/<role_id>', methods=['GET'])
+@require_oauth('profile')
+def role_permission_groups_list(role_id):
+    q = SysPermissionGroup.query.join(SysPermissionGroupRole,SysPermissionGroupRole.permission_group_id == SysPermissionGroup.id)\
+        .filter(SysPermissionGroupRole.role_id == role_id)
+    list = q.all()
+    return JsonResult.queryResult(list)
+
 @baseRoute.route('/role_permission_groups/<role_id>', methods=['PUT'])
 # @require_oauth('profile')
 def update_role_permission_groups(role_id):
