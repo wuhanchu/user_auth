@@ -40,7 +40,7 @@ def add_{model_name}():
     return JsonResult.success("创建成功！", {"id": obj.id})
 
 # 更新， PUT:全部字段 ；PATCH:部分字段
-@baseRoute.route('/{model_name}/<id>', methods=['PUT','PATCH'])
+@baseRoute.route('/{model_name}/<id>', methods=['PUT'])
 def update_{model_name}(id):
     obj = {ModelName}.query.get(id)
     if obj is None :

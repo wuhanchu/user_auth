@@ -155,7 +155,8 @@ def permission_eoapi():
     is_exit = 0
     rules = app.url_map.iter_rules()
     for rule in rules:
-        data['baseInfo']['apiURI'] =rule.rule
+        apiURI = rule.rule
+        data['baseInfo']['apiURI'] = apiURI.replace("<", "{").replace(">", "}")
         for ele in rule.methods:
             if ele != 'HEAD' and ele != 'OPTIONS' and is_exit != 1:
                 if ele=='GET':
