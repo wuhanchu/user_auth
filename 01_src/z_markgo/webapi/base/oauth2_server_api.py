@@ -103,8 +103,9 @@ def current_user():
         res = db.session.execute(sql).fetchall()
         user["permissions"] = js.queryToDict(res)
         sql_group = """
-                select grp.id,grp.group_name,grp.key from sys_permission_group grp join sys_permission_group_role grole on grp.id = grole.role_id 
-                    join sys_role r on r.id = grole.permission_group_id
+                select grp.id,grp.group_name,grp.key from sys_permission_group grp 
+                    join sys_permission_group_role grole on grp.id = grole.permission_group_id 
+                    join sys_role r on r.id = grole.role_id
                     join sys_user_role ur on r.id = ur.role_id
                 where ur.user_id = '%s'
                 """ % user["id"]
