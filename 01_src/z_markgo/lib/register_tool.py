@@ -69,12 +69,12 @@ def check_licfile():
 
 
 if __name__ == '__main__':
-    machineInfo = "dsV6kfzQordJgiN66Dh+3iC2icbQ2Ui2TdjcTG3bEf4YFGECQDLgzBbmGrhvwuZ1lbm1crFX6BgPFFaC0s5DJ0spHg5BM89UydXzLb1fJumGMgJJ81lDjda9DchpEoxOW6d91+VIGgETyv8dGnnaaWFV5kqMfTdasvbXH2B4BiMFrxE5gbI3ljhes0BhcCaL58xTfNt0+dPWJ4e5i4CjjTUAWEJN5fx//Uybf04wKlCaRw43Bg84btNjxAhUUPCbVbTnmrpm0+Hcmt1kNyK5xFmmXkfjanMyOmrqftfmaf7GCAL9pcurGsYHbpMMfgEcFTIJMpD0EJVYrU7we3N3Xw=="
+    machineInfo = "SsyVmPr+80xh1EETtIRDM1x51wUCnnSMZeRiSu32E2B0I4mPr0BAWnIFVYZdvN90lq5wtAk/l+pKjN530WGDlceF7Fd9ryghiPBFd9+9yWUul9nJOvoafxOIoJ4XiZn9B/nXS0rcXSV2jGcf1vZ30s5QdKJyGu+SZoMuGwqNNl+idmMxu1FCdUnoTUra3YkVO8BnwdAeOolhNUO22IAZhlrD6rPg1nY6gctUwk3LaI6KhABkTv7kM254Q3IeLPzeai7rOydVIdHz29zfXvkU+6zxEE4swKAL2HutnZyTLC7/c9trWTxFi+EwfcH+J6yA3ho/QUKcv5738NCPZ3S18Q=="
     # machineInfo = base64.b64decode(machineInfo.encode("utf-8"))
     # print(machineInfo)
     # machineInfo = rsa_tool.pri_decrypt(machineInfo)
     # print(str(machineInfo,"utf-8"))
-    create_license(machineInfo,"2020-12-30","天聪标注狗")
+    create_license(machineInfo,"2020-12-30","标注狗演示环境")
     # print (get_netcard())
     # s = "你好"
     # print(s.encode("utf-8"))

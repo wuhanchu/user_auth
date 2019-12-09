@@ -1,5 +1,5 @@
 # 项目工具
-import subprocess,os
+import subprocess,os,json
 
 model = """
 from flask import request, send_file,make_response,render_template
@@ -55,6 +55,8 @@ def update_{model_name}(id):
 def del_{model_name}(id):
     "删除"
     obj = {ModelName}.query.get(id)
+    if obj is None:
+        return JsonResult.error("删除失败，id=%s不存在！"%record_id)
     db.session.delete(obj)
     # sql = "delete from ts_meetasr_log where meetid='%s' " % meetid
     # db.session.execute(sql)
@@ -82,6 +84,103 @@ def auto_create_models(model_name,ModelName):
     with open(filepath, 'w',encoding="utf-8") as output:
         output.write(new_model)
         print("生成文件：%s"%filepath)
+
+
+def get_eoapi(app):
+    data = {
+    "baseInfo": {
+      "apiName": "",
+      "apiURI": "",
+      "apiProtocol": 0,
+      "apiSuccessMock": "",
+      "apiFailureMock": "",
+      "apiRequestType": 0,
+      "apiStatus": 0,
+      "starred": 0,
+      "createTime": "",
+      "apiNoteType": 1,
+      "apiNoteRaw": "",
+      "apiNote": "",
+      "apiRequestParamType": 0,
+      "apiRequestRaw": "",
+      "apiFailureStatusCode": "200",
+      "apiSuccessStatusCode": "200",
+      "apiFailureContentType": "text\/html; charset=UTF-8",
+      "apiSuccessContentType": "text\/html; charset=UTF-8",
+      "apiRequestParamJsonType": 0,
+      "apiUpdateTime": "",
+      "apiTag": "",
+      "advancedSetting": {
+        "requestRedirect": 1
+      }
+    },
+    "headerInfo": [
+
+    ],
+    "authInfo": {
+      "status": "0"
+    },
+    "requestInfo": [
+
+    ],
+    "urlParam": [
+
+    ],
+    "restfulParam": [
+
+    ],
+    "resultInfo": [
+
+    ],
+    "responseHeader": [
+
+    ],
+    "resultParamJsonType": 0,
+    "resultParamType": 0,
+    "structureID": "[]",
+    "databaseFieldID": "[]",
+    "globalStructureID": "[]",
+    "testCastList": [
+
+    ],
+    "dataStructureList": [
+
+    ],
+    "globalDataStructureList": [
+
+    ],
+    "mockExpectationList": [
+
+    ]
+  }
+    json_model = []
+    is_exit = 0
+    rules = app.url_map.iter_rules()
+    for rule in rules:
+        apiURI = rule.rule
+        data['baseInfo']['apiURI'] = apiURI.replace("<", "{").replace(">", "}")
+        for ele in rule.methods:
+            if ele != 'HEAD' and ele != 'OPTIONS' and is_exit != 1:
+                if ele=='GET':
+                    data['baseInfo']['apiRequestType'] = 1
+                elif ele == 'POST':
+                    data['baseInfo']['apiRequestType'] = 0
+                elif ele == 'PUT':
+                    data['baseInfo']['apiRequestType'] = 2
+                elif ele == 'DELETE':
+                    data['baseInfo']['apiRequestType'] = 3
+                json_model.append(json.dumps(data))
+                is_exit = 1
+        is_exit = 0
+    with open('./api2eolinker.amsa', 'a', encoding='utf-8') as f:
+        f.write('[')
+        for i in range(len(json_model)):
+            f.write(json_model[i])
+            if i < len(json_model)-1:
+                f.write(',')
+        f.write(']')
+        f.close()
+    return ''
 
 
 if __name__ == '__main__':

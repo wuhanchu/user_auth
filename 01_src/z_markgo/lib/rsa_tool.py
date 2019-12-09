@@ -3,11 +3,11 @@ from rsa import common, transform, core,PrivateKey,PublicKey
 import os,base64
 
 try:
-    pubkey = PublicKey.load_pkcs1(open("conf/public.pem").read())
-    privkey = PrivateKey.load_pkcs1(open("conf/private.pem").read())
+    pubkey = PublicKey.load_pkcs1(open("resource/public.pem").read())
+    privkey = PrivateKey.load_pkcs1(open("resource/private.pem").read())
 except:
-    pubkey = PublicKey.load_pkcs1(open("../conf/public.pem").read())
-    privkey = PrivateKey.load_pkcs1(open("../conf/private.pem").read())
+    pubkey = PublicKey.load_pkcs1(open("../resource/public.pem").read())
+    privkey = PrivateKey.load_pkcs1(open("../resource/private.pem").read())
 
 def _pad_for_encryption(message, target_length):
     max_msglength = target_length - 11
@@ -60,12 +60,12 @@ def pri_decrypt(edata):
 
 if __name__ == '__main__':
     # (pubkey, privkey) = rsa.newkeys(2048)
-    # with open('../conf/public.pem', 'wb') as pubfile:
+    # with open('../resource/public.pem', 'wb') as pubfile:
     #     pubfile.write(pubkey.save_pkcs1())
-    # with open('../conf/private.pem', 'wb') as prifile:
+    # with open('../resource/private.pem', 'wb') as prifile:
     #     prifile.write(privkey.save_pkcs1())
-    pubkey = PublicKey.load_pkcs1(open("../conf/public.pem").read())
-    privkey = PrivateKey.load_pkcs1(open("../conf/private.pem").read())
+    pubkey = PublicKey.load_pkcs1(open("../resource/public.pem").read())
+    privkey = PrivateKey.load_pkcs1(open("../resource/private.pem").read())
 
     # data = 'hellowword中文中文hellowwordhellowwordhellowwordhellowwordhellowwordhellowword'
     # data2b = data.encode('utf8')

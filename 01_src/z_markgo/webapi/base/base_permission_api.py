@@ -170,7 +170,7 @@ def permission_eoapi():
                 json_model.append(json.dumps(data))
                 is_exit = 1
         is_exit = 0
-    with open('C:/Users/czc/Desktop/api2eolinker.json', 'a', encoding='utf-8') as f:
+    with open('C:/Users/czc/Desktop/api2eolinker.json', 'w', encoding='utf-8') as f:
         f.write('[')
         for i in range(len(json_model)):
             f.write(json_model[i])
