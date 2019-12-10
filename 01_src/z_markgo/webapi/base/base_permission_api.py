@@ -1,5 +1,5 @@
 from flask import request
-from dao.base_model import *
+from dao.model_user import *
 from dao.models import db
 from lib.JsonResult import JsonResult
 from lib import param_tool

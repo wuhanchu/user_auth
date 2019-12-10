@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from flask import request
-from dao.base_model import *
+from dao.model_user import *
 from lib.JsonResult import JsonResult
 from lib import sql_tool, com_tool, param_tool
 from webapi import baseRoute

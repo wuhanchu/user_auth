@@ -3,7 +3,7 @@ import time
 from flask import request
 from lib import sql_tool, permission_context, param_tool
 from lib.JsonResult import JsonResult
-from dao.base_model import *
+from dao.model_user import *
 from dao.models import db
 from webapi import baseRoute
 from lib.oauth2 import require_oauth

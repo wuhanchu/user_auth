@@ -11,7 +11,7 @@ from authlib.oauth2.rfc6750 import BearerTokenValidator
 from werkzeug.security import gen_salt
 from dao.models import db
 from dao.model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
-from dao.base_model import SysUser
+from dao.model_user import SysUser
 from flask import request as _req
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):

@@ -7,7 +7,7 @@ from lib import sql_tool, busi_tool, com_tool, ffmpeg_tool, param_tool
 from lib.dk_thread_pool import dk_thread_pool
 from webapi import markRoute, app
 from dao import mark_dao
-from dao.base_model import SysUser
+from dao.model_user import SysUser
 import os
 import logging
 import json
