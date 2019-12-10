@@ -1,9 +1,8 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, ForeignKey, String, Text, text,Float
+from sqlalchemy import Column, ForeignKey, String, text
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.orm import relationship
-from flask_sqlalchemy import SQLAlchemy
-from lib.models import db
+from dao.models import db
 Base = db.Model
 
 

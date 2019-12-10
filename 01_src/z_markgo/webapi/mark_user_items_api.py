@@ -7,7 +7,7 @@ from sqlalchemy import and_, or_
 
 from lib import sql_tool, param_tool
 from lib.JsonResult import JsonResult
-from lib.models import *
+from dao.models import *
 from dao.base_model import SysUser
 from lib.my_synchronized import synchronized
 from lib.oauth2 import require_oauth
@@ -119,7 +119,7 @@ def get_next_items(project_id):
         q = q.filter(MarkProjectItem.project_id == project_id)
     item = q.order_by(MarkProjectItem.asr_txt.desc()
                       ).order_by(MarkProjectItem.id).first()
-    logger.warn("-----------next_item:%s" % str(q))
+    logger.warning("-----------next_item:%s" % str(q))
     # if True:
     #     raise RuntimeError("next_item sql : %s"%str(q) )
     # 更新标注状态

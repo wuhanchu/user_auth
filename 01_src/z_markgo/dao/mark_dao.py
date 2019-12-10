@@ -1,8 +1,8 @@
-from lib.models import *
+from dao.models import *
 from lib import JsonResult
 import logging,json
 from webapi import app
-from lib.model_oauth import *
+from dao.model_oauth import *
 
 logger = logging.getLogger('flask.app')
 # 判断项目下是否有标注数据

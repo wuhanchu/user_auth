@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from flask import request
-from lib.models import *
+from dao.models import *
 from lib.JsonResult import JsonResult
 from lib import sql_tool, param_tool
 from webapi import markRoute, app

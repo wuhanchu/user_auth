@@ -92,8 +92,8 @@ def del_users(id):
     "删除用户"
     obj = SysUser.query.get(id)
     db.session.delete(obj)
-    # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
-    # db.session.execute(sql)
+    sql = """ delete from sys_user_role where user_id ='%s' """ % id
+    db.session.execute(sql)
     db.session.commit()
     return JsonResult.success("删除成功！", {"id": id})
 

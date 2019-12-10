@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from flask import request
-from lib.models import AiService,db
+from dao.models import AiService,db
 from lib.JsonResult import JsonResult
 from lib import com_tool, sql_tool, param_tool
 from webapi import baseRoute

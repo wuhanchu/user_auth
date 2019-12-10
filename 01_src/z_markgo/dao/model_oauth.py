@@ -1,5 +1,5 @@
 import time
-from lib.models import db
+from dao.models import db
 
 from authlib.flask.oauth2.sqla import (
     OAuth2ClientMixin,

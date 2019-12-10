@@ -1,11 +1,10 @@
-from flask import Blueprint, request, session
-from flask import render_template, redirect, jsonify
+from flask import request, session
+from flask import render_template, redirect
 from werkzeug.security import gen_salt
 from authlib.flask.oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
-from lib.models import db
 from dao.base_model import *
-from lib.model_oauth import OAuth2Client
+from dao.model_oauth import OAuth2Client
 from lib.oauth2 import authorization, require_oauth
 from lib.JsonResult import JsonResult
 from lib import JsonResult as js

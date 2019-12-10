@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 from flask import request, send_file
-from lib.models import *
+from dao.models import *
 from lib.JsonResult import JsonResult
 from lib import com_tool, sql_tool, busi_tool, param_tool
 from webapi import markRoute

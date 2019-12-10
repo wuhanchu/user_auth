@@ -1,6 +1,6 @@
 from lib import JsonResult as js
 from webapi import app
-from lib.models import db
+from dao.models import db
 
 permission_map = None
 # 判断权限

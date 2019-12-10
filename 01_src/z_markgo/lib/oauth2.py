@@ -5,14 +5,12 @@ from authlib.flask.oauth2.sqla import (
     create_query_client_func,
     create_save_token_func,
     create_revocation_endpoint,
-    create_bearer_token_validator,
 )
 from authlib.oauth2.rfc6749 import grants
-from authlib.oauth2 import OAuth2Error
 from authlib.oauth2.rfc6750 import BearerTokenValidator
 from werkzeug.security import gen_salt
-from lib.models import db
-from lib.model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
+from dao.models import db
+from dao.model_oauth import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 from dao.base_model import SysUser
 from flask import request as _req
 
