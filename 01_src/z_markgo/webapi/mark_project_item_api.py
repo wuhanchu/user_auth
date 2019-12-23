@@ -121,7 +121,7 @@ def project_items_upload():
             if ext != ".wav" and ext != ".WAV":
                 item.filepath = item.filepath + ".wav"
                 wav_filepath = filepath + ".wav"
-                ffmpeg_tool.ffmpeg(filepath, wav_filepath)
+                ffmpeg_tool.ffmpeg(filepath, wav_filepath,ar=project.frame_rate*1000)
                 os.remove(filepath)  # 删除旧文件
                 filepath = wav_filepath
         db.session.add(item)
@@ -208,7 +208,7 @@ def project_items_delete_batch():
     db.session.commit()
     return JsonResult.success("批量删除成功！")
 
-
+#批量asr转写
 @markRoute.route('/project_items/item_asr/<project_id>', methods=['GET'])
 def call_project_asr(project_id):
     project = MarkProject.query.get(project_id)
