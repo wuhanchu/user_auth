@@ -12,7 +12,7 @@ ffmpeg_tmp = os.path.join(tempfile._get_default_tempdir(), "ffmpeg_tmp.log")
 # -y 覆盖
 # 参数说明
 def ffmpeg(input_path,output_path,f="wav", ar=16000 ,ac=1):
-    cmd = "ffmpeg -y -i %s -f %s -ar %s -ac %s %s > %s 2>&1 "  % (input_path, f, ar,ac, output_path,ffmpeg_tmp)
+    cmd = """ffmpeg -y -i "%s" -f %s -ar %s -ac %s "%s" > %s 2>&1 """  % (input_path, f, ar,ac, output_path,ffmpeg_tmp)
     print('执行ffmpeg命令：%s'%cmd)
     res = (os.system(cmd) == 0)
     if res == False :
