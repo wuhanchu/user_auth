@@ -1,6 +1,6 @@
 
 from flask import request
-from dao.models import *
+from dao.model_user import *
 from lib.JsonResult import JsonResult
 from lib import param_tool
 from webapi import baseRoute
