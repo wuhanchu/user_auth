@@ -54,7 +54,7 @@ def add_user():
         db.session.commit()
     except Exception:
         print("hi")
-        return JsonResult.error("创建失败，用户名重复！", {"loginid": loginid})
+        return JsonResult.error("创建失败，用户名重复！", {"loginid": obj.loginid})
 
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
