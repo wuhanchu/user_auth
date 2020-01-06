@@ -130,8 +130,6 @@ def project_items_upload():
     return JsonResult.success("导入音频成功！总条数%s" % len(item_paths))
 
 # 更新
-
-
 @markRoute.route('/project_items/<id>', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def project_items_update(id):
@@ -160,7 +158,10 @@ def project_items_update(id):
                                             "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT}, ensure_ascii=False)
     elif "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'):
         # 数据异常
+        logger.info("重分配!")
         obj.status = args["status"]
+        if"inspection_status" in args.keys():
+            obj.inspection_status = args["inspection_status"]
         if "remark" in args.keys():
             obj.remark = args["remark"]
     else:
