@@ -69,7 +69,7 @@ FROM (
                     sum(CASE
                             WHEN to_days(pi.mark_time) = to_days(CURDATE()) AND STATUS = 2 THEN 1
                             ELSE 0 END)                                               mark_today,
-                    sum(CASE WHEN pi.inspection_status IS NOT NULL THEN 1 ELSE 0 END) inspection_sum,
+                    sum(CASE WHEN pi.inspection_status = 2 or pi.inspection_status=3 THEN 1 ELSE 0 END) inspection_sum,
                     sum(CASE WHEN pi.inspection_status = 3 THEN 1 ELSE 0 END)         inspection_fail_sum
              FROM mark_project_items pi
                       left JOIN mark_project_user pu ON pi.user_id = pu.user_id
