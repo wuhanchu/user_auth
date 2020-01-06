@@ -45,6 +45,7 @@ class MarkProjectItem(Base):
     mark_txt = Column(Text)
     user_id = Column(ForeignKey('sys_user.id'), index=True)
     inspection_status = Column(INTEGER(1), server_default=text("'0'"))
+    upload_time = Column(DateTime)
     mark_time = Column(DateTime)
     assigned_time = Column(DateTime)
     inspection_time = Column(DateTime)
