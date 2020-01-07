@@ -15,7 +15,7 @@ echo "代码混淆结束！"
 
 echo "开始代码编译！"
 #选择python编译器版本
-python3 -m compileall .
+python36 -m compileall .
 for file in $(find . -name '*.pyc');
 do
     mv $file $(echo $file | sed 's/\.cpython-36//g'| sed 's/__pycache__\///g');
