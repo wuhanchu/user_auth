@@ -15,5 +15,6 @@ echo "删除运行中的容器"
 docker stop $APP_NAME || echo "未发现旧容器"
 docker rm $APP_NAME || echo "未发现旧容器"
 echo "启动新容器"
+echo "docker run -d -p 5002:5002 --name $APP_NAME -e SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@192.168.1.150:3306/$APP_NAME?charset=utf8' -v ~/tmp/$APP_NAME_items:/opt/$APP_NAME_items $APP_NAME:${VERSION}"
 docker run -d -p 5002:5002 --name $APP_NAME -e SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:root@192.168.1.150:3306/$APP_NAME?charset=utf8' -v ~/tmp/$APP_NAME_items:/opt/$APP_NAME_items $APP_NAME:${VERSION}
 
