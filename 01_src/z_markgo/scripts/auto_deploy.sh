@@ -2,7 +2,7 @@ set -e
 git pull
 #自动编译
 echo "自动编译"
-./scripts/compileall.sh
+sh ./scripts/compileall.sh
 echo "删除运行中的容器"
 docker stop z_markgo
 docker rm z_markgo
