@@ -7,7 +7,7 @@ cp -r ../z_markgo ../z_markgo_cp
 cd ../z_markgo_cp
 echo "复制代码成功！"
 echo "开始代码混淆！"
-python ./scripts/obscure.py
+python36 ./scripts/obscure.py
 echo "代码混淆结束！"
 
 echo "开始代码编译！"
