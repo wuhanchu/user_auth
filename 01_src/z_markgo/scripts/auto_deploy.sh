@@ -10,7 +10,7 @@ echo "更新git代码"
 git pull
 #自动编译
 echo "自动编译"
-sh compileall.sh ${APP_NAME}
+sh compileall.sh ${APP_NAME} ${VERSION}
 echo "删除运行中的容器"
 docker stop $APP_NAME || echo "未发现旧容器"
 docker rm $APP_NAME || echo "未发现旧容器"
