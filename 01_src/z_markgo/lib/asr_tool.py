@@ -3,9 +3,9 @@ import requests
 import config
 import json
 import os
-from lib import com_tool
+from base.lib import com_tool
 from requests_toolbelt import MultipartEncoder
-from webapi import app
+from base.webapi import app
 
 userid = "13811002233"
 token = "12345678"

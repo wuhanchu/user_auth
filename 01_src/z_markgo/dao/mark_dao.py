@@ -1,8 +1,8 @@
 from dao.models import *
-from lib import JsonResult
+from base.lib import JsonResult
 import logging,json
-from webapi import app
-from dao.model_oauth import *
+from base.webapi import app
+from base.dao.model_oauth import *
 
 logger = logging.getLogger('flask.app')
 # 判断项目下是否有标注数据
@@ -43,7 +43,7 @@ def get_all_asr_items():
 def update_asr_txt(res):
     logger.debug("调用asr结果到数据库" )
     if not res or not res._result[0] or not res._result[1]:
-        logger.error("asr写入失败：%s"%json.dumps(res))
+        logger.error("asr写入失败：%s"%str(res))
         return
     with app.app_context():
         logger.debug("更新asr结果到数据库，item_id:%s,asr_txt:%s" %(res._result[0],res._result[1]))

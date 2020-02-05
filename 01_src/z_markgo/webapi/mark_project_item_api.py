@@ -2,17 +2,19 @@
 
 from flask import request, send_file
 from dao.models import *
-from lib.JsonResult import JsonResult
-from lib import sql_tool, busi_tool, com_tool, ffmpeg_tool, param_tool
-from lib.dk_thread_pool import dk_thread_pool
-from webapi import markRoute, app
+from base.lib.JsonResult import JsonResult
+from base.lib import sql_tool, com_tool, ffmpeg_tool, param_tool
+from base.lib.dk_thread_pool import dk_thread_pool
+from lib import busi_tool
+from webapi import markRoute
+from base.webapi import app
 from dao import mark_dao
-from dao.model_user import SysUser
+from base.dao.base_model import SysUser
 import os
 import logging
 import json
 from sqlalchemy.orm import aliased
-from lib.oauth2 import require_oauth
+from base.lib.oauth2 import require_oauth
 from authlib.flask.oauth2 import current_token
 
 logger = logging.getLogger('flask.app')

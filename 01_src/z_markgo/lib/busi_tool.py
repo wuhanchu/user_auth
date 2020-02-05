@@ -4,8 +4,8 @@ import logging
 import os
 import shutil
 
-from lib import asr_tool, wav_tool, com_tool, txt_compare
-
+from lib import asr_tool, wav_tool, txt_compare
+from base.lib import com_tool
 logger = logging.getLogger('flask.app')
 
 

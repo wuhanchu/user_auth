@@ -4,10 +4,10 @@ from flask import request
 import re
 
 from lib import txt_compare
-from webapi import baseRoute
-from lib.oauth2 import require_oauth
+from base.webapi import baseRoute
+from base.lib.oauth2 import require_oauth
 
-from lib.JsonResult import JsonResult
+from base.lib.JsonResult import JsonResult
 
 
 @baseRoute.route('/tools/report', methods=['POST'])

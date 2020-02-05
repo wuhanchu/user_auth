@@ -5,12 +5,12 @@ from authlib.flask.oauth2 import current_token
 from flask import request
 from sqlalchemy import and_, or_
 
-from lib import sql_tool, param_tool
-from lib.JsonResult import JsonResult
+from base.lib import sql_tool, param_tool
+from base.lib.JsonResult import JsonResult
 from dao.models import *
-from dao.model_user import SysUser
-from lib.my_synchronized import synchronized
-from lib.oauth2 import require_oauth
+from base.dao.base_model import SysUser
+from base.lib.my_synchronized import synchronized
+from base.lib.oauth2 import require_oauth
 from webapi import markRoute
 
 logger = logging.getLogger('flask.app')

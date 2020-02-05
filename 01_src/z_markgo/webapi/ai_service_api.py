@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 from flask import request
 from dao.models import AiService,db
-from lib.JsonResult import JsonResult
-from lib import com_tool, sql_tool, param_tool
-from webapi import baseRoute
-from lib.oauth2 import require_oauth
+from base.lib.JsonResult import JsonResult
+from base.lib import com_tool, sql_tool, param_tool
+from base.webapi import baseRoute
+from base.lib.oauth2 import require_oauth
 
 # 列表
 @baseRoute.route('/aiservices', methods=['GET'])

@@ -1,13 +1,17 @@
-import datetime,os
+import os
 from config import config
-from flask import render_template
-from webapi import app, DEFAULT_MODULES, mark_project_api, tools_api, ai_service_api, \
+from flask import request
+from base.lib.busi_exception import BusiError
+from webapi import mark_project_api, tools_api, ai_service_api, \
     mark_project_item_api, mark_project_user_api, mark_user_items_api
-from webapi.base import base_user_api,base_menu_api,base_permission_api,base_permission_menu_api,\
+from base.webapi import app, DEFAULT_MODULES,base_user_api,base_menu_api,base_permission_api,base_permission_menu_api,\
     base_role_api,oauth2_server_api,register_api,permission_group_api
 from dao.models import db
-from lib.oauth2 import config_oauth
+from base.lib.oauth2 import config_oauth
 from flask_apscheduler import APScheduler
+from authlib.flask.error import _HTTPException
+import logging,traceback,json
+logger = logging.getLogger('flask.app')
 # 加载配置文件
 os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -16,10 +20,30 @@ def init_config(config_name):
     config[config_name].init_app(app)
     return app
 
+@app.errorhandler(404)
+def page_not_found(error):
+    logger.error("url:%s,%s"%(request.base_url,error.description))
+    return "url:%s,%s"%(request.base_url,error.description)
+
+# 全局异常处理
+@app.errorhandler(Exception)
+def exception_handle(error):
+    logger.exception(error)
+    if isinstance(error,BusiError):
+        return error
+    else:
+        if isinstance(error,_HTTPException):
+            if error.code == 401 or error.code == 403:
+                body = json.loads(error.body)
+                return BusiError(body["error"], code=error.code)
+            else:
+                return BusiError(error.body, code=error.code)
+        else:
+            return BusiError(error.__str__(),traceback=traceback.format_exc())
 
 @app.route('/', methods=['GET'])
 def index():
-    return app.send_static_file('index.html')
+    return "markgo is running"
 
 
 # @app.errorhandler(404)

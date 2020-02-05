@@ -2,11 +2,12 @@
 import os
 from flask import request, send_file
 from dao.models import *
-from lib.JsonResult import JsonResult
-from lib import com_tool, sql_tool, busi_tool, param_tool
+from base.lib.JsonResult import JsonResult
+from base.lib import com_tool, sql_tool, param_tool
+from lib import busi_tool
 from webapi import markRoute
 from dao import mark_dao
-from lib.oauth2 import require_oauth
+from base.lib.oauth2 import require_oauth
 
 
 item_root_path = busi_tool.get_item_root_path()

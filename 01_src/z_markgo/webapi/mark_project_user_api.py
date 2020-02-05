@@ -1,11 +1,12 @@
 # -*- coding:utf-8 -*-
 from flask import request
 from dao.models import *
-from lib.JsonResult import JsonResult
-from lib import sql_tool, param_tool
-from webapi import markRoute, app
+from base.lib.JsonResult import JsonResult
+from base.lib import sql_tool, param_tool
+from webapi import markRoute
+from base.webapi import app
 from dao import mark_dao
-from lib.oauth2 import require_oauth
+from base.lib.oauth2 import require_oauth
 
 
 # 批量添加员工，支持直接把项目中的人员名单覆盖
