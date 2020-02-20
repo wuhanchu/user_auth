@@ -140,7 +140,16 @@ def project_items_update(id):
         return JsonResult.error("对象不存在，id=%s" % id)
     args = request.get_json()
     # 将参数加载进去
-    if "mark_txt" in args.keys():
+    if "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'):
+        # 数据异常
+        logger.info("重分配!")
+        param_tool.set_dict_parm(obj, args)
+        obj.status = args["status"]
+        if"inspection_status" in args.keys():
+            obj.inspection_status = args["inspection_status"]
+        if "remark" in args.keys():
+            obj.remark = args["remark"]
+    elif "mark_txt" in args.keys():
         obj.mark_time = param_tool.get_curr_time()
         obj.user_id = current_token.user.id
         obj.mark_txt = args["mark_txt"]
@@ -158,14 +167,6 @@ def project_items_update(id):
             obj.inspection_status = 3
         obj.inspection_result = json.dumps({"accuracy": accuracy, "op": op, "op2": op2, "s1": s1, "s2": s2, "I_COUNT_PCT": I_COUNT_PCT,
                                             "D_COUNT_PCT": D_COUNT_PCT, "S_COUNT_PCT": S_COUNT_PCT}, ensure_ascii=False)
-    elif "status" in args.keys() and (args["status"] == '-1' or args["status"] == '0'):
-        # 数据异常
-        logger.info("重分配!")
-        obj.status = args["status"]
-        if"inspection_status" in args.keys():
-            obj.inspection_status = args["inspection_status"]
-        if "remark" in args.keys():
-            obj.remark = args["remark"]
     else:
         return JsonResult.success("参数错误！")
 

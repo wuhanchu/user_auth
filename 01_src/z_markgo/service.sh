@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-APP_NAME=z_markgo.py
+APP_NAME=app.py
 
 MYSQL_PWD=$2
 
