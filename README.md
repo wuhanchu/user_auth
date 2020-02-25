@@ -1,37 +1,17 @@
-# z_markgo
+# 项目标注狗
 
-#### 介绍
-语音标注平台
-
-#### 软件架构
-软件架构说明
-
-
-#### 安装教程
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 使用说明
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+## 环境要求
+	操作系统：linux/windows
+	数据库：mysql5.6+
+	依赖程序：
+		python3.6+及相关扩展包(requirements.txt)
+		ffmpeg(需能在命令行下直接执行ffmpeg命令，该程序主要用于音频转码)
+	
+## 框架说明：
+1. config.py 数据库，日志等相关配置信息
+2. webapi目录：接口相关文件所在目录，
+3. webapi/__init__.py: 所有接口的路径应以/api/v*/ 为前缀，所以接口的写法应通过__init__.py中定义的Blueprint的路由进行访问，可自己新增Blueprint定义
+4. lib/models.py :orm模型文件（可以通过sqlacodegen自动生成models文件）
+5. lib/JsonResult.py : 标准的返回格式，所有接口的返回都通过这个处理方法。
 
 
-#### 码云特技
-
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)

@@ -7,3 +7,6 @@
 *.bak
 01_src/z_markgo/license
 *.lic
+Dockerfile
+logs/
+service.sh
