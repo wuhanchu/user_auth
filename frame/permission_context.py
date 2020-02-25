@@ -1,4 +1,4 @@
-from extension.db import db
+from extension.database import db
 from frame import JsonResult as js
 
 permission_map = None

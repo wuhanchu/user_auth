@@ -5,7 +5,7 @@ from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.dialects.postgresql import INET
 from sqlalchemy.orm import relationship, foreign, remote
 
-from extension.db import db, BaseModel, db_schema
+from extension.database import db, BaseModel, db_schema
 from module.permission.model import PermissionScope, Permission
 
 

@@ -6,7 +6,7 @@ from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
 from werkzeug.security import gen_salt
 
-from extension.db import db
+from extension.database import db
 from frame import com_tool, permission_context, JsonResult as js
 from frame.busi_exception import BusiError
 from module.user.model import SysUser

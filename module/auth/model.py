@@ -6,7 +6,7 @@ from sqlalchemy import Column
 from sqlalchemy.orm import foreign
 from werkzeug.utils import cached_property
 
-from extension.db import db, BaseModel, db_schema
+from extension.database import db, BaseModel, db_schema
 from module.user.model import SysUser
 
 

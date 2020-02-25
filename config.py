@@ -21,9 +21,6 @@ class Config:
     LOG_FILE_MAX_BYTES = 100 * 1024 * 1024
     LOG_FILE_BACKUP_COUNT = 10  # 轮转数量是 10 个
 
-    # file
-    ITEM_FILE_SAVE_PATH = "./items"  # 音频文件存放路径
-
     # module
     ENABLED_MODULES = (
         'permission',

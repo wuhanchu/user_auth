@@ -1,4 +1,4 @@
-from extension.db import db, db_schema, BaseModel
+from extension.database import db, db_schema, BaseModel
 
 
 class PermissionScope(db.Model, BaseModel):
