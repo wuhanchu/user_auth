@@ -2,7 +2,7 @@
 import base64
 import os
 
-from authlib.flask.oauth2 import current_token
+from authlib.integrations.flask_oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
 from flask import render_template, redirect
 from flask import request, session

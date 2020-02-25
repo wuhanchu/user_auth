@@ -5,13 +5,13 @@ from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
 from sqlalchemy.dialects.postgresql import INET
 from sqlalchemy.orm import relationship, foreign, remote
 
-from extension.db import db
-from module.permission.model import SysPermissionGroup
+from extension.db import db, BaseModel, db_schema
+from module.permission.model import PermissionScope, Permission
 
-Base = db.Model
 
-class SysRole(Base):
-    __tablename__ = 'sys_role'
+class Role(BaseModel, db.Model):
+    __tablename__ = 'role'
+    __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
     id = Column(INTEGER(11), primary_key=True)
     name = Column(String(64))
@@ -22,8 +22,9 @@ class SysRole(Base):
     del_fg = Column(TINYINT(1))
 
 
-class SysUser(Base):
-    __tablename__ = 'sys_user'
+class SysUser(BaseModel, db.Model):
+    __tablename__ = 'user'
+    __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
     id = Column(INTEGER(11), primary_key=True)
     name = Column(String(32))
@@ -46,50 +47,41 @@ class SysUser(Base):
         return self.id
 
 
-class SysPermissionGroupRole(Base):
-    __tablename__ = 'sys_permission_group_role'
+class PermissionScopeRole(BaseModel, db.Model):
+    __tablename__ = 'role_permission_group'
+
+    id = Column(primary_key=True)
+    role_id = Column(ForeignKey(db_schema + '.role.id'), index=True)
+    permission_group_key = Column(ForeignKey(db_schema + '.permission_group.key'), index=True)
+
+    permission_group = relationship(PermissionScope,
+                                    primaryjoin=remote(PermissionScope.key) == foreign(permission_group_key))
+    role = relationship('Role',
+                        primaryjoin=remote(Role.id) == cast(foreign(role_id), INET))
+
+
+class PermissionScopeRetail(db.Model, BaseModel):
+    __tablename__ = 'permission_group_detail'
+    __table_args__ = {'extend_existing': True, 'schema': db_schema}
 
     id = Column(INTEGER(11), primary_key=True)
-    role_id = Column(ForeignKey('sys_role.id'), index=True)
-    permission_group_id = Column(ForeignKey('sys_permission_group.id'), index=True)
+    permission_key = Column(ForeignKey(db_schema + '.permission.key'), index=True)
+    permission_scope_key = Column(ForeignKey(db_schema + '.permission_scope.key'), index=True)
 
-    permission_group = relationship('SysPermissionGroup',
-                                    primaryjoin=remote(SysPermissionGroup.id) == cast(foreign(permission_group_id),
-                                                                                      INET))
-    role = relationship('SysRole',
-                        primaryjoin=remote(SysRole.id) == cast(foreign(role_id), INET))
-
-
-class SysPermissionMenu(Base):
-    __tablename__ = 'sys_permission_menu'
-
-    id = Column(INTEGER(11), primary_key=True)
-    menu_id = Column(ForeignKey('sys_menu.id'), index=True)
-    permission_id = Column(ForeignKey('sys_permission.id'), index=True)
-
-    menu = relationship('SysMenu')
-    permission = relationship('SysPermission')
+    permission_scope = relationship(PermissionScope,
+                                    primaryjoin=PermissionScope.key == foreign(permission_scope_key))
+    permission = relationship(Permission,
+                              primaryjoin=remote(Permission.key) == foreign(permission_key))
 
 
-class SysPermissionGroupRel(Base):
-    __tablename__ = 'sys_permission_group_rel'
+class SysUserRole(BaseModel, db.Model):
+    __tablename__ = 'user_role'
 
     id = Column(INTEGER(11), primary_key=True)
-    permission_id = Column(ForeignKey('sys_permission.id'), index=True)
-    permission_group_id = Column(ForeignKey('sys_permission_group.id'), index=True)
+    user_id = Column(ForeignKey('user.id'), index=True)
+    role_id = Column(ForeignKey('role.id'), index=True)
 
-    permission_group = relationship('SysPermissionGroup')
-    permission = relationship('SysPermission')
-
-
-class SysUserRole(Base):
-    __tablename__ = 'sys_user_role'
-
-    id = Column(INTEGER(11), primary_key=True)
-    user_id = Column(ForeignKey('sys_user.id'), index=True)
-    role_id = Column(ForeignKey('sys_role.id'), index=True)
-
-    role = relationship('SysRole',
-                        primaryjoin=remote(SysRole.id) == cast(foreign(role_id), INET))
+    role = relationship('Role',
+                        primaryjoin=remote(Role.id) == cast(foreign(role_id), INET))
     user = relationship('SysUser',
                         primaryjoin=remote(SysUser.id) == cast(foreign(user_id), INET))

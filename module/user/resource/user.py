@@ -2,15 +2,15 @@
 from flask import request
 from sqlalchemy import func
 
-from webapi import blueprint_base
-from model.base_model import *
 from frame import sql_tool, com_tool, param_tool
 from frame.JsonResult import JsonResult
 from module.auth.extension.oauth2 import require_oauth
+from .. import blueprint
+from ..model import *
 
 
 # 用户列表
-@blueprint_base.route('/users', methods=['GET'])
+@blueprint.route('/users', methods=['GET'])
 @require_oauth('profile')
 def user_list():
     q = db.session.query(SysUser.id, func.max(SysUser.name).label("name"),
@@ -33,14 +33,14 @@ def user_list():
 
 
 # 详细用户信息
-@blueprint_base.route('/users/<id>', methods=['GET'])
+@blueprint.route('/users/<id>', methods=['GET'])
 @require_oauth('profile')
 def get_user(id):
     obj = SysUser.query.get(id)
     return JsonResult.queryResult(obj)
 
 
-@blueprint_base.route('/users', methods=['POST'])
+@blueprint.route('/users', methods=['POST'])
 @require_oauth('profile')
 def add_user():
     obj = SysUser()
@@ -60,7 +60,7 @@ def add_user():
 
 
 # PUT:全部字段 ；PATCH:部分字段
-@blueprint_base.route('/users/<id>', methods=['PUT', 'PATCH'])
+@blueprint.route('/users/<id>', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user(id):
     obj = SysUser.query.get(id)
@@ -76,7 +76,7 @@ def update_user(id):
 
 
 # 修改密码
-@blueprint_base.route('/users/<id>/password', methods=['PUT', 'PATCH'])
+@blueprint.route('/users/<id>/password', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user_password(id):
     obj = SysUser.query.get(id)
@@ -95,7 +95,7 @@ def update_user_password(id):
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint_base.route('/users/<id>', methods=['DELETE'])
+@blueprint.route('/users/<id>', methods=['DELETE'])
 @require_oauth('profile')
 def del_users(id):
     "删除用户"

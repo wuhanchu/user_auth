@@ -9,6 +9,7 @@ class Config:
     SSL_DISABLE = False
 
     # database
+    DB_SCHEMA = "user_auth"
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -25,9 +26,9 @@ class Config:
 
     # module
     ENABLED_MODULES = (
-        'auth',
         'permission',
         'user',
+        'auth',
     )
 
     # schedule jobs

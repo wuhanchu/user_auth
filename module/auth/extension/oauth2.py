@@ -1,9 +1,6 @@
-from authlib.flask.oauth2 import AuthorizationServer, ResourceProtector
-from authlib.flask.oauth2.sqla import (
-    create_query_client_func,
-    create_save_token_func,
-    create_revocation_endpoint,
-)
+from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector
+from authlib.integrations.sqla_oauth2 import create_query_client_func, create_save_token_func, \
+    create_revocation_endpoint
 from authlib.oauth2.rfc6749 import grants
 from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
