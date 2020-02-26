@@ -5,15 +5,21 @@ from flask import request
 
 from frame import sql_tool, permission_context, param_tool
 from frame.JsonResult import JsonResult
+from frame.extension.database import db
 from module.auth.extension.oauth2 import require_oauth
-from .. import blueprint
-from ..model import *
+from module.permission.model import Permission, PermissionScopeRetail, PermissionScope
+from module.role.model import Role, RolePermissionScope
+from . import blueprint
 
 
 # 角色列表
-@blueprint.route('/role', methods=['GET'])
+@blueprint.route('', methods=['GET'])
 @require_oauth('profile')
 def role_list():
+    id = request.args.get("id")
+    if id:
+        return get_role(id)
+
     q = Role.query
     name = request.args.get("name")
     if name is not None:
@@ -28,15 +34,17 @@ def role_list():
     return JsonResult.res_page(res, total)
 
 
-# 详细角色信息
-@blueprint.route('/role/<id>', methods=['GET'])
-@require_oauth('profile')
 def get_role(id):
+    """
+    # 详细角色信息
+    :param id:
+    :return:
+    """
     obj = Role.query.get(id)
     return JsonResult.queryResult(obj)
 
 
-@blueprint.route('/role', methods=['POST'])
+@blueprint.route('', methods=['POST'])
 @require_oauth('profile')
 def add_role():
     obj = Role()
@@ -50,9 +58,10 @@ def add_role():
 
 
 # PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('/role/<id>', methods=['PUT'])
+@blueprint.route('', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
-def update_role(id):
+def update_role():
+    id = request.args.get("id")
     obj = Role.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -65,10 +74,15 @@ def update_role(id):
     return JsonResult.success("更新成功！", {"id": obj.id})
 
 
-@blueprint.route('/role/<id>', methods=['DELETE'])
+@blueprint.route('', methods=['DELETE'])
 @require_oauth('profile')
-def del_role(id):
-    "删除角色"
+def del_role():
+    """
+    删除角色
+    :param id:
+    :return:
+    """
+    id = request.args.get("id")
     obj = Role.query.get(id)
     db.session.delete(obj)
     # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
@@ -77,54 +91,51 @@ def del_role(id):
     return JsonResult.success("删除成功！", {"id": id})
 
 
-@blueprint.route('/user_roles/<user_id>', methods=['GET'])
+@blueprint.route('/permission', methods=['GET'])
 @require_oauth('profile')
-def user_roles_list(user_id):
-    list = Role.query.join(SysUserRole, SysUserRole.role_id == Role.id).filter(
-        SysUserRole.user_id == user_id).all()
-    return JsonResult.queryResult(list)
-
-
-
-
-
-@blueprint.route('/role_permissions/<role_id>', methods=['GET'])
-@require_oauth('profile')
-def role_permissions_list(role_id):
-    q = Permission.query.join(PermissionScopeRetail, PermissionScopeRetail.permission_id == Permission.id) \
-        .join(PermissionScopeRole,
-              PermissionScopeRole.permission_group_id == PermissionScopeRetail.permission_group_id) \
-        .filter(PermissionScopeRole.role_id == role_id)
+def role_permissions_list():
+    role_id = request.args.get("role_id")
+    q = Permission.query.join(PermissionScopeRetail, PermissionScopeRetail.permission_key == Permission.key) \
+        .join(RolePermissionScope,
+              RolePermissionScope.permission_scope_key == PermissionScopeRetail.permission_scope_key) \
+        .filter(RolePermissionScope.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
 
 
-@blueprint.route('/role_permission_groups/<role_id>', methods=['GET'])
+@blueprint.route('/permission_scope', methods=['GET'])
 @require_oauth('profile')
-def role_permission_groups_list(role_id):
-    q = PermissionScope.query.join(PermissionScopeRole,
-                                   PermissionScopeRole.permission_group_id == PermissionScope.id) \
-        .filter(PermissionScopeRole.role_id == role_id)
+def role_permission_scopes_list():
+    role_id = request.args.get("role_id")
+
+    q = PermissionScope.query.join(RolePermissionScope,
+                                   RolePermissionScope.permission_scope_key == PermissionScope.id) \
+        .filter(RolePermissionScope.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
 
 
-@blueprint.route('/role_permission_groups/<role_id>', methods=['PUT'])
-# @require_oauth('profile')
-def update_role_permission_groups(role_id):
+@blueprint.route('/permission_scope', methods=['PUT'])
+def update_role_permission_scopes():
+    role_id = request.args.get("role_id")
+
     args = request.get_json()
-    role_permission_group_ids = args.get("role_permission_group_ids")
-    role_permission_groups = PermissionScopeRole.query.filter(PermissionScopeRole.role_id == role_id).all()
-    for permission_group_id in role_permission_group_ids:
+    role_permission_scope_keys = args.get("role_permission_scope_keys")
+    role_permission_scopes = RolePermissionScope.query.filter(RolePermissionScope.role_id == role_id).all()
+    for permission_scope_key in role_permission_scope_keys:
         # 判断数据库中是否已经存在该用户
-        selected = [pr for pr in role_permission_groups if pr.permission_group_id == permission_group_id]
+        selected = [pr for pr in role_permission_scopes if pr.permission_scope_key == permission_scope_key]
         if len(selected) == 0:
-            role_permission_group = PermissionScopeRole(role_id=role_id, permission_group_id=permission_group_id)
-            db.session.add(role_permission_group)
+            role_permission_scope = RolePermissionScope(role_id=role_id, permission_scope_key=permission_scope_key)
+            db.session.add(role_permission_scope)
         else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
-            role_permission_groups.remove(selected[0])
+            role_permission_scopes.remove(selected[0])
     # 删除已经不存在的数据
-    [db.session.delete(role_permission_group) for role_permission_group in role_permission_groups]
+    [db.session.delete(role_permission_scope) for role_permission_scope in role_permission_scopes]
     db.session.commit()
     permission_context.load_permission()
     return JsonResult.success("更新角色权限成功！")
+
+
+def init_app(app, **kwargs):
+    app.register_blueprint(blueprint)

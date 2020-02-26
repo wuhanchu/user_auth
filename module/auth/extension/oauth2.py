@@ -6,9 +6,9 @@ from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
 from werkzeug.security import gen_salt
 
-from extension.database import db
 from frame import com_tool, permission_context, JsonResult as js
 from frame.busi_exception import BusiError
+from frame.extension.database import db, db_schema
 from module.user.model import SysUser
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 
@@ -88,7 +88,7 @@ class _BearerTokenValidator(BearerTokenValidator):
         return token
 
     def get_usr_roles(self, user_id):
-        sql = "select role_id from sys_user_role where user_id =%s " % (user_id)
+        sql = "select role_id from %s.user_role where user_id =%s " % (db_schema, user_id)
         res = db.session.execute(sql).fetchall()
         role_list = js.queryToDict(res)
         role_list = [str(role['role_id']) for role in role_list]

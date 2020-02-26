@@ -1,12 +1,14 @@
 # -*- coding:utf-8 -*-
-from flask import request
+from authlib.integrations.flask_oauth2 import current_token
+from flask import request, jsonify
 from sqlalchemy import func
 
+from frame import JsonResult as js
 from frame import sql_tool, com_tool, param_tool
 from frame.JsonResult import JsonResult
 from module.auth.extension.oauth2 import require_oauth
-from .. import blueprint
-from ..model import *
+from module.user.model import *
+from . import blueprint
 
 
 @blueprint.route('', methods=['GET'])
@@ -16,6 +18,10 @@ def user_list():
     用户列表
     :return:
     """
+    id = request.args.get("id")
+    if id:
+        return get_user(id)
+
     q = db.session.query(SysUser.id, func.max(SysUser.name).label("name"),
                          func.max(SysUser.loginid).label("loginid"), func.max(SysUser.telephone) \
                          .label("telephone"), func.max(SysUser.address).label("address"),
@@ -35,8 +41,6 @@ def user_list():
     return JsonResult.res_page(res, total)
 
 
-@blueprint.route('/<id>', methods=['GET'])
-@require_oauth('profile')
 def get_user(id):
     """
     详细用户信息
@@ -70,34 +74,16 @@ def add_user():
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
 
-@blueprint.route('/<id>', methods=['PUT', 'PATCH'])
+@blueprint.route('/password', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
-def update_user(id):
-    """
-     PUT:全部字段 ；PATCH:部分字段
-    :param id:
-    :return:
-    """
-    obj = SysUser.query.get(id)
-    if obj is None:
-        return JsonResult.error("对象不存在，id=%s" % id)
-    args = request.get_json()
-    if "password" in args:
-        args.pop("password")
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    db.session.commit()
-    return JsonResult.success("更新成功！", {"id": obj.id})
-
-
-@blueprint.route('/<id>/password', methods=['PUT', 'PATCH'])
-@require_oauth('profile')
-def update_user_password(id):
+def update_user_password():
     """
     # 修改密码
     :param id:
     :return:
     """
+    id = request.args.get("id")
+
     obj = SysUser.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -114,12 +100,13 @@ def update_user_password(id):
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/user_roles', methods=['PUT'])
+@blueprint.route('/roles', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user_roles():
     data = request.get_json()
     user_id = request.args.get("id")
     role_ids = data.get("role_ids")
+
     user_roles = SysUserRole.query.filter(SysUserRole.user_id == user_id).all()
     for role_id in role_ids:
         # 判断数据库中是否已经存在该用户
@@ -133,3 +120,50 @@ def update_user_roles():
     [db.session.delete(user_role) for user_role in user_roles]
     db.session.commit()
     return JsonResult.success("更新用户角色成功！")
+
+
+@blueprint.route('/role', methods=['GET'])
+@require_oauth('profile')
+def user_roles_list():
+    user_id = request.args.get("user_id")
+
+    list = Role.query.join(SysUserRole, SysUserRole.role_id == Role.id).filter(
+        SysUserRole.user_id == user_id).all()
+    return JsonResult.queryResult(list)
+
+
+@blueprint.route('/current', methods=['GET'])
+@require_oauth('profile')
+def current_user():
+    if current_token:
+        user = current_token.user
+        user = js.queryToDict(user)
+        user.pop("password")
+        user.pop("del_fg")
+        user.pop("token")
+        sql = f"""
+            SET search_path to {db_schema};
+            select p.name,p.url,p.method,p.key ,string_agg(cast(r.id as text),',') as role_id,string_agg(r.name,',') as role_name from permission p 
+                join permission_scope_detail rel on rel.permission_key = p.key
+								join role_permission_scope gr on gr.permission_scope_key = rel.permission_scope_key
+								-- join permission_role pr on p.id = pr.permission_key 
+                join role r on r.id = gr.role_id
+                join user_role ur on r.id = ur.role_id
+            where ur.user_id = '%s'
+            group by p.name,p.url,p.method,p.key
+        """ % user["id"]
+
+        res = db.session.execute(sql).fetchall()
+        user["permissions"] = js.queryToDict(res)
+        sql_group = f"""SET search_path to {db_schema};
+                select grp.name,grp.key from permission_scope grp 
+                    join role_permission_scope grole on grp.key = grole.permission_scope_key 
+                    join role r on r.id = grole.role_id
+                    join user_role ur on r.id = ur.role_id
+                where ur.user_id = '%s'
+                """ % user["id"]
+        res_group = db.session.execute(sql_group).fetchall()
+        user["permission_scopes"] = js.queryToDict(res_group)
+        return jsonify(user)
+    else:
+        return JsonResult.error()

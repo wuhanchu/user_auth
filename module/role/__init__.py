@@ -6,14 +6,9 @@ from flask import Blueprint
 
 from frame.py_utils import import_dir
 
-blueprint = Blueprint('auth', __name__, url_prefix='/auth')
+blueprint = Blueprint('role', __name__, url_prefix='/role')
 
 
 def init_app(app, **kwargs):
     import_dir(os.path.dirname(__file__), __name__)
-
-    # 加载oauth2认证模块
-    from .extension.oauth2 import config_oauth
-    config_oauth(app)
-
     app.register_blueprint(blueprint)

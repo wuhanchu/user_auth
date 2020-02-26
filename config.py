@@ -4,16 +4,20 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    # set enable
+    ENABLED_EXTENSION = ["loguru", "database", "postgrest"]
+
     # module
     ENABLED_MODULE = [
         'permission',
         'user',
+        'role',
         'auth',
+        'license'
     ]
 
-    SECRET_KEY = 'z_markgo'
-    OAUTH2_REFRESH_TOKEN_GENERATOR: True
-    SSL_DISABLE = False
+    # posrgrest
+    PROXY_SERVER_URL = "http://192.168.31.193:40014"
 
     # database
     DB_SCHEMA = "user_auth"
@@ -27,7 +31,6 @@ class Config:
     LOG_PATH_INFO = os.path.join(LOG_PATH, 'user_auth.log')
     LOG_FILE_MAX_BYTES = 100 * 1024 * 1024
     LOG_FILE_BACKUP_COUNT = 10  # 轮转数量是 10 个
-
 
     # schedule jobs
     JOBS = [
@@ -44,6 +47,12 @@ class Config:
         }
     ]
     # SCHEDULER_API_ENABLED = FALSE
+
+    # project
+
+    SECRET_KEY = 'z_markgo'
+    OAUTH2_REFRESH_TOKEN_GENERATOR: True
+    SSL_DISABLE = False
 
 
 class DevelopmentConfig(Config):

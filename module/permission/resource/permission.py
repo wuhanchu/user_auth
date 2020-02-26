@@ -10,10 +10,21 @@ from module.permission import blueprint
 from ..model import *
 
 
+# 详细权限信息
+def get_permission(id):
+    permission = Permission.query.get(id)
+    return JsonResult.queryResult(permission)
+
+
 @blueprint.route('', methods=['GET'])
 @require_oauth("profile")
 def permission_list():
     q = Permission.query
+
+    id = request.args.get("id")
+    if id:
+        return get_permission(id)
+
     name = request.args.get("name")
     if name is not None:
         q = q.filter(Permission.name.like("%" + name + "%"))
@@ -26,14 +37,6 @@ def permission_list():
     return JsonResult.page(page)
 
 
-# 详细权限信息
-@blueprint.route('/<id>', methods=['GET'])
-@require_oauth("profile")
-def get_permission(id):
-    permission = Permission.query.get(id)
-    return JsonResult.queryResult(permission)
-
-
 @blueprint.route('', methods=['POST'])
 @require_oauth("profile")
 def add_permission():
@@ -43,7 +46,7 @@ def add_permission():
     param_tool.set_dict_parm(obj, args)
     db.session.add(obj)
     db.session.commit()
-    return JsonResult.success("创建成功！", {"permission_id": obj.id})
+    return JsonResult.success("创建成功！", {"permission_key": obj.id})
 
 
 @blueprint.route('/<id>', methods=['PUT', 'PATCH'])
@@ -78,7 +81,7 @@ def permission_sql():
     str = ''
     is_exit = 0
     sql_list = []
-    sql = 'insert into sys_permission(url,method) select \'%s\' as url,\'%s\' as method from dual WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE url=\'%s\' and method=\'%s\' );\n'
+    sql = 'insert into permission(url,method) select \'%s\' as url,\'%s\' as method from dual WHERE NOT EXISTS (SELECT 1 FROM permission WHERE url=\'%s\' and method=\'%s\' );\n'
     rules = app.url_map.iter_rules()
     for rule in rules:
         for ele in rule.methods:
