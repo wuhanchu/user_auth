@@ -4,6 +4,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    # module
+    ENABLED_MODULE = [
+        'permission',
+        'user',
+        'auth',
+    ]
+
     SECRET_KEY = 'z_markgo'
     OAUTH2_REFRESH_TOKEN_GENERATOR: True
     SSL_DISABLE = False
@@ -21,12 +28,6 @@ class Config:
     LOG_FILE_MAX_BYTES = 100 * 1024 * 1024
     LOG_FILE_BACKUP_COUNT = 10  # 轮转数量是 10 个
 
-    # module
-    ENABLED_MODULES = (
-        'permission',
-        'user',
-        'auth',
-    )
 
     # schedule jobs
     JOBS = [

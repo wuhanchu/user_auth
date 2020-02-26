@@ -10,7 +10,7 @@ from module.permission import blueprint
 from ..model import *
 
 
-@blueprint.route('/permissions', methods=['GET'])
+@blueprint.route('', methods=['GET'])
 @require_oauth("profile")
 def permission_list():
     q = Permission.query
@@ -27,14 +27,14 @@ def permission_list():
 
 
 # 详细权限信息
-@blueprint.route('/permissions/<id>', methods=['GET'])
+@blueprint.route('/<id>', methods=['GET'])
 @require_oauth("profile")
 def get_permission(id):
     permission = Permission.query.get(id)
     return JsonResult.queryResult(permission)
 
 
-@blueprint.route('/permissions', methods=['POST'])
+@blueprint.route('', methods=['POST'])
 @require_oauth("profile")
 def add_permission():
     obj = Permission()
@@ -46,7 +46,7 @@ def add_permission():
     return JsonResult.success("创建成功！", {"permission_id": obj.id})
 
 
-@blueprint.route('/permissions/<id>', methods=['PUT', 'PATCH'])
+@blueprint.route('/<id>', methods=['PUT', 'PATCH'])
 @require_oauth("profile")
 def update_permission(id):
     permission = Permission.query.get(id)
@@ -59,7 +59,7 @@ def update_permission(id):
     return JsonResult.success("更新成功！", {"id": permission.id})
 
 
-@blueprint.route('/permissions/<id>', methods=['DELETE'])
+@blueprint.route('/<id>', methods=['DELETE'])
 @require_oauth("profile")
 def del_permission(id):
     "删除权限"

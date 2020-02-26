@@ -11,7 +11,7 @@ from ..model import *
 
 
 # 角色列表
-@blueprint.route('/roles', methods=['GET'])
+@blueprint.route('/role', methods=['GET'])
 @require_oauth('profile')
 def role_list():
     q = Role.query
@@ -29,14 +29,14 @@ def role_list():
 
 
 # 详细角色信息
-@blueprint.route('/roles/<id>', methods=['GET'])
+@blueprint.route('/role/<id>', methods=['GET'])
 @require_oauth('profile')
 def get_role(id):
     obj = Role.query.get(id)
     return JsonResult.queryResult(obj)
 
 
-@blueprint.route('/roles', methods=['POST'])
+@blueprint.route('/role', methods=['POST'])
 @require_oauth('profile')
 def add_role():
     obj = Role()
@@ -50,7 +50,7 @@ def add_role():
 
 
 # PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('/roles/<id>', methods=['PUT'])
+@blueprint.route('/role/<id>', methods=['PUT'])
 @require_oauth('profile')
 def update_role(id):
     obj = Role.query.get(id)
@@ -65,7 +65,7 @@ def update_role(id):
     return JsonResult.success("更新成功！", {"id": obj.id})
 
 
-@blueprint.route('/roles/<id>', methods=['DELETE'])
+@blueprint.route('/role/<id>', methods=['DELETE'])
 @require_oauth('profile')
 def del_role(id):
     "删除角色"
@@ -85,24 +85,7 @@ def user_roles_list(user_id):
     return JsonResult.queryResult(list)
 
 
-@blueprint.route('/user_roles/<user_id>', methods=['PUT'])
-@require_oauth('profile')
-def update_user_roles(user_id):
-    args = request.get_json()
-    role_ids = args.get("role_ids")
-    user_roles = SysUserRole.query.filter(SysUserRole.user_id == user_id).all()
-    for role_id in role_ids:
-        # 判断数据库中是否已经存在该用户
-        selected = [ur for ur in user_roles if ur.role_id == role_id]
-        if len(selected) == 0:
-            user_role = SysUserRole(user_id=user_id, role_id=role_id)
-            db.session.add(user_role)
-        else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
-            user_roles.remove(selected[0])
-    # 删除已经不存在的数据
-    [db.session.delete(user_role) for user_role in user_roles]
-    db.session.commit()
-    return JsonResult.success("更新用户角色成功！")
+
 
 
 @blueprint.route('/role_permissions/<role_id>', methods=['GET'])

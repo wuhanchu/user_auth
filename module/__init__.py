@@ -13,5 +13,5 @@ variable.
 def init_app(app, **kwargs):
     from importlib import import_module
 
-    for module_name in app.config['ENABLED_MODULES']:
+    for module_name in app.config['ENABLED_MODULE']:
         import_module('.%s' % module_name, package=__name__).init_app(app, **kwargs)

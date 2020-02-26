@@ -40,8 +40,8 @@ def create_app(flask_config_name="default", **kwargs):
     flask_app.logger.addHandler(file_handler_info)
 
     # 数据库初始化
-    from extension import db
-    db.init_app(flask_app)
+    from extension import database
+    database.init_app(flask_app)
 
     #  init module
     import module

@@ -4,7 +4,7 @@ import os
 
 from authlib.integrations.flask_oauth2 import current_token
 from authlib.oauth2 import OAuth2Error
-from flask import render_template, redirect
+from flask import render_template, redirect, jsonify
 from flask import request, session
 from werkzeug.security import gen_salt
 
@@ -118,7 +118,7 @@ def current_user():
                 """ % user["id"]
         res_group = db.session.execute(sql_group).fetchall()
         user["permission_groups"] = js.queryToDict(res_group)
-        return JsonResult.success("查询成功", user)
+        return jsonify(user)
     else:
         return JsonResult.error()
 
@@ -149,7 +149,8 @@ def license_info():
             lic_info = base64.b64decode(lic_info)
             is_enable, msg = register_tool.check_license(lic_info)
             if is_enable:
-                return JsonResult.success("证书有效！", msg)
+                return JsonResult.success("证书有效！", dict(msg,
+                                                        machineInfo=register_tool.get_machineInfo()))
             else:
                 res = {
                     "machineInfo": register_tool.get_machineInfo(),
@@ -161,3 +162,11 @@ def license_info():
             "machineInfo": register_tool.get_machineInfo()
         }
         return JsonResult.error("证书不存在，请联系相关销售进行申请证书！", res)
+
+
+@blueprint.route('/license/check', methods=['get'])
+def license_check():
+    # 证书验证
+    if not register_tool.check_licfile():
+        return '证书无效，请联系管理员更新!', 403
+    return "证书有效"

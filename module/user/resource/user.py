@@ -9,10 +9,13 @@ from .. import blueprint
 from ..model import *
 
 
-# 用户列表
-@blueprint.route('/users', methods=['GET'])
+@blueprint.route('', methods=['GET'])
 @require_oauth('profile')
 def user_list():
+    """
+    用户列表
+    :return:
+    """
     q = db.session.query(SysUser.id, func.max(SysUser.name).label("name"),
                          func.max(SysUser.loginid).label("loginid"), func.max(SysUser.telephone) \
                          .label("telephone"), func.max(SysUser.address).label("address"),
@@ -32,17 +35,25 @@ def user_list():
     return JsonResult.res_page(res, total)
 
 
-# 详细用户信息
-@blueprint.route('/users/<id>', methods=['GET'])
+@blueprint.route('/<id>', methods=['GET'])
 @require_oauth('profile')
 def get_user(id):
+    """
+    详细用户信息
+    :param id:
+    :return:
+    """
     obj = SysUser.query.get(id)
     return JsonResult.queryResult(obj)
 
 
-@blueprint.route('/users', methods=['POST'])
+@blueprint.route('', methods=['POST'])
 @require_oauth('profile')
 def add_user():
+    """
+    增加用户
+    :return:
+    """
     obj = SysUser()
     args = request.get_json()
     # 将参数加载进去
@@ -59,10 +70,14 @@ def add_user():
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
 
-# PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('/users/<id>', methods=['PUT', 'PATCH'])
+@blueprint.route('/<id>', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user(id):
+    """
+     PUT:全部字段 ；PATCH:部分字段
+    :param id:
+    :return:
+    """
     obj = SysUser.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -75,10 +90,14 @@ def update_user(id):
     return JsonResult.success("更新成功！", {"id": obj.id})
 
 
-# 修改密码
-@blueprint.route('/users/<id>/password', methods=['PUT', 'PATCH'])
+@blueprint.route('/<id>/password', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user_password(id):
+    """
+    # 修改密码
+    :param id:
+    :return:
+    """
     obj = SysUser.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -95,13 +114,22 @@ def update_user_password(id):
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/users/<id>', methods=['DELETE'])
+@blueprint.route('/user_roles', methods=['PUT'])
 @require_oauth('profile')
-def del_users(id):
-    "删除用户"
-    obj = SysUser.query.get(id)
-    db.session.delete(obj)
-    sql = """ delete from sys_user_role where user_id ='%s' """ % id
-    db.session.execute(sql)
+def update_user_roles():
+    data = request.get_json()
+    user_id = request.args.get("id")
+    role_ids = data.get("role_ids")
+    user_roles = SysUserRole.query.filter(SysUserRole.user_id == user_id).all()
+    for role_id in role_ids:
+        # 判断数据库中是否已经存在该用户
+        selected = [ur for ur in user_roles if ur.role_id == role_id]
+        if len(selected) == 0:
+            user_role = SysUserRole(user_id=user_id, role_id=role_id)
+            db.session.add(user_role)
+        else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
+            user_roles.remove(selected[0])
+    # 删除已经不存在的数据
+    [db.session.delete(user_role) for user_role in user_roles]
     db.session.commit()
-    return JsonResult.success("删除成功！", {"id": id})
+    return JsonResult.success("更新用户角色成功！")

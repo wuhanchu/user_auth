@@ -1,7 +1,7 @@
 # coding: utf-8
 
-from sqlalchemy import Column, ForeignKey, String, text, cast
-from sqlalchemy.dialects.mysql import BIGINT, INTEGER, TINYINT
+from sqlalchemy import Column, ForeignKey, cast
+from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.dialects.postgresql import INET
 from sqlalchemy.orm import relationship, foreign, remote
 
@@ -14,12 +14,6 @@ class Role(BaseModel, db.Model):
     __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
     id = Column(INTEGER(11), primary_key=True)
-    name = Column(String(64))
-    chinese_name = Column(String(64))
-    description = Column(String(255))
-    opr_by = Column(String(32))
-    opr_at = Column(BIGINT(32))
-    del_fg = Column(TINYINT(1))
 
 
 class SysUser(BaseModel, db.Model):
@@ -27,21 +21,6 @@ class SysUser(BaseModel, db.Model):
     __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
     id = Column(INTEGER(11), primary_key=True)
-    name = Column(String(32))
-    telephone = Column(String(16))
-    address = Column(String(64))
-    enabled = Column(TINYINT(1))
-    loginid = Column(String(255), unique=True)
-    password = Column(String(255))
-    token = Column(String(100))
-    expires_in = Column(INTEGER(32))
-    login_at = Column(BIGINT(32))
-    login_ip = Column(String(100))
-    login_count = Column(INTEGER(32), nullable=False, server_default=text("'1'"))
-    remark = Column(String(255))
-    opr_by = Column(String(32))
-    opr_at = Column(BIGINT(32))
-    del_fg = Column(TINYINT(1))
 
     def get_user_id(self):
         return self.id
@@ -78,10 +57,10 @@ class SysUserRole(BaseModel, db.Model):
     __tablename__ = 'user_role'
 
     id = Column(INTEGER(11), primary_key=True)
-    user_id = Column(ForeignKey('user.id'), index=True)
-    role_id = Column(ForeignKey('role.id'), index=True)
+    user_id = Column(ForeignKey(db_schema + '.user.id'), index=True)
+    role_id = Column(ForeignKey(db_schema + '.role.id'), index=True)
 
     role = relationship('Role',
-                        primaryjoin=remote(Role.id) == cast(foreign(role_id), INET))
+                        primaryjoin=remote(Role.id) == foreign(role_id))
     user = relationship('SysUser',
-                        primaryjoin=remote(SysUser.id) == cast(foreign(user_id), INET))
+                        primaryjoin=remote(SysUser.id) == foreign(user_id))
