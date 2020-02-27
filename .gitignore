@@ -2,5 +2,5 @@
 /.idea
 *.bak
 *.lic
-logs/
+log
 service.sh
