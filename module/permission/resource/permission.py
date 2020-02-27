@@ -76,7 +76,7 @@ def del_permission(id):
 
 @blueprint.route('/permission_sql', methods=['GET'])
 def permission_sql():
-    from app import app
+    from run import app
 
     str = ''
     is_exit = 0
