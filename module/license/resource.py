@@ -64,12 +64,12 @@ def license_info():
                                                     machine_info=util.get_machine_info()))
         else:
             res = {
-                "machineInfo": util.get_machine_info(),
+                "machine_info": util.get_machine_info(),
             }
             return JsonResult.error("%s ，请联系相关销售进行申请证书！" % msg, res)
     else:
         res = {
-            "machineInfo": util.get_machine_info()
+            "machine_info": util.get_machine_info()
         }
         return JsonResult.error("证书不存在，请联系相关销售进行申请证书！", res)
 

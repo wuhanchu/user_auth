@@ -1,0 +1,250 @@
+
+Traceback (most recent call last):
+
+  File "/Users/wuhanchu/Library/Application Support/IntelliJIdea2019.3/python/helpers/pydev/_pydev_bundle/pydev_monkey.py", line 769, in __call__
+    ret = self.original_func(*self.args, **self.kwargs)
+          │    │              │    │       │    └ {}
+          │    │              │    │       └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x10928c790>
+          │    │              │    └ ()
+          │    │              └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x10928c790>
+          │    └ <bound method Thread._bootstrap of <Thread(Thread-9, started daemon 123145543696384)>>
+          └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x10928c790>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x103b53170>
+    └ <Thread(Thread-9, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x103bd0ef0>
+    └ <Thread(Thread-9, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-9, started daemon 123145543696384)>
+    │    │        │    └ (<socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-9, started daemon 123145543696384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>>
+    └ <Thread(Thread-9, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 63931)
+    │    │              └ <socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x10426e170>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+    │    │                   │        └ ('127.0.0.1', 63931)
+    │    │                   └ <socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x104c81b00>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x10928cc50>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 327, in handle
+    rv = BaseHTTPRequestHandler.handle(self)
+         │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x10928cc50>
+         │                      └ <function BaseHTTPRequestHandler.handle at 0x10426a710>
+         └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x104c81cb0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x10928cc50>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 362, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x104c81a70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x10928cc50>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x1092526d0>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x10928cc50>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x109289710>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 294, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x109263f50>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x109289680>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=27>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'frame.app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x1092526d0>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 2309, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x109289680>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=27>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x105089cb0>
+           └ <Flask 'frame.app'>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1050893b0>
+               └ <Flask 'frame.app'>
+> File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x105089320>
+         └ <Flask 'frame.app'>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/license/check?product_key=z_know_info' [GET]>
+           │    │              │    └ 'license.license_check'
+           │    │              └ <Rule '/license/check' (OPTIONS, GET, HEAD) -> license.license_check>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'frame.app'>>, 'index': <function create_app.<locals>...
+           └ <Flask 'frame.app'>
+
+  File "/Users/wuhanchu/Project/me/flask_user_auth/module/license/resource.py", line 87, in license_check
+    abort(HTTPStatus.UNAUTHORIZED, {"message": "证书无效，请联系管理员更新!"})
+    │     │          └ <HTTPStatus.UNAUTHORIZED: 401>
+    │     └ <enum 'HTTPStatus'>
+    └ <function abort at 0x104ab1f80>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/exceptions.py", line 772, in abort
+    return _aborter(status, *args, **kwargs)
+           │        │        │       └ {}
+           │        │        └ ({'message': '证书无效，请联系管理员更新!'},)
+           │        └ <HTTPStatus.UNAUTHORIZED: 401>
+           └ <werkzeug.exceptions.Aborter object at 0x104cc3e10>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/exceptions.py", line 753, in __call__
+    raise self.mapping[code](*args, **kwargs)
+          │    │       │      │       └ {}
+          │    │       │      └ ({'message': '证书无效，请联系管理员更新!'},)
+          │    │       └ <HTTPStatus.UNAUTHORIZED: 401>
+          │    └ {400: <class 'werkzeug.exceptions.BadRequest'>, 401: <class 'werkzeug.exceptions.Unauthorized'>, 403: <class 'werkzeug.except...
+          └ <werkzeug.exceptions.Aborter object at 0x104cc3e10>
+
+werkzeug.exceptions.Unauthorized: 401 Unauthorized: {'message': '证书无效，请联系管理员更新!'}
+
+Traceback (most recent call last):
+
+  File "/Users/wuhanchu/Library/Application Support/IntelliJIdea2019.3/python/helpers/pydev/_pydev_bundle/pydev_monkey.py", line 769, in __call__
+    ret = self.original_func(*self.args, **self.kwargs)
+          │    │              │    │       │    └ {}
+          │    │              │    │       └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x1094402d0>
+          │    │              │    └ ()
+          │    │              └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x1094402d0>
+          │    └ <bound method Thread._bootstrap of <Thread(Thread-13, started daemon 123145543696384)>>
+          └ <_pydev_bundle.pydev_monkey._NewThreadStartupWithTrace object at 0x1094402d0>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x103b53170>
+    └ <Thread(Thread-13, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 926, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x103bd0ef0>
+    └ <Thread(Thread-13, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-13, started daemon 123145543696384)>
+    │    │        │    └ (<socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=(...
+    │    │        └ <Thread(Thread-13, started daemon 123145543696384)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>>
+    └ <Thread(Thread-13, started daemon 123145543696384)>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 650, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 64024)
+    │    │              └ <socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x10426e170>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+    │    │                   │        └ ('127.0.0.1', 64024)
+    │    │                   └ <socket.socket fd=27, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 5000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/socketserver.py", line 720, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x104c81b00>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x1092e3610>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 327, in handle
+    rv = BaseHTTPRequestHandler.handle(self)
+         │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x1092e3610>
+         │                      └ <function BaseHTTPRequestHandler.handle at 0x10426a710>
+         └ <class 'http.server.BaseHTTPRequestHandler'>
+
+  File "/usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/lib/python3.7/http/server.py", line 426, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x104c81cb0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x1092e3610>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 362, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x104c81a70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x1092e3610>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x1092526d0>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x10928c750>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x1092e3610>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x109452b90>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/serving.py", line 294, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x109454450>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/debug/__init__.py", line 330, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x109401c20>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=27>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'frame.app'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x1092526d0>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 2309, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x109401c20>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=27>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x105089cb0>
+           └ <Flask 'frame.app'>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x1050893b0>
+               └ <Flask 'frame.app'>
+> File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x105089320>
+         └ <Flask 'frame.app'>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://127.0.0.1:5000/license/check?product_key=z_know_info' [GET]>
+           │    │              │    └ 'license.license_check'
+           │    │              └ <Rule '/license/check' (OPTIONS, GET, HEAD) -> license.license_check>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'frame.app'>>, 'index': <function create_app.<locals>...
+           └ <Flask 'frame.app'>
+
+  File "/Users/wuhanchu/Project/me/flask_user_auth/module/license/resource.py", line 87, in license_check
+    abort(HTTPStatus.UNAUTHORIZED, {"message": "证书无效，请联系管理员更新!"})
+    │     │          └ <HTTPStatus.UNAUTHORIZED: 401>
+    │     └ <enum 'HTTPStatus'>
+    └ <function abort at 0x104ab1f80>
+
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/exceptions.py", line 772, in abort
+    return _aborter(status, *args, **kwargs)
+           │        │        │       └ {}
+           │        │        └ ({'message': '证书无效，请联系管理员更新!'},)
+           │        └ <HTTPStatus.UNAUTHORIZED: 401>
+           └ <werkzeug.exceptions.Aborter object at 0x104cc3e10>
+  File "/Users/wuhanchu/temp/venv37/lib/python3.7/site-packages/werkzeug/exceptions.py", line 753, in __call__
+    raise self.mapping[code](*args, **kwargs)
+          │    │       │      │       └ {}
+          │    │       │      └ ({'message': '证书无效，请联系管理员更新!'},)
+          │    │       └ <HTTPStatus.UNAUTHORIZED: 401>
+          │    └ {400: <class 'werkzeug.exceptions.BadRequest'>, 401: <class 'werkzeug.exceptions.Unauthorized'>, 403: <class 'werkzeug.except...
+          └ <werkzeug.exceptions.Aborter object at 0x104cc3e10>
+
+werkzeug.exceptions.Unauthorized: 401 Unauthorized: {'message': '证书无效，请联系管理员更新!'}
