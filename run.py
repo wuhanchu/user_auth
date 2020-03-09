@@ -8,4 +8,4 @@ module.init_app(app)
 
 if __name__ == '__main__':
     # 启动web服务
-    app.run('0.0.0.0', port=app.config.get("RUN_PORT"), debug=True)
+    app.run('0.0.0.0', port=app.config.get("RUN_PORT"), threaded=False)

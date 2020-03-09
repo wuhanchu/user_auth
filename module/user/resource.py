@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
-from sqlalchemy import func
+from sqlalchemy import func, Text
 
 from frame import JsonResult as js
 from frame import sql_tool, com_tool, param_tool
@@ -25,9 +25,10 @@ def user_list():
     q = db.session.query(SysUser.id, func.max(SysUser.name).label("name"),
                          func.max(SysUser.loginid).label("loginid"), func.max(SysUser.telephone) \
                          .label("telephone"), func.max(SysUser.address).label("address"),
-                         func.string_agg(Role.name, ',').label("roles")) \
+                         func.string_agg(func.cast(Role.id, Text), ',').label("roles")) \
         .outerjoin(SysUserRole, SysUserRole.user_id == SysUser.id) \
         .outerjoin(Role, Role.id == SysUserRole.role_id).group_by(SysUser.id)
+
     name = request.args.get("name")
     if name is not None:
         q = q.filter(SysUser.name.like("%" + name + "%"))
@@ -100,7 +101,7 @@ def update_user_password():
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/roles', methods=['PUT', 'PATCH'])
+@blueprint.route('/role', methods=['PUT', 'PATCH'])
 @require_oauth('profile')
 def update_user_roles():
     data = request.get_json()
@@ -143,25 +144,33 @@ def current_user():
         user.pop("token")
         sql = f"""
             SET search_path to {db_schema};
-            select p.name,p.url,p.method,p.key ,string_agg(cast(r.id as text),',') as role_id,string_agg(r.name,',') as role_name from permission p 
-                join permission_scope_detail rel on rel.permission_key = p.key
-								join role_permission_scope gr on gr.permission_scope_key = rel.permission_scope_key
-								-- join permission_role pr on p.id = pr.permission_key 
-                join role r on r.id = gr.role_id
-                join user_role ur on r.id = ur.role_id
+            select p.name,
+                   p.url,
+                   p.method,
+                   p.key,
+                   string_agg(cast(r.id as text), ',') as role_id,
+                   string_agg(r.name, ',')             as role_name
+            from permission p
+                     join permission_scope_detail rel on rel.permission_key = p.key
+                     join role_permission_scope gr on gr.permission_scope_key = rel.permission_scope_key
+                     join role r on r.id = gr.role_id
+                     join user_role ur on r.id = ur.role_id
             where ur.user_id = '%s'
-            group by p.name,p.url,p.method,p.key
+            group by p.name, p.url, p.method, p.key;
         """ % user["id"]
 
         res = db.session.execute(sql).fetchall()
         user["permissions"] = js.queryToDict(res)
-        sql_group = f"""SET search_path to {db_schema};
-                select grp.name,grp.key from permission_scope grp 
-                    join role_permission_scope grole on grp.key = grole.permission_scope_key 
-                    join role r on r.id = grole.role_id
-                    join user_role ur on r.id = ur.role_id
+        sql_group = f"""
+                SET search_path to {db_schema};                    
+                select grp.name, grp.key
+                from permission_scope grp
+                         join role_permission_scope grole on grp.key = grole.permission_scope_key
+                         join role r on r.id = grole.role_id
+                         join user_role ur on r.id = ur.role_id
                 where ur.user_id = '%s'
                 """ % user["id"]
+
         res_group = db.session.execute(sql_group).fetchall()
         user["permission_scopes"] = js.queryToDict(res_group)
         return jsonify(user)

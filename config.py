@@ -17,7 +17,7 @@ class Config:
     ]
 
     # posrgrest
-    PROXY_SERVER_URL = "http://192.168.31.193:40014"
+    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL')
 
     # database
     DB_SCHEMA = "user_auth"
@@ -25,12 +25,6 @@ class Config:
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-
-    # log
-    LOG_PATH = os.path.join(basedir, 'logs')
-    LOG_PATH_INFO = os.path.join(LOG_PATH, 'user_auth.log')
-    LOG_FILE_MAX_BYTES = 100 * 1024 * 1024
-    LOG_FILE_BACKUP_COUNT = 10  # 轮转数量是 10 个
 
     # schedule jobs
     JOBS = [
@@ -53,11 +47,13 @@ class Config:
     SECRET_KEY = 'z_markgo'
     OAUTH2_REFRESH_TOKEN_GENERATOR: True
     SSL_DISABLE = False
+    RUN_PORT = os.environ.get('RUN_PORT', 5000)
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    PRESERVE_CONTEXT_ON_EXCEPTION = False
+    RUN_PORT = 5000
+    PROXY_SERVER_URL = "http://asus.uglyxu.cn:40014"
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:whcxhwyz@asus.uglyxu.cn:40011/dataknown'
 
 

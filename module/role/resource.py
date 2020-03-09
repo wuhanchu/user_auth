@@ -109,7 +109,7 @@ def role_permission_scopes_list():
     role_id = request.args.get("role_id")
 
     q = PermissionScope.query.join(RolePermissionScope,
-                                   RolePermissionScope.permission_scope_key == PermissionScope.id) \
+                                   RolePermissionScope.permission_scope_key == PermissionScope.key) \
         .filter(RolePermissionScope.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
@@ -117,22 +117,22 @@ def role_permission_scopes_list():
 
 @blueprint.route('/permission_scope', methods=['PUT'])
 def update_role_permission_scopes():
-    role_id = request.args.get("role_id")
+    id = request.args.get("id")
 
     args = request.get_json()
+
+    # delete before
+    RolePermissionScope.__table__.delete().where(RolePermissionScope.role_id == id)
+
+    # add new
     role_permission_scope_keys = args.get("role_permission_scope_keys")
-    role_permission_scopes = RolePermissionScope.query.filter(RolePermissionScope.role_id == role_id).all()
     for permission_scope_key in role_permission_scope_keys:
-        # 判断数据库中是否已经存在该用户
-        selected = [pr for pr in role_permission_scopes if pr.permission_scope_key == permission_scope_key]
-        if len(selected) == 0:
-            role_permission_scope = RolePermissionScope(role_id=role_id, permission_scope_key=permission_scope_key)
-            db.session.add(role_permission_scope)
-        else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
-            role_permission_scopes.remove(selected[0])
-    # 删除已经不存在的数据
-    [db.session.delete(role_permission_scope) for role_permission_scope in role_permission_scopes]
+        role_permission_scope = RolePermissionScope(role_id=id, permission_scope_key=permission_scope_key)
+        db.session.add(role_permission_scope)
+
     db.session.commit()
+
+    # reload
     permission_context.load_permission()
     return JsonResult.success("更新角色权限成功！")
 

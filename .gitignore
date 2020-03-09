@@ -3,4 +3,5 @@
 *.bak
 *.lic
 /log
+/logs
 service.sh
