@@ -2,11 +2,12 @@ import json
 
 from flask import request
 
-from frame import param_tool
-from frame.JsonResult import JsonResult
+from frame.http.JsonResult import JsonResult
+from frame.util import param_tool
 from module.auth.extension.oauth2 import require_oauth
 # 权限列表
 from module.permission import blueprint
+from run import app
 from ..model import *
 
 

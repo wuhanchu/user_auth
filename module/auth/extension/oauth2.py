@@ -6,10 +6,12 @@ from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
 from werkzeug.security import gen_salt
 
-from frame import com_tool, permission_context, JsonResult as js
-from frame.busi_exception import BusiError
+from frame import permission_context
 from frame.extension.database import db, db_schema
-from module.user.model import SysUser
+from frame.http.JsonResult import queryToDict
+from frame.http.exception import BusiError
+from frame.util import com_tool
+from module.user.model import User
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 
 
@@ -39,12 +41,12 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
     def authenticate_user(self, authorization_code):
         return None
-        # return SysUser.query.get(authorization_code.user_id)
+        # return User.query.get(authorization_code.user_id)
 
 
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
-        user = SysUser.query.filter_by(loginid=username).first()
+        user = User.query.filter_by(loginid=username).first()
         # 校验密码
         if user.password == com_tool.get_MD5_code(password):
             return user
@@ -57,7 +59,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
             return token
 
     def authenticate_user(self, credential):
-        return SysUser.query.get(credential.user_id)
+        return User.query.get(credential.user_id)
 
 
 query_client = create_query_client_func(db.session, OAuth2Client)
@@ -90,7 +92,7 @@ class _BearerTokenValidator(BearerTokenValidator):
     def get_usr_roles(self, user_id):
         sql = "select role_id from %s.user_role where user_id =%s " % (db_schema, user_id)
         res = db.session.execute(sql).fetchall()
-        role_list = js.queryToDict(res)
+        role_list = queryToDict(res)
         role_list = [str(role['role_id']) for role in role_list]
         return role_list
 

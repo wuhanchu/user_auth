@@ -4,7 +4,7 @@ import os
 
 from flask import Blueprint
 
-from frame.py_utils import import_dir
+from frame.util.py_utils import import_dir
 
 blueprint = Blueprint('role', __name__, url_prefix='/role')
 

@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     # set enable
-    ENABLED_EXTENSION = ["loguru", "database", "postgrest"]
+    ENABLED_EXTENSION = ["loguru", "database", "postgrest", "permission"]
 
     # module
     ENABLED_MODULE = [
@@ -15,6 +15,9 @@ class Config:
         'auth',
         'license'
     ]
+
+    # permission config
+    USER_AUTH_LOCAL = True
 
     # posrgrest
     PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL')
@@ -43,7 +46,7 @@ class Config:
     # SCHEDULER_API_ENABLED = FALSE
 
     # project
-
+    PRODUCT_KEY = "user_auth"
     SECRET_KEY = 'z_markgo'
     OAUTH2_REFRESH_TOKEN_GENERATOR: True
     SSL_DISABLE = False

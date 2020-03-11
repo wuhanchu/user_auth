@@ -3,9 +3,10 @@ import time
 
 from flask import request
 
-from frame import sql_tool, permission_context, param_tool
-from frame.JsonResult import JsonResult
+from frame import permission_context
 from frame.extension.database import db
+from frame.http.JsonResult import JsonResult
+from frame.util import sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.permission.model import Permission, PermissionScopeRetail, PermissionScope
 from module.role.model import Role, RolePermissionScope
@@ -125,9 +126,10 @@ def update_role_permission_scopes():
     RolePermissionScope.__table__.delete().where(RolePermissionScope.role_id == id)
 
     # add new
-    role_permission_scope_keys = args.get("role_permission_scope_keys")
-    for permission_scope_key in role_permission_scope_keys:
-        role_permission_scope = RolePermissionScope(role_id=id, permission_scope_key=permission_scope_key)
+    role_permission_scope = args.get("role_permission_scope")
+    for permission_scope in role_permission_scope:
+        role_permission_scope = RolePermissionScope(role_id=id, permission_scope_key=permission_scope.get("key"),
+                                                    product_key=permission_scope.get("product_key"))
         db.session.add(role_permission_scope)
 
     db.session.commit()

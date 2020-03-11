@@ -9,7 +9,7 @@ from module.auth.extension.oauth2 import authorization
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
-from ..user.model import SysUser
+from ..user.model import User
 from ..user.resource import current_user
 
 
@@ -17,7 +17,7 @@ from ..user.resource import current_user
 def home():
     if request.method == 'POST':
         username = request.form.get('username')
-        user = SysUser.query.filter_by(loginid=username).first()
+        user = User.query.filter_by(loginid=username).first()
         session['id'] = user.id
         return redirect('/oauth')
     user = current_user()
@@ -64,7 +64,7 @@ def authorize():
         return render_template('authorize.html', user=user, grant=grant)
     if not user and 'username' in request.form:
         username = request.form.get('username')
-        user = SysUser.query.filter_by(loginid=username).first()
+        user = User.query.filter_by(loginid=username).first()
     if request.form['confirm']:
         grant_user = user
     else:

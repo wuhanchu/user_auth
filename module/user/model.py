@@ -9,7 +9,7 @@ from module.permission.model import PermissionScope
 from module.role.model import Role
 
 
-class SysUser(BaseModel, db.Model):
+class User(BaseModel, db.Model):
     __tablename__ = 'user'
     __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
@@ -19,7 +19,7 @@ class SysUser(BaseModel, db.Model):
         return self.id
 
 
-class SysUserRole(BaseModel, db.Model):
+class UserRole(BaseModel, db.Model):
     __tablename__ = 'user_role'
 
     id = Column(INTEGER(11), primary_key=True)
@@ -28,5 +28,5 @@ class SysUserRole(BaseModel, db.Model):
 
     role = relationship('Role',
                         primaryjoin=remote(Role.id) == foreign(role_id))
-    user = relationship('SysUser',
-                        primaryjoin=remote(SysUser.id) == foreign(user_id))
+    user = relationship('User',
+                        primaryjoin=remote(User.id) == foreign(user_id))

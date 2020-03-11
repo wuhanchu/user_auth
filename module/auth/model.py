@@ -6,7 +6,7 @@ from sqlalchemy.orm import foreign
 from werkzeug.utils import cached_property
 
 from frame.extension.database import db, BaseModel, db_schema
-from module.user.model import SysUser
+from module.user.model import User
 
 
 class OAuth2Client(db.Model, BaseModel, OAuth2ClientMixin):
@@ -32,8 +32,8 @@ class OAuth2Token(db.Model, BaseModel, OAuth2TokenMixin):
 
     user_id = db.Column(
         db.Integer, db.ForeignKey(db_schema + '.user.id', ondelete='CASCADE'))
-    user = db.relationship(SysUser,
-                           primaryjoin=SysUser.id == foreign(user_id))
+    user = db.relationship(User,
+                           primaryjoin=User.id == foreign(user_id))
 
     def is_refresh_token_expired(self):
         expires_at = self.issued_at + self.expires_in * 2

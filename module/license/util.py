@@ -5,7 +5,7 @@ import os
 
 import psutil
 
-from frame import rsa_tool
+from frame.util import rsa_tool
 
 
 def get_net_card():
