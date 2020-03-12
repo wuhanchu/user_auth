@@ -4,6 +4,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    # project
+    PRODUCT_KEY = "user_auth"
+    SECRET_KEY = 'z_markgo'
+    OAUTH2_REFRESH_TOKEN_GENERATOR: True
+    SSL_DISABLE = False
+    RUN_PORT = os.environ.get('RUN_PORT', 5000)
+
     # set enable
     ENABLED_EXTENSION = ["loguru", "database", "postgrest", "permission"]
 
@@ -43,27 +50,20 @@ class Config:
 
         }
     ]
-    # SCHEDULER_API_ENABLED = FALSE
-
-    # project
-    PRODUCT_KEY = "user_auth"
-    SECRET_KEY = 'z_markgo'
-    OAUTH2_REFRESH_TOKEN_GENERATOR: True
-    SSL_DISABLE = False
-    RUN_PORT = os.environ.get('RUN_PORT', 5000)
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
     RUN_PORT = 5000
     PROXY_SERVER_URL = "http://asus.uglyxu.cn:40014"
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:whcxhwyz@asus.uglyxu.cn:40011/dataknown'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
+                                             'postgresql://dataknown:dataknown1234@asus.uglyxu.cn:40011/dataknown')
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-                              'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
+                                             'postgresql://dataknown:dataknown1234@asus.uglyxu.cn:40011/dataknown')
     WTF_CSRF_ENABLED = False
 
 
