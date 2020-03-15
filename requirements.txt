@@ -1,3 +1,1 @@
 -r frame/requirements.txt
-
-Authlib~=0.14.1
