@@ -1,7 +1,8 @@
 from flask import request
 
-from frame import param_tool, permission_context, sql_tool
-from frame.JsonResult import JsonResult
+from frame import permission_context
+from frame.http.JsonResult import JsonResult
+from frame.util import param_tool, sql_tool
 from module.auth.extension.oauth2 import require_oauth
 from .. import blueprint
 from ..model import *
@@ -72,7 +73,7 @@ def del_permissionpermission_scope(id):
     :param id:
     :return:
     """
-    permissionpermission_scope_key = request.args.get("id")
+    permission_scope_key = request.args.get("id")
 
     obj = PermissionScope.query.get(id)
     db.session.delete(obj)
@@ -85,10 +86,10 @@ def del_permissionpermission_scope(id):
 @blueprint.route('/scope/detail', methods=['GET'])
 @require_oauth('profile')
 def get_group_permissions():
-    permissionpermission_scope_key = request.args.get("permissionpermission_scope_key")
+    permission_scope_key = request.args.get("permission_scope_key")
     q = Permission.query.join(PermissionScopeRetail,
                               PermissionScopeRetail.permission_key == Permission.key) \
-        .filter(PermissionScopeRetail.permissionpermission_scope_key == permissionpermission_scope_key)
+        .filter(PermissionScopeRetail.permission_scope_key == permission_scope_key)
     list = q.all()
     return JsonResult.queryResult(list)
 
@@ -97,15 +98,15 @@ def get_group_permissions():
 @require_oauth('profile')
 def update_group_permissions():
     args = request.get_json()
-    permissionpermission_scope_key = request.args.get("permissionpermission_scope_key")
+    permission_scope_key = request.args.get("permission_scope_key")
     permission_keys = args.get("permission_keys")
     group_permissions = PermissionScopeRetail.query.filter(
-        PermissionScopeRetail.permissionpermission_scope_key == permissionpermission_scope_key).all()
+        PermissionScopeRetail.permission_scope_key == permission_scope_key).all()
     for permission_key in permission_keys:
         # 判断数据库中是否已经存在该用户
         selected = [pr for pr in group_permissions if pr.permission_key == permission_key]
         if len(selected) == 0:
-            role_permission = PermissionScopeRetail(permissionpermission_scope_key=permissionpermission_scope_key,
+            role_permission = PermissionScopeRetail(permission_scope_key=permission_scope_key,
                                                     permission_key=permission_key)
             db.session.add(role_permission)
         else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户

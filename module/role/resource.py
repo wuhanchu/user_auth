@@ -123,7 +123,7 @@ def update_role_permission_scopes():
     args = request.get_json()
 
     # delete before
-    RolePermissionScope.__table__.delete().where(RolePermissionScope.role_id == id)
+    db.session.execute(RolePermissionScope.__table__.delete().where(RolePermissionScope.role_id == id))
 
     # add new
     role_permission_scope = args.get("role_permission_scope")

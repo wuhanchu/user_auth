@@ -64,8 +64,6 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
                                              'postgresql://dataknown:dataknown1234@asus.uglyxu.cn:40011/dataknown')
-    WTF_CSRF_ENABLED = False
-
 
 class ProductionConfig(Config):
     pass

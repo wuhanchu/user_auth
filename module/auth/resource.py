@@ -28,6 +28,7 @@ def home():
     return render_template('oauth_index.html', user=user, clients=clients)
 
 
+@blueprint.route('/token', methods=('DELETE',))
 @blueprint.route('/logout')
 def logout():
     del session['id']
@@ -81,4 +82,3 @@ def issue_token():
 @blueprint.route('/revoke', methods=['POST'])
 def revoke_token():
     return authorization.create_endpoint_response('revocation', request)
-
