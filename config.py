@@ -55,15 +55,14 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     RUN_PORT = 5000
-    PROXY_SERVER_URL = "http://asus.uglyxu.cn:40014"
+    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:32023")
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
-                                             'postgresql://dataknown:dataknown1234@asus.uglyxu.cn:40011/dataknown')
+                                             'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
-                                             'postgresql://dataknown:dataknown1234@asus.uglyxu.cn:40011/dataknown')
+
 
 class ProductionConfig(Config):
     pass
