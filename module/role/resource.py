@@ -59,7 +59,7 @@ def add_role():
 
 
 # PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('', methods=['PUT', 'PATCH'])
+@blueprint.route('', methods=['PATCH'])
 @require_oauth('profile')
 def update_role():
     id = request.args.get("id")

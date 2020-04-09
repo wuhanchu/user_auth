@@ -50,7 +50,7 @@ def add_permission():
     return JsonResult.success("创建成功！", {"permission_key": obj.id})
 
 
-@blueprint.route('/<id>', methods=['PUT', 'PATCH'])
+@blueprint.route('/<id>', methods=['PATCH'])
 @require_oauth("profile")
 def update_permission(id):
     permission = Permission.query.get(id)

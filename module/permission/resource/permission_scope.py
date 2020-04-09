@@ -13,10 +13,10 @@ from ..model import *
 
 @blueprint.route('/scope', methods=['GET'])
 @require_oauth('profile')
-def permissionpermission_scope_list():
+def permission_scope_list():
     id = request.args.get("id")
     if id:
-        return get_permissionpermission_scope(id)
+        return get_permission_scope(id)
 
     q = PermissionScope.query
     name = request.args.get("name")
@@ -33,7 +33,7 @@ def permissionpermission_scope_list():
 
 
 # 详细信息
-def get_permissionpermission_scope(id):
+def get_permission_scope(id):
     obj = PermissionScope.query.get(id)
     return JsonResult.queryResult(obj)
 
@@ -41,7 +41,7 @@ def get_permissionpermission_scope(id):
 # 添加
 @blueprint.route('/scope', methods=['POST'])
 @require_oauth('profile')
-def add_permissionpermission_scope():
+def add_permission_scope():
     obj = PermissionScope()
     args = request.get_json()
     # 将参数加载进去
@@ -52,9 +52,9 @@ def add_permissionpermission_scope():
 
 
 # 更新， PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('/scope/<id>', methods=['PUT'])
+@blueprint.route('/scope/<id>', methods=['PATCH'])
 @require_oauth('profile')
-def update_permissionpermission_scope(id):
+def update_permission_scope(id):
     obj = PermissionScope.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -67,7 +67,7 @@ def update_permissionpermission_scope(id):
 
 @blueprint.route('/scope', methods=['DELETE'])
 @require_oauth('profile')
-def del_permissionpermission_scope(id):
+def del_permission_scope(id):
     """
     删除
     :param id:
