@@ -16,4 +16,4 @@ def api_init(c):
 
     database.api_init(app, [{"name": "角色", "key": "role"}, {"name": "用户", "key": "user"},
                             {"name": "客户端", "key": "oauth2_client"}, {"name": "接口", "key": "permission"},
-                            {"name": "功能", "key": "permission_scope"}])
+                            {"name": "功能", "key": "permission_scope"}, {"name": "部门", "key": "department"}])

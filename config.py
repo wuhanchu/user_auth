@@ -12,7 +12,7 @@ class Config:
     RUN_PORT = os.environ.get('RUN_PORT', 5000)
 
     # set enable
-    ENABLED_EXTENSION = ["loguru", "database", "postgrest", "permission", "sentry"]
+    ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest", "sentry"]
 
     # sentry
     SENTRY_DS = "https://c58a597cd1fb4a44b2b719f357325597@server.aiknown.cn:31027/4"
@@ -61,7 +61,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     # set enable
-    ENABLED_EXTENSION = ["loguru", "database", "postgrest", "permission"]
+    ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest"]
 
     RUN_PORT = 5000
     PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:32023")

@@ -85,7 +85,7 @@ class _BearerTokenValidator(BearerTokenValidator):
         method = token_request.method
 
         # 权限验证
-        if not permission_context.check_permission(_req.url_rule.rule, method, self.get_usr_roles(token.user_id)):
+        if _req.url_rule and not permission_context.check_permission(_req.url_rule.rule, method, self.get_usr_roles(token.user_id)):
             raise BusiError("Permission denied!", 'API has not access permission <%s>:%s' % (method, uri), code=403)
         return token
 
