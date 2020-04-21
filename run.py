@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 from frame.app import create_app
 
 app = create_app()
