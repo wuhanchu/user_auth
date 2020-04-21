@@ -3,7 +3,9 @@ pipeline {
         pollSCM ('* * * * *')
     }
 
-    agent any
+    agent {
+        label 'master'
+    }
 
     environment {
         GROUP = "z_ai_frame"
