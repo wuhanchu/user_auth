@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        GROUP = "flask_rest_frame"
+        GROUP = "z_ai_frame"
         PROJECT = "user_auth"
 
         SERVER_DEV = "192.168.1.150"
@@ -102,7 +102,7 @@ pipeline {
                         }
                     }
                 }
-                
+
 
                 stage('Deploy Test') {
                     when {
