@@ -3,9 +3,7 @@ pipeline {
         pollSCM ('* * * * *')
     }
 
-    agent {
-        label 'master'
-    }
+    agent any
 
     environment {
         GROUP = "z_ai_frame"
@@ -23,8 +21,11 @@ pipeline {
     stages {
         stage('READY') {
             steps{
-                sh 'echo ${BRANCH_NAME}'
-                sh 'echo ${TAG_NAME}'
+                withDockerRegistry(registry: [url: "https://server.aiknown.cn:31003", credentialsId: 'harbor']) {
+                      sh 'echo ${BRANCH_NAME}'
+                      sh 'echo ${TAG_NAME}'
+                      sh 'docker pull server.aiknown.cn:31003/z_ai_frame/alpine-python3:latest'
+                }
             }
         }
 
