@@ -47,7 +47,7 @@ pipeline {
                 stage('Docker Build Tag') {
                     when { buildingTag()}
                     steps{
-                        sh 'docker build . -f ./frame/docker/frame/Dockerfile.source  -t server.aiknown.cn:31003/${GROUP}/${PROJECT}:${TAG_NAME}'
+                        sh 'docker build . -f ./frame/docker/Dockerfile.source  -t server.aiknown.cn:31003/${GROUP}/${PROJECT}:${TAG_NAME}'
                     }
                 }
             }
