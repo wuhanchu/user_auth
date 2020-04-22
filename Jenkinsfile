@@ -15,8 +15,8 @@ pipeline {
         PORT_DEV  = "32024"
 
         SERVER_TEST = "192.168.1.34"
-        SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@172.17.0.1:31014/dataknown"
-        PROXY_SERVER_TEST = "http://172.17.0.1:40020"
+        SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
+        PROXY_SERVER_TEST = "http://192.168.1.34:40020"
         PORT_TEST  = "40016"
     }
 
