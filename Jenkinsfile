@@ -13,6 +13,8 @@ pipeline {
 
         SERVER_DEV = "192.168.1.150"
         PORT_DEV  = "32024"
+        SQLALCHEMY_DATABASE_URI_DEV = "postgresql://postgres:dataknown1234@172.17.0.1:32021/dataknown"
+        PROXY_SERVER_DEV = "http://172.17.0.1:32023"
 
         SERVER_TEST = "192.168.1.34"
         SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
@@ -100,7 +102,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_dev']) {
-                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_DEV}:5000  --name ${PROJECT} server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
+                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_DEV}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_DEV} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_DEV}  --name ${PROJECT}  server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
                         }
                     }
                 }
