@@ -8,7 +8,7 @@ from werkzeug.security import gen_salt
 
 from frame import permission_context
 from frame.extension.database import db, db_schema
-from frame.http.JsonResult import queryToDict
+from frame.http.response import queryToDict
 from frame.http.exception import BusiError
 from frame.util import com_tool
 from module.user.model import User

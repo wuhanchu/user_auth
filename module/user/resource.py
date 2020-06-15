@@ -4,7 +4,7 @@ from flask import request, jsonify
 from sqlalchemy import func, Text
 
 from frame.extension.postgrest.util import get_args_delete_prefix
-from frame.http.JsonResult import JsonResult
+from frame.http.response import JsonResult
 from frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import *
