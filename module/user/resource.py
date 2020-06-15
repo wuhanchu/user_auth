@@ -3,6 +3,7 @@ from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
 from sqlalchemy import func, Text
 
+from frame.extension.postgrest.util import get_args_delete_prefix
 from frame.http.JsonResult import JsonResult
 from frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
@@ -105,7 +106,7 @@ def update_user_password():
 @require_oauth('profile')
 def update_user_roles():
     data = request.get_json()
-    user_id = request.args.get("id")
+    user_id = get_args_delete_prefix(request.args.get("id", ""))
     role_ids = data.get("role_ids")
 
     user_roles = UserRole.query.filter(UserRole.user_id == user_id).all()
