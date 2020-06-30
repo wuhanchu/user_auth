@@ -5,6 +5,7 @@ from flask import request
 
 from frame import permission_context
 from frame.extension.database import db
+from frame.extension.postgrest.util import get_args_delete_prefix
 from frame.http.response import JsonResult
 from frame.util import sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
@@ -107,7 +108,7 @@ def role_permissions_list():
 @blueprint.route('/permission_scope', methods=['GET'])
 @require_oauth('profile')
 def role_permission_scopes_list():
-    role_id = request.args.get("role_id")
+    role_id = get_args_delete_prefix(request.args.get("role_id"))
 
     q = PermissionScope.query.join(RolePermissionScope,
                                    RolePermissionScope.permission_scope_key == PermissionScope.key) \
@@ -118,7 +119,7 @@ def role_permission_scopes_list():
 
 @blueprint.route('/permission_scope', methods=['PUT'])
 def update_role_permission_scopes():
-    id = request.args.get("id")
+    id = get_args_delete_prefix(request.args.get("id"))
 
     args = request.get_json()
 
