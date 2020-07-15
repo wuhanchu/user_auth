@@ -11,4 +11,5 @@ blueprint = Blueprint('permission', __name__, url_prefix='/permission')
 
 def init_app(app, **kwargs):
     import_dir(os.path.dirname(__file__), __name__)
+    from . import resource
     app.register_blueprint(blueprint)

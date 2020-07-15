@@ -1,5 +1,3 @@
-import os
-
-from frame.py_utils import import_dir
-
-import_dir(os.path.dirname(__file__), __name__ )
+# -*- coding: UTF-8 -*-
+from . import permission
+from . import permission_scope
