@@ -76,23 +76,6 @@ def update_role():
     return JsonResult.success("更新成功！", {"id": obj.id})
 
 
-@blueprint.route('', methods=['DELETE'])
-@require_oauth('profile')
-def del_role():
-    """
-    删除角色
-    :param id:
-    :return:
-    """
-    id = request.args.get("id")
-    obj = Role.query.get(id)
-    db.session.delete(obj)
-    # sql = """ delete from ts_meetasr_log where meetid='%s' """ % meetid
-    # db.session.execute(sql)
-    db.session.commit()
-    return JsonResult.success("删除成功！", {"id": id})
-
-
 @blueprint.route('/permission', methods=['GET'])
 @require_oauth('profile')
 def role_permissions_list():
