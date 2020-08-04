@@ -35,15 +35,15 @@ def logout():
     return redirect('/')
 
 
-@blueprint.route('/create_client', methods=('GET', 'POST'))
+@blueprint.route('/client', methods=['POST'])
 def create_client():
     user = current_user()
+    user = user.json
     if not user:
-        return redirect('/')
-    if request.method == 'GET':
-        return render_template('create_client.html')
+        return
+
     client = OAuth2Client(**request.form.to_dict(flat=True))
-    client.user_id = user.id
+    client.user_id = user.get("id")
     client.client_id = gen_salt(24)
     if client.token_endpoint_auth_method == 'none':
         client.client_secret = ''
