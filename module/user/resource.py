@@ -21,7 +21,6 @@ from ..role.model import Role
 
 
 @blueprint.route('', methods=['GET'])
-@require_oauth('profile')
 def user_get():
     """
     用户列表
@@ -166,8 +165,11 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
             current_app.config.get(ConfigDefine.USER_SERVER_URL),
             "/user/operation/detail_info")
         response = requests.get(url, headers=request.headers)
-
         data = response.json()
+
+        if data.get("httpcode"):
+            return data.get("message"), data.get("httpcode")
+
         data = PhfundUserSchema().load(data)
         return jsonify(data)
 
