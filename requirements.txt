@@ -1,1 +1,3 @@
 -r frame/requirements.txt
+celery~=4.4.6
+redis~=3.3.8
