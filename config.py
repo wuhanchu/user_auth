@@ -3,6 +3,21 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
+class ConfigDefine:
+    """配置定义"""
+
+    # 用户服务信息
+    USER_PATTERN = "USER_PATTERN"  # 用户服务模式
+    USER_SERVER_URL = "USER_SERVER_URL"  # 用户服务地址
+
+    class UserPattern:
+        standard = "standard"  # 标准
+        phfund = "phfund"  # 鹏华
+
+    # celery
+    CELERY_BROKER = "CELERY_BROKER"
+
+
 class Config:
     # project
     PRODUCT_KEY = "user_auth"
@@ -57,9 +72,13 @@ class Config:
         }
     ]
 
+    # 用户服务模式
+    USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
+
     # set enable
     ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest"]
 
@@ -67,6 +86,8 @@ class DevelopmentConfig(Config):
     PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:32023")
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
                                              'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
+
+    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32049")
 
 
 class TestingConfig(Config):
@@ -77,9 +98,23 @@ class ProductionConfig(Config):
     pass
 
 
+class DevelopmentPhfundConfig(DevelopmentConfig):
+    """鹏华的运行配置"""
+    USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
+    USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
+
+
+class ProductionPhfundConfig(ProductionConfig):
+    """鹏华的运行配置"""
+    USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
+    USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
+
+
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'testing': TestingConfig,
+    'development_phfund': DevelopmentPhfundConfig,
+    'production_phfund': ProductionPhfundConfig,
     'default': DevelopmentConfig
 }

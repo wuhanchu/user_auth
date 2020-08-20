@@ -1,16 +1,20 @@
 # -*- coding: UTF-8 -*-
-
+import requests
 from authlib.oauth2 import OAuth2Error
-from flask import render_template, redirect
+from flask import render_template, redirect, jsonify
 from flask import request, session
 from werkzeug.security import gen_salt
+import urllib.parse
 
 from module.auth.extension.oauth2 import authorization
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
+from .. import get_user_pattern
 from ..user.model import User
 from ..user.resource import current_user
+from config import ConfigDefine
+from ..user.schema import PhfundUserSchema
 
 
 @blueprint.route('/', methods=('GET', 'POST'))
@@ -26,13 +30,6 @@ def home():
     else:
         clients = []
     return render_template('oauth_index.html', user=user, clients=clients)
-
-
-@blueprint.route('/token', methods=('DELETE',))
-@blueprint.route('/logout')
-def logout():
-    del session['id']
-    return redirect('/')
 
 
 @blueprint.route('/client', methods=['POST'])
@@ -82,3 +79,27 @@ def issue_token():
 @blueprint.route('/revoke', methods=['POST'])
 def revoke_token():
     return authorization.create_endpoint_response('revocation', request)
+
+
+# 鹏华
+if get_user_pattern() == ConfigDefine.UserPattern.phfund:
+
+    @blueprint.route('/token', methods=('DELETE',))
+    def logout():
+        from flask import current_app, request
+
+        url = urllib.parse.urljoin(
+            current_app.config.get(ConfigDefine.USER_SERVER_URL),
+            "/authentication/revoke_token")
+        response = requests.get(url, headers=request.headers)
+        result = PhfundUserSchema().loads(response.json())
+        return jsonify(result)
+
+# 默认
+else:
+
+    @blueprint.route('/token', methods=('DELETE',))
+    @blueprint.route('/logout')
+    def logout():
+        del session['id']
+        return redirect('/')

@@ -1,34 +1,49 @@
 # -*- coding:utf-8 -*-
+import urllib.parse
+
+import requests
 from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
 from sqlalchemy import func, Text
 
+from config import ConfigDefine
+from frame.extension.database import db
 from frame.extension.postgrest.util import get_args_delete_prefix
 from frame.http.response import JsonResult
 from frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
-from module.user.model import *
+from module.user.model import User, UserRole
 from . import blueprint
+from .schema import PhfundUserSchema
 from .service import get_user_extend_info
+from .. import get_user_pattern
+from ..role.model import Role
 
 
 @blueprint.route('', methods=['GET'])
 @require_oauth('profile')
-def user_list():
+def user_get():
     """
     用户列表
     :return:
     """
+
     id = request.args.get("id")
     if id:
-        return get_user(id)
+        obj = User.query.get(id)
+        return JsonResult.queryResult(obj)
 
-    q = db.session.query(User.id, User.department_key, func.max(User.name).label("name"),
-                         func.max(User.loginid).label("loginid"), func.max(User.telephone)
-                         .label("telephone"), func.max(User.address).label("address"),
-                         func.string_agg(func.cast(Role.id, Text), ',').label("roles")).outerjoin(UserRole,
-                                                                                                  UserRole.user_id == User.id).outerjoin(
-        Role, Role.id == UserRole.role_id).group_by(User.id)
+    q = db.session.query(
+        User.id, User.department_key,
+        func.max(User.name).label("name"),
+        func.max(User.loginid).label("loginid"),
+        func.max(User.telephone).label("telephone"),
+        func.max(User.address).label("address"),
+        func.string_agg(func.cast(Role.id, Text),
+                        ',').label("roles")).outerjoin(
+        UserRole, UserRole.user_id == User.id).outerjoin(
+        Role,
+        Role.id == UserRole.role_id).group_by(User.id)
 
     name = request.args.get("name")
     if name is not None:
@@ -37,20 +52,10 @@ def user_list():
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     sort = request.args.get('sort')
-    if sort == None:
+    if sort is None:
         sort = "-id"
     res, total = sql_tool.model_page(q, limit, offset, sort)
     return JsonResult.res_page(res, total)
-
-
-def get_user(id):
-    """
-    详细用户信息
-    :param id:
-    :return:
-    """
-    obj = User.query.get(id)
-    return JsonResult.queryResult(obj)
 
 
 @blueprint.route('', methods=['POST'])
@@ -70,7 +75,7 @@ def add_user():
     db.session.add(obj)
     try:
         db.session.commit()
-    except Exception as e:
+    except Exception:
         return JsonResult.error("创建失败，用户名重复！", {"loginid": obj.loginid})
 
     return JsonResult.success("创建成功！", {"userid": obj.id})
@@ -90,7 +95,8 @@ def update_user_password():
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
     args = request.get_json()
-    if "old_password" in args and obj.password == com_tool.get_MD5_code(args["old_password"]):
+    if "old_password" in args and obj.password == com_tool.get_MD5_code(
+            args["old_password"]):
         if "new_password" in args:
             new_passwd = com_tool.get_MD5_code(args["new_password"])
             obj.password = new_passwd
@@ -129,15 +135,50 @@ def update_user_roles():
 def user_roles_list():
     user_id = request.args.get("user_id")
 
-    list = Role.query.join(UserRole, UserRole.role_id == Role.id).filter(
-        UserRole.user_id == user_id).all()
+    list = Role.query.join(
+        UserRole,
+        UserRole.role_id == Role.id).filter(UserRole.user_id == user_id).all()
     return JsonResult.queryResult(list)
 
 
-@blueprint.route('/current', methods=['GET'])
-@require_oauth('profile')
-def current_user():
-    if current_token:
-        return jsonify(get_user_extend_info(current_token.user))
-    else:
-        return JsonResult.error()
+# 鹏华
+if get_user_pattern() == ConfigDefine.UserPattern.phfund:
+
+    @blueprint.route('/current', methods=['GET'])
+    def current_user():
+        from flask import current_app, request
+
+        # todo
+        data = {
+            "userId": 1341,
+            "username": "x_wuhanchu",
+            "realname": "吴汉楚",
+            "email": "x_wuhanchu@phfund.com.cn",
+            "mobilePhone": "",
+            "fixedPhone": "",
+            "company": "",
+            "department": "",
+            "title": "",
+            "userStatus": "正常",
+            "sortNumber": "0"
+        }
+        # url = urllib.parse.urljoin(
+        #     current_app.config.get(ConfigDefine.USER_SERVER_URL),
+        #     "/user/operation/detail_info")
+        # response = requests.get(url, headers=request.headers)
+        #
+        # data = response.json()
+        data = PhfundUserSchema().load(data)
+        return jsonify(data)
+
+
+# 默认
+else:
+
+    @blueprint.route('/current', methods=['GET'])
+    @require_oauth('profile')
+    def current_user():
+        if current_token:
+            return jsonify(get_user_extend_info(current_token.user))
+        else:
+            return JsonResult.error()
