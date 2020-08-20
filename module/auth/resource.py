@@ -94,7 +94,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         response = requests.get(url, headers=request.headers)
         result = response.json()
         if result.get("httpcode"):
-            return None, result.get("httpcode")
+            return result.get("message"), result.get("httpcode")
 
         result = PhfundUserSchema().loads(response.json())
         return jsonify(result)
