@@ -149,25 +149,25 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         from flask import current_app, request
 
         # todo
-        data = {
-            "userId": 1341,
-            "username": "x_wuhanchu",
-            "realname": "吴汉楚",
-            "email": "x_wuhanchu@phfund.com.cn",
-            "mobilePhone": "",
-            "fixedPhone": "",
-            "company": "",
-            "department": "",
-            "title": "",
-            "userStatus": "正常",
-            "sortNumber": "0"
-        }
-        # url = urllib.parse.urljoin(
-        #     current_app.config.get(ConfigDefine.USER_SERVER_URL),
-        #     "/user/operation/detail_info")
-        # response = requests.get(url, headers=request.headers)
-        #
-        # data = response.json()
+        # data = {
+        #     "userId": 1341,
+        #     "username": "x_wuhanchu",
+        #     "realname": "吴汉楚",
+        #     "email": "x_wuhanchu@phfund.com.cn",
+        #     "mobilePhone": "",
+        #     "fixedPhone": "",
+        #     "company": "",
+        #     "department": "",
+        #     "title": "",
+        #     "userStatus": "正常",
+        #     "sortNumber": "0"
+        # }
+        url = urllib.parse.urljoin(
+            current_app.config.get(ConfigDefine.USER_SERVER_URL),
+            "/user/operation/detail_info")
+        response = requests.get(url, headers=request.headers)
+
+        data = response.json()
         data = PhfundUserSchema().load(data)
         return jsonify(data)
 
