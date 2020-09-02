@@ -31,7 +31,7 @@ class LadpServer():
     
         # org_base = ','.join(['OU=' + ou for ou in org.split('.')]) + ',' + self.DC
 
-        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(objectCategory=person)',
+        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter="(&(objectCategory=person))",
                                attributes=att_list,search_scope=SUBTREE,generator=True)
 
         if res:
@@ -50,8 +50,9 @@ class LadpServer():
         
         # org_base = ','.join(['OU=' + ou for ou in org.split('.')]) + ',' + self.DC
 
-        
-        res = self.conn.search(search_base=self.DC, search_filter='(objectCategory=group)', attributes=ALL_ATTRIBUTES)
+        # res = self.conn.search(search_base=self.DC, search_filter='(objectCategory=group)', attributes=att_list)
+
+        res = self.conn.search(search_base=self.DC, search_filter='(&(objectCategory=group))', attributes=att_list)
         if res:
             return [item.get("attributes") for item in self.conn.response ] 
 
