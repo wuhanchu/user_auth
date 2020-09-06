@@ -93,6 +93,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
 
     from celery.schedules import crontab
+    CHECK_API = False
 
     # module
     ENABLED_MODULE = [
