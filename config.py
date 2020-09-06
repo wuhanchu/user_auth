@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -9,6 +10,7 @@ class ConfigDefine:
     # 用户服务信息
     USER_PATTERN = "USER_PATTERN"  # 用户服务模式
     USER_SERVER_URL = "USER_SERVER_URL"  # 用户服务地址
+    CELERY_SCHEDULE = "CELERY_SCHEDULE"  # 定时任务
 
     class UserPattern:
         standard = "standard"  # 标准
@@ -57,21 +59,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
-    # schedule jobs
-    JOBS = [
-        {
-            'id': 'job_check_item',
-            'func': 'extensions.scheduler:job_check_project_item',
-            # 'trigger': 'interval',
-            # 'seconds': 60,
-            'trigger': 'cron',
-            'hour': 0,
-            'minute': 0,
-            'second': 0
-
-        }
-    ]
-
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
 
@@ -87,7 +74,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
                                              'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
 
-    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32049")
+    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32061")
 
 
 class TestingConfig(Config):
@@ -100,8 +87,29 @@ class ProductionConfig(Config):
 
 class DevelopmentPhfundConfig(DevelopmentConfig):
     """鹏华的运行配置"""
+
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
+
+    from celery.schedules import crontab
+
+    # module
+    ENABLED_MODULE = [
+        'permission',
+        'user',
+        'role',
+        'auth',
+        'license',
+        'phfund'
+    ]
+
+    # schedule jobs
+    CELERY_SCHEDULE = {
+        "user_job_sync_ldap": {
+            "task": "module.phfund.task.job_sync_ldap",
+            "schedule": timedelta(seconds=10)
+        },
+    }
 
 
 class ProductionPhfundConfig(ProductionConfig):

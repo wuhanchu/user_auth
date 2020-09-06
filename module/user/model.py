@@ -13,7 +13,7 @@ class User(BaseModel, db.Model):
     __tablename__ = 'user'
     __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
 
-    id = Column(INTEGER(11), primary_key=True)
+    id = Column(INTEGER(11), primary_key=True, autoincrement=True)
 
     def get_user_id(self):
         return self.id
@@ -22,7 +22,7 @@ class User(BaseModel, db.Model):
 class UserRole(BaseModel, db.Model):
     __tablename__ = 'user_role'
 
-    id = Column(INTEGER(11), primary_key=True)
+    id = Column(INTEGER(11), primary_key=True, autoincrement=True)
     user_id = Column(ForeignKey(db_schema + '.user.id'), index=True)
     role_id = Column(ForeignKey(db_schema + '.role.id'), index=True)
 
@@ -30,3 +30,9 @@ class UserRole(BaseModel, db.Model):
                         primaryjoin=remote(Role.id) == foreign(role_id))
     user = relationship('User',
                         primaryjoin=remote(User.id) == foreign(user_id))
+
+
+class Department(BaseModel, db.Model):
+    __tablename__ = 'department'
+    __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
+    id = Column(INTEGER(11), primary_key=True, autoincrement=True)

@@ -7,7 +7,6 @@ from frame.util import param_tool
 from module.auth.extension.oauth2 import require_oauth
 # 权限列表
 from module.permission import blueprint
-from run import app
 from ..model import *
 
 
@@ -99,6 +98,8 @@ def permission_sql():
 
 @blueprint.route('/permission_eoapi', methods=['GET'])
 def permission_eoapi():
+    from run import app
+
     data = {
         "baseInfo": {
             "apiName": "",

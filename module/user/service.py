@@ -17,6 +17,13 @@ def get_user_extend_info(user_record):
     user.pop("del_fg")
     user.pop("token")
 
+    append_permission(user)
+    append_permission_scope(user)
+
+    return user
+
+
+def append_permission(data):
     sql = f"""
             SET search_path to {db_schema};
             select 
@@ -34,10 +41,13 @@ def get_user_extend_info(user_record):
                      join user_role ur on r.id = ur.role_id
             where ur.user_id = '%s'
             group by p.product_key,p.name, p.url, p.method, p.key;
-        """ % user["id"]
+        """ % data["id"]
 
     res = db.session.execute(sql).fetchall()
-    user["permissions"] = queryToDict(res)
+    data["permissions"] = queryToDict(res)
+
+
+def append_permission_scope(data):
     sql_group = f"""
                 SET search_path to {db_schema};                    
                 select grp.product_key, grp.name, grp.key
@@ -46,8 +56,7 @@ def get_user_extend_info(user_record):
                          join role r on r.id = grole.role_id
                          join user_role ur on r.id = ur.role_id
                 where ur.user_id = '%s'
-                """ % user["id"]
+                """ % data["id"]
 
     res_group = db.session.execute(sql_group).fetchall()
-    user["permission_scopes"] = queryToDict(res_group)
-    return user
+    data["permission_scopes"] = queryToDict(res_group)

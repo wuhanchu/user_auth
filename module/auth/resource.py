@@ -12,13 +12,14 @@ from .model import *
 from .model import OAuth2Client
 from .. import get_user_pattern
 from ..user.model import User
-from ..user.resource import current_user
 from config import ConfigDefine
 from ..user.schema import PhfundUserSchema
 
 
 @blueprint.route('/', methods=('GET', 'POST'))
 def home():
+    from ..user.resource import current_user
+
     if request.method == 'POST':
         username = request.form.get('username')
         user = User.query.filter_by(loginid=username).first()
@@ -34,6 +35,8 @@ def home():
 
 @blueprint.route('/client', methods=['POST'])
 def create_client():
+    from ..user.resource import current_user
+
     user = current_user()
     user = user.json
     if not user:

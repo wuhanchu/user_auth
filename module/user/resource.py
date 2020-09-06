@@ -15,47 +15,9 @@ from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
 from . import blueprint
 from .schema import PhfundUserSchema
-from .service import get_user_extend_info
+from .service import get_user_extend_info, append_permission, append_permission_scope
 from .. import get_user_pattern
 from ..role.model import Role
-
-
-@blueprint.route('', methods=['GET'])
-@require_oauth('profile')
-def user_get():
-    """
-    用户列表
-    :return:
-    """
-
-    id = request.args.get("id")
-    if id:
-        obj = User.query.get(id)
-        return JsonResult.queryResult(obj)
-
-    q = db.session.query(
-        User.id, User.department_key,
-        func.max(User.name).label("name"),
-        func.max(User.loginid).label("loginid"),
-        func.max(User.telephone).label("telephone"),
-        func.max(User.address).label("address"),
-        func.string_agg(func.cast(Role.id, Text),
-                        ',').label("roles")).outerjoin(
-        UserRole, UserRole.user_id == User.id).outerjoin(
-        Role,
-        Role.id == UserRole.role_id).group_by(User.id)
-
-    name = request.args.get("name")
-    if name is not None:
-        q = q.filter(User.name.like("%" + name.split(".")[-1] + "%"))
-    # q = q.order_by(User.name.desc())
-    offset = int(request.args.get('offset'))
-    limit = int(request.args.get('limit'))
-    sort = request.args.get('sort')
-    if sort is None:
-        sort = "-id"
-    res, total = sql_tool.model_page(q, limit, offset, sort)
-    return JsonResult.res_page(res, total)
 
 
 @blueprint.route('', methods=['POST'])
@@ -148,10 +110,11 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
     def current_user():
         from flask import current_app, request
 
-        # todo
+        # 调用服务器获取当前数据
+        #
         # data = {
         #     "userId": 1341,
-        #     "username": "x_wuhanchu",
+        #     "username": "biaozhu",
         #     "realname": "吴汉楚",
         #     "email": "x_wuhanchu@phfund.com.cn",
         #     "mobilePhone": "",
@@ -162,6 +125,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         #     "userStatus": "正常",
         #     "sortNumber": "0"
         # }
+
         url = urllib.parse.urljoin(
             current_app.config.get(ConfigDefine.USER_SERVER_URL),
             "/user/operation/detail_info")
@@ -169,6 +133,16 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 
         data = response.json()
         data = PhfundUserSchema().load(data)
+
+        # 查询本地数据
+        user_record = User.query.filter_by(loginid=data.get("loginid")).first()
+        data["id"] = user_record.id
+
+        # 附加权限
+        append_permission(data)
+        append_permission_scope(data)
+
+        # 返回
         return jsonify(data)
 
 
