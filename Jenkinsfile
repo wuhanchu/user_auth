@@ -21,7 +21,7 @@ pipeline {
         SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
         PROXY_SERVER_TEST = "http://192.168.1.34:40020"
         PORT_TEST  = "40016"
-        CELERY_BROKER_DEV = "http://172.17.0.1:31063"
+        CELERY_BROKER_TEST = "http://172.17.0.1:31063"
 
     }
 
@@ -105,7 +105,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_dev']) {
-                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_DEV}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_DEV} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_DEV}  --name ${PROJECT}  server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
+                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_DEV}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_DEV} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_DEV} -e CELERY_BROKER=${CELERY_BROKER_DEV} --name ${PROJECT}  server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
                         }
                     }
                 }
@@ -118,7 +118,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_test']) {
-                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_TEST}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_TEST} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_TEST} -e FLASK_CONFIG=testing --name ${PROJECT} server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
+                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_TEST}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_TEST} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_TEST}  -e CELERY_BROKER=${CELERY_BROKER_TEST}  -e FLASK_CONFIG=testing --name ${PROJECT} server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
                         }
                     }
                 }

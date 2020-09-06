@@ -61,6 +61,7 @@ class Config:
 
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
+    CELERY_BROKER = os.environ.get('CELERY_BROKER')
 
 
 class DevelopmentConfig(Config):
