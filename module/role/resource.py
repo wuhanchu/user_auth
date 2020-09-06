@@ -16,7 +16,6 @@ from . import blueprint
 
 # 角色列表
 @blueprint.route('', methods=['GET'])
-@require_oauth('profile')
 def role_list():
     id = request.args.get("id")
     if id:

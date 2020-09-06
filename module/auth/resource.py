@@ -95,6 +95,10 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
             current_app.config.get(ConfigDefine.USER_SERVER_URL),
             "/authentication/revoke_token")
         response = requests.get(url, headers=request.headers)
+        result = response.json()
+        if result.get("httpcode"):
+            return result.get("message"), result.get("httpcode")
+
         result = PhfundUserSchema().loads(response.json())
         return jsonify(result)
 
