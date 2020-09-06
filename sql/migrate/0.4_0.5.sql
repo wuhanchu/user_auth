@@ -40,4 +40,5 @@ ALTER TABLE "user"
 
 ALTER TABLE "user"
     ADD CONSTRAINT "external_pk" UNIQUE ("source", "external_id");
-UPDATE "param" SET name = '版本', value = '0.4' WHERE key = 'version';
+
+UPDATE "param" SET name = '版本', value = '0.5' WHERE key = 'version';
