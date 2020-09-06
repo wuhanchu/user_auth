@@ -1,5 +1,5 @@
 -r frame/requirements.txt
 celery~=4.4.7
 redis~=3.3.8
-ldap~=2.8
+ldap3~=2.8
 celery_once~=3.0.1
