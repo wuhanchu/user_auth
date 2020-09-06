@@ -6,6 +6,7 @@ from extension.celery import celery
 
 
 # from celery_once import QueueOnce
+from extension.ldap import LadpServer
 
 
 @celery.task(base=QueueOnce)
@@ -23,15 +24,15 @@ def job_sync_ldap():
     from module.user.model import Department
     try:
 
-        # operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
-        # department_list = operation.get_all_group_info()
-        # user_list = operation.get_all_user_info()
-        with open("test/data/group.json") as file_obj:
-            department_list = json.load(file_obj)
-            department_list = DepartmentSchema(many=True).load(department_list)
-        with open("test/data/user.json") as file_obj:
-            user_list = json.load(file_obj)
-            user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
+        operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
+        department_list = operation.get_all_group_info()
+        user_list = operation.get_all_user_info()
+        # with open("test/data/group.json") as file_obj:
+        #     department_list = json.load(file_obj)
+        #     department_list = DepartmentSchema(many=True).load(department_list)
+        # with open("test/data/user.json") as file_obj:
+        #     user_list = json.load(file_obj)
+        #     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
 
         # 使用
         department_map = {}
