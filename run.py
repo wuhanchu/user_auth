@@ -1,7 +1,6 @@
 # encoding: utf-8
 from extension import celery
 from extension import marshmallow
-from extension import scheduler
 
 from frame.app import create_app
 import argparse
