@@ -2,7 +2,6 @@
 
 import codecs
 
-import pysnooper
 from ldap3 import Server, Connection, ALL, SUBTREE
 
 
@@ -19,7 +18,6 @@ class LadpServer():
         self.server = Server(self.domain, use_ssl=True, get_info=ALL)
         self.conn = Connection(self.server, user=self.pre + '\\' + self.user, password=self.password, auto_bind=True)
 
-    @pysnooper.snoop()
     def get_all_user_info(self):
         """
         查询组织下的用户
@@ -37,7 +35,6 @@ class LadpServer():
             print('查询失败: ', self.conn.result['description'])
             return None
 
-    @pysnooper.snoop()
     def get_all_group_info(self):
         """
         查询组织下的组
