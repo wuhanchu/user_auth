@@ -76,9 +76,6 @@ def job_sync_ldap():
                 item.department_key = [department_map[item].key for item in data.get("memberOf") if
                                        department_map.get(item)]
 
-            if not item.department_key or item.department_key < 1:
-                continue
-
             record = User.query.filter_by(source='phfund', external_id=item.external_id).first()
             if record:
                 item.id = record.id
@@ -93,7 +90,7 @@ def job_sync_ldap():
 
 
 def get_members(item, department_map):
-    result = []
+    result = [item]
 
     if not item:
         return result
@@ -105,7 +102,6 @@ def get_members(item, department_map):
     for member_key in data.get("member"):
         member = department_map.get(member_key)
         if member:
-            result.append(member)
             result = result + get_members(member, department_map)
 
     return result
