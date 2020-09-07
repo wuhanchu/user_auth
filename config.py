@@ -110,7 +110,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     CELERY_SCHEDULE = {
         "user_job_sync_ldap": {
             "task": "module.phfund.task.job_sync_ldap",
-            "schedule": timedelta(minutes=os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 60))
+            "schedule": timedelta(minutes=int(os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 1)))
         },
     }
 

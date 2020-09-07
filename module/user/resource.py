@@ -4,6 +4,7 @@ import urllib.parse
 import requests
 from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
+from flask_restplus._http import HTTPStatus
 from sqlalchemy import func, Text
 
 from config import ConfigDefine
@@ -146,7 +147,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
             # 返回
             return jsonify(data)
         except Exception as e:
-            return JsonResult.error()
+            return {'message': "查找不到用户"}, HTTPStatus.UNAUTHORIZED
 
 # 默认
 else:

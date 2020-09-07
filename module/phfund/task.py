@@ -27,10 +27,11 @@ def job_sync_ldap():
     user_list = operation.get_all_user_info()
     # with open("test/data/group.json") as file_obj:
     #     department_list = json.load(file_obj)
-    #     department_list = DepartmentSchema(many=True).load(department_list)
     # with open("test/data/user.json") as file_obj:
     #     user_list = json.load(file_obj)
-    #     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
+
+    department_list = DepartmentSchema(many=True).load(department_list)
+    user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
 
     # 使用
     department_map = {}
