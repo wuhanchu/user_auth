@@ -11,6 +11,7 @@ class ConfigDefine:
     USER_PATTERN = "USER_PATTERN"  # 用户服务模式
     USER_SERVER_URL = "USER_SERVER_URL"  # 用户服务地址
     CELERY_SCHEDULE = "CELERY_SCHEDULE"  # 定时任务
+    LDAP_INTERVAL_MINUTE = "LDAP_INTERVAL_MINUTE"  # 定时任务
 
     class UserPattern:
         standard = "standard"  # 标准
@@ -109,7 +110,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     CELERY_SCHEDULE = {
         "user_job_sync_ldap": {
             "task": "module.phfund.task.job_sync_ldap",
-            "schedule": timedelta(hours=1)
+            "schedule": timedelta(minutes=os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 60))
         },
     }
 

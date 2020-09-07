@@ -23,7 +23,8 @@ def home():
     if request.method == 'POST':
         username = request.form.get('username')
         user = User.query.filter_by(loginid=username).first()
-        session['id'] = user.id
+        if user:
+            session['id'] = user.id
         return redirect('/oauth')
     user = current_user()
     if user:
@@ -56,6 +57,8 @@ def create_client():
 
 @blueprint.route('/authorize', methods=['GET', 'POST'])
 def authorize():
+    from ..user.resource import current_user
+
     user = current_user()
     if request.method == 'GET':
         try:
