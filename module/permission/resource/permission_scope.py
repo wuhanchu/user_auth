@@ -12,6 +12,7 @@ from ..model import *
 
 
 @blueprint.route('/scope', methods=['GET'])
+@require_oauth('profile')
 def permission_scope_list():
     id = request.args.get("id")
     if id:
@@ -39,6 +40,7 @@ def get_permission_scope(id):
 
 # 添加
 @blueprint.route('/scope', methods=['POST'])
+@require_oauth('profile')
 def add_permission_scope():
     obj = PermissionScope()
     args = request.get_json()
@@ -51,6 +53,7 @@ def add_permission_scope():
 
 # 更新， PUT:全部字段 ；PATCH:部分字段
 @blueprint.route('/scope/<id>', methods=['PATCH'])
+@require_oauth('profile')
 def update_permission_scope(id):
     obj = PermissionScope.query.get(id)
     if obj is None:
@@ -63,6 +66,7 @@ def update_permission_scope(id):
 
 
 @blueprint.route('/scope', methods=['DELETE'])
+@require_oauth('profile')
 def del_permission_scope(id):
     """
     删除
@@ -80,6 +84,7 @@ def del_permission_scope(id):
 
 
 @blueprint.route('/scope/detail', methods=['GET'])
+@require_oauth('profile')
 def get_group_permissions():
     permission_scope_key = request.args.get("permission_scope_key")
     q = Permission.query.join(PermissionScopeRetail,
@@ -90,6 +95,7 @@ def get_group_permissions():
 
 
 @blueprint.route('/scope/detail', methods=['PUT'])
+@require_oauth('profile')
 def update_group_permissions():
     args = request.get_json()
     permission_scope_key = request.args.get("permission_scope_key")

@@ -22,6 +22,7 @@ from ..role.model import Role
 
 
 @blueprint.route('', methods=['POST'])
+@require_oauth('profile')
 def add_user():
     """
     增加用户
@@ -44,6 +45,7 @@ def add_user():
 
 
 @blueprint.route('/password', methods=['PUT'])
+@require_oauth('profile')
 def update_user_password():
     """
     # 修改密码
@@ -70,6 +72,7 @@ def update_user_password():
 
 
 @blueprint.route('/role', methods=['PUT'])
+@require_oauth('profile')
 def update_user_roles():
     data = request.get_json()
     user_id = get_args_delete_prefix(request.args.get("id", ""))
@@ -91,6 +94,7 @@ def update_user_roles():
 
 
 @blueprint.route('/role', methods=['GET'])
+@require_oauth('profile')
 def user_roles_list():
     user_id = request.args.get("user_id")
 
@@ -149,6 +153,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 else:
 
     @blueprint.route('/current', methods=['GET'])
+    @require_oauth('profile')
     def current_user():
         if current_token:
             return jsonify(get_user_extend_info(current_token.user))

@@ -9,7 +9,11 @@ class ConfigDefine:
 
     # 用户服务信息
     USER_PATTERN = "USER_PATTERN"  # 用户服务模式
+
     USER_SERVER_URL = "USER_SERVER_URL"  # 用户服务地址
+    USER_SERVER_ACCOUNT = "USER_SERVER_ACCOUNT"  # 用户服务账号
+    USER_SERVER_PASSWORD = "USER_SERVER_PASSWORD"  # 用户服务密码
+
     CELERY_SCHEDULE = "CELERY_SCHEDULE"  # 定时任务
     LDAP_INTERVAL_MINUTE = "LDAP_INTERVAL_MINUTE"  # 定时任务
 
@@ -92,7 +96,8 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
 
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
-
+    USER_SERVER_ACCOUNT = os.environ.get(ConfigDefine.USER_SERVER_ACCOUNT, "linchengcao")
+    USER_SERVER_PASSWORD = os.environ.get(ConfigDefine.USER_SERVER_PASSWORD, "Qq1612226490")
     from celery.schedules import crontab
     CHECK_API = False
 
@@ -119,6 +124,7 @@ class ProductionPhfundConfig(DevelopmentPhfundConfig):
     """鹏华的运行配置"""
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "https://auth.phfund.com.cn")  # 独立用户服务地址
+
 
 
 config = {
