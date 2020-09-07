@@ -43,8 +43,7 @@ class LadpServer():
         att_list = ['objectGUID','name','sAMAccountName', 'displayName', 'description','mail','memberOf','distinguishedName','objectClass']
 
         res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))', attributes=att_list)
-        
-        print(self.conn.response)
+
         if res:
             return [dict(item.get("attributes")) for item in res if item.get("attributes")]
 
