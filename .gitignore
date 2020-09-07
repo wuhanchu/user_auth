@@ -5,3 +5,5 @@
 /log
 /logs
 service.sh
+/celerybeat.pid
+/celerybeat-schedule

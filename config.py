@@ -115,7 +115,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     }
 
 
-class ProductionPhfundConfig(ProductionConfig):
+class ProductionPhfundConfig(DevelopmentPhfundConfig):
     """鹏华的运行配置"""
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "https://auth.phfund.com.cn")  # 独立用户服务地址

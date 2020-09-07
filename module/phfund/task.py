@@ -4,7 +4,6 @@ from celery_once import QueueOnce
 
 from extension.celery import celery
 
-
 # from celery_once import QueueOnce
 from extension.ldap import LadpServer
 
@@ -22,26 +21,26 @@ def job_sync_ldap():
     from module.user.model import User
 
     from module.user.model import Department
-    try:
 
-        operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
-        department_list = operation.get_all_group_info()
-        user_list = operation.get_all_user_info()
-        # with open("test/data/group.json") as file_obj:
-        #     department_list = json.load(file_obj)
-        #     department_list = DepartmentSchema(many=True).load(department_list)
-        # with open("test/data/user.json") as file_obj:
-        #     user_list = json.load(file_obj)
-        #     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
+    operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
+    department_list = operation.get_all_group_info()
+    user_list = operation.get_all_user_info()
+    # with open("test/data/group.json") as file_obj:
+    #     department_list = json.load(file_obj)
+    #     department_list = DepartmentSchema(many=True).load(department_list)
+    # with open("test/data/user.json") as file_obj:
+    #     user_list = json.load(file_obj)
+    #     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
 
-        # 使用
-        department_map = {}
-        for item in department_list:
-            data = json.loads(item.remark)
-            department_map[data.get("distinguishedName")] = item
+    # 使用
+    department_map = {}
+    for item in department_list:
+        data = json.loads(item.remark)
+        department_map[data.get("distinguishedName")] = item
 
-        # 循环生成 key
-        for item in department_list:
+    # 循环生成 key
+    for item in department_list:
+        try:
             item.key = create_key(item, department_map)
             record = Department.query.filter_by(source='phfund', external_id=item.external_id).first()
             if record:
@@ -50,12 +49,14 @@ def job_sync_ldap():
             else:
                 db.session.add(item)
 
-        # db.session.commit()
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flask_app.logger.error(e)
 
-        # 处理用户
-        cumulative_number = 0  # 累计处理数目
-        for item in user_list:
-
+    # 处理用户
+    for item in user_list:
+        try:
             data = json.loads(item.remark)
             if data.get("memberOf") and len(data.get("memberOf")) >= 1:
                 item.department_key = [department_map[item].key for item in data.get("memberOf")]
@@ -67,16 +68,10 @@ def job_sync_ldap():
             else:
                 db.session.add(item)
 
-            # 定量提交
-            cumulative_number += 1
-            if cumulative_number % 100 == 0:
-                db.session.commit()
-                cumulative_number = 0
-
-        db.session.commit()
-    except Exception as e:
-        flask_app.logger.error(e)
-        db.session.rollback()
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flask_app.logger.error(e)
 
 
 def create_key(item, department_map):
