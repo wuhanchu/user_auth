@@ -60,7 +60,6 @@ def add_role():
 
 # PUT:全部字段 ；PATCH:部分字段
 @blueprint.route('', methods=['PATCH'])
-@require_oauth('profile')
 def update_role():
     id = request.args.get("id")
     obj = Role.query.get(id)
@@ -76,7 +75,6 @@ def update_role():
 
 
 @blueprint.route('/permission', methods=['GET'])
-@require_oauth('profile')
 def role_permissions_list():
     role_id = request.args.get("role_id")
     q = Permission.query.join(PermissionScopeRetail, PermissionScopeRetail.permission_key == Permission.key) \
@@ -88,7 +86,6 @@ def role_permissions_list():
 
 
 @blueprint.route('/permission_scope', methods=['GET'])
-@require_oauth('profile')
 def role_permission_scopes_list():
     role_id = get_args_delete_prefix(request.args.get("role_id"))
 

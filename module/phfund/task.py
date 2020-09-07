@@ -19,10 +19,13 @@ def job_sync_ldap():
     from module.phfund.schema import DepartmentSchema
     from frame.extension.database import db
     from module.user.model import User
-
+    from config import ConfigDefine
     from module.user.model import Department
 
-    operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
+    operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_URL),
+                           flask_app.config.get(ConfigDefine.USER_SERVER_ACCOUNT),
+                           flask_app.config.get(ConfigDefine.USER_SERVER_PASSWORD))
+
     department_list = operation.get_all_group_info()
     user_list = operation.get_all_user_info()
     # with open("test/data/group.json") as file_obj:
