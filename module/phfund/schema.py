@@ -61,7 +61,7 @@ class DepartmentSchema(ma.SQLAlchemySchema, BaseSchema):
         unknown = EXCLUDE
         load_instance = True
 
-    name = ma.auto_field(data_key="displayName")
+    name = ma.auto_field(data_key="name")
     external_id = ma.Method(data_key="objectGUID", deserialize="load_external_id")
     source = ma.auto_field(default="phfund")
 
