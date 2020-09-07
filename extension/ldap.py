@@ -32,9 +32,9 @@ class LadpServer():
                                                      attributes=att_list, search_scope=SUBTREE, generator=True)
 
         if res:
-            return [item.get("attributes") for item in res]
+            return [dict(item.get("attributes")) for item in res if item.get("attributes")]
         else:
-            print('查询失败: ', self.conn.result['description'])
+            print('查询失败: ', self.conn.result['description'] )
             return None
 
     @pysnooper.snoop()
@@ -45,16 +45,18 @@ class LadpServer():
         """
         att_list = ['objectGUID','name','sAMAccountName', 'displayName', 'description','mail','memberOf','distinguishedName','objectClass']
 
-        res = self.conn.search(search_base=self.DC, search_filter='(&(objectCategory=group))', attributes=att_list)
+        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))', attributes=att_list)
+        
+        print(self.conn.response)
         if res:
-            return [item.get("attributes") for item in self.conn.response]
+            return [dict(item.get("attributes")) for item in res if item.get("attributes")]
 
         else:
             print('查询失败: ', self.conn.result['description'])
 
 
 if __name__ == '__main__':
-    operation = LadpServer("ad.phfund.com.cn", "linchengcao", "Qq1612226490@")
+    operation = LadpServer("ad.phfund.com.cn", "x_wuhanchu", "DATAknown1234")
     with codecs.open("./temp/user.json", "w", 'utf-8') as file:
         file.write(str(operation.get_all_user_info()))
     with codecs.open("./temp/group.json", "w", 'utf-8') as file:
