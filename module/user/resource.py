@@ -125,26 +125,28 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         #     "userStatus": "正常",
         #     "sortNumber": "0"
         # }
+        try:
 
-        url = urllib.parse.urljoin(
-            current_app.config.get(ConfigDefine.USER_SERVER_URL),
-            "/user/operation/detail_info")
-        response = requests.get(url, headers=request.headers)
+            url = urllib.parse.urljoin(
+                current_app.config.get(ConfigDefine.USER_SERVER_URL),
+                "/user/operation/detail_info")
+            response = requests.get(url, headers=request.headers)
 
-        data = response.json()
-        data = PhfundUserSchema().load(data)
+            data = response.json()
+            data = PhfundUserSchema().load(data)
 
-        # 查询本地数据
-        user_record = User.query.filter_by(loginid=data.get("loginid")).first()
-        data["id"] = user_record.id
+            # 查询本地数据
+            user_record = User.query.filter_by(loginid=data.get("loginid")).first()
+            data["id"] = user_record.id
 
-        # 附加权限
-        append_permission(data)
-        append_permission_scope(data)
+            # 附加权限
+            append_permission(data)
+            append_permission_scope(data)
 
-        # 返回
-        return jsonify(data)
-
+            # 返回
+            return jsonify(data)
+        except Exception as e:
+            return JsonResult.error()
 
 # 默认
 else:
