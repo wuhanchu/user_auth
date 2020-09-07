@@ -22,18 +22,17 @@ def job_sync_ldap():
     from config import ConfigDefine
     from module.user.model import Department
 
-    # todo
-    # operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_URL),
-    #                        flask_app.config.get(ConfigDefine.USER_SERVER_ACCOUNT),
-    #                        flask_app.config.get(ConfigDefine.USER_SERVER_PASSWORD))
-    #
-    # department_list = operation.get_all_group_info()
-    # user_list = operation.get_all_user_info()
+    operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_URL),
+                           flask_app.config.get(ConfigDefine.USER_SERVER_ACCOUNT),
+                           flask_app.config.get(ConfigDefine.USER_SERVER_PASSWORD))
 
-    with open("test/data/group.json") as file_obj:
-        department_list = json.load(file_obj)
-    with open("test/data/user.json") as file_obj:
-        user_list = json.load(file_obj)
+    department_list = operation.get_all_group_info()
+    user_list = operation.get_all_user_info()
+
+    # with open("test/data/group.json") as file_obj:
+    #     department_list = json.load(file_obj)
+    # with open("test/data/user.json") as file_obj:
+    #     user_list = json.load(file_obj)
 
     department_list = DepartmentSchema(many=True).load(department_list)
     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
