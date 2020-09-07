@@ -22,7 +22,7 @@ def job_sync_ldap():
     from config import ConfigDefine
     from module.user.model import Department
 
-    operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_URL),
+    operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_LDAP),
                            flask_app.config.get(ConfigDefine.USER_SERVER_ACCOUNT),
                            flask_app.config.get(ConfigDefine.USER_SERVER_PASSWORD))
 

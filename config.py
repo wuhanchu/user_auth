@@ -11,8 +11,9 @@ class ConfigDefine:
     USER_PATTERN = "USER_PATTERN"  # 用户服务模式
 
     USER_SERVER_URL = "USER_SERVER_URL"  # 用户服务地址
-    USER_SERVER_ACCOUNT = "USER_SERVER_ACCOUNT"  # 用户服务账号
-    USER_SERVER_PASSWORD = "USER_SERVER_PASSWORD"  # 用户服务密码
+    USER_SERVER_LDAP = "USER_SERVER_LDAP"  # LDAP 服务器
+    USER_SERVER_ACCOUNT = "USER_SERVER_ACCOUNT"  # LDAP服务账号
+    USER_SERVER_PASSWORD = "USER_SERVER_PASSWORD"  # LDAP服务密码
 
     CELERY_SCHEDULE = "CELERY_SCHEDULE"  # 定时任务
     LDAP_INTERVAL_MINUTE = "LDAP_INTERVAL_MINUTE"  # 定时任务
@@ -98,8 +99,9 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
 
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "http://passport.dev.phfund.com.cn")  # 独立用户服务地址
-    USER_SERVER_ACCOUNT = os.environ.get(ConfigDefine.USER_SERVER_ACCOUNT, "linchengcao")
-    USER_SERVER_PASSWORD = os.environ.get(ConfigDefine.USER_SERVER_PASSWORD, "Qq1612226490")
+    USER_SERVER_LDAP = os.environ.get(ConfigDefine.USER_SERVER_LDAP, "ad.phfund.com.cn")
+    USER_SERVER_ACCOUNT = os.environ.get(ConfigDefine.USER_SERVER_ACCOUNT, "x_wuhanchu")
+    USER_SERVER_PASSWORD = os.environ.get(ConfigDefine.USER_SERVER_PASSWORD, "DATAknown1234")
     from celery.schedules import crontab
     CHECK_API = False
 
