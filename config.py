@@ -26,6 +26,8 @@ class ConfigDefine:
 
 
 class Config:
+    CHECK_API = False
+
     # project
     PRODUCT_KEY = "user_auth"
     SECRET_KEY = 'z_markgo'
@@ -112,10 +114,11 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     ]
 
     # schedule jobs
+    minutes = int(os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 1))
     CELERY_SCHEDULE = {
         "user_job_sync_ldap": {
             "task": "module.phfund.task.job_sync_ldap",
-            "schedule": timedelta(minutes=int(os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 1)))
+            "schedule": timedelta(minutes=minutes)
         },
     }
 
@@ -124,7 +127,6 @@ class ProductionPhfundConfig(DevelopmentPhfundConfig):
     """鹏华的运行配置"""
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.phfund)  # 用户服务模式
     USER_SERVER_URL = os.environ.get(ConfigDefine.USER_SERVER_URL, "https://auth.phfund.com.cn")  # 独立用户服务地址
-
 
 
 config = {

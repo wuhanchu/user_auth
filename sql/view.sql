@@ -1,6 +1,7 @@
-drop view IF EXISTS permission_role;
+drop view IF EXISTS permission_role cascade;
+drop view IF EXISTS user_extend cascade;
 
-create or replace view permission_role(name, url, method, role_ids, role_names) as
+create or replace view permission_role as
 SELECT permission.name,
        permission.url,
        permission.method,
@@ -12,3 +13,9 @@ FROM permission
          JOIN role_permission_scope ON role_permission_scope.permission_scope_key::text = permission_scope.key::text
          JOIN role ON role.id = role_permission_scope.role_id
 GROUP BY permission.name, permission.url, permission.method;
+
+create or replace view user_extend as
+select "user".*, array_agg(ur.role_id) as roles
+from "user"
+         left join user_role ur on "user".id = ur.user_id
+group by "user".id

@@ -24,15 +24,17 @@ class LadpServer():
         org: 组织，格式为：aaa.bbb 即bbb组织下的aaa组织，不包含域地址
         """
 
-        att_list = ['objectGUID','name','uid','title','sAMAccountName','mobile','userAccountControl','displayName', 'description','mail','memberOf','distinguishedName','objectClass']
+        att_list = ['objectGUID', 'name', 'uid', 'title', 'sAMAccountName', 'mobile', 'userAccountControl',
+                    'displayName', 'description', 'mail', 'memberOf', 'distinguishedName', 'objectClass']
 
-        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter="(&(objectCategory=person)(objectClass=organizationalPerson))",
+        res = self.conn.extend.standard.paged_search(search_base=self.DC,
+                                                     search_filter="(&(objectCategory=person)(objectClass=organizationalPerson))",
                                                      attributes=att_list, search_scope=SUBTREE, generator=True)
 
         if res:
             return [dict(item.get("attributes")) for item in res if item.get("attributes")]
         else:
-            print('查询失败: ', self.conn.result['description'] )
+            print('查询失败: ', self.conn.result['description'])
             return None
 
     def get_all_group_info(self):
@@ -42,7 +44,8 @@ class LadpServer():
         """
         att_list = ['objectGUID','name','sAMAccountName','member', 'displayName', 'description','mail','memberOf','distinguishedName','objectClass']
 
-        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))', attributes=att_list)
+        res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))',
+                                                     attributes=att_list)
 
         if res:
             return [dict(item.get("attributes")) for item in res if item.get("attributes")]

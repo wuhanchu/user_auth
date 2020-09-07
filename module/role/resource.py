@@ -46,7 +46,6 @@ def get_role(id):
 
 
 @blueprint.route('', methods=['POST'])
-@require_oauth('profile')
 def add_role():
     obj = Role()
     args = request.get_json()
