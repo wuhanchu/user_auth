@@ -2,7 +2,6 @@
 import urllib.parse
 
 import requests
-from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
 from flask_restplus._http import HTTPStatus
 from sqlalchemy import func, Text
@@ -151,6 +150,8 @@ else:
     @blueprint.route('/current', methods=['GET'])
     @require_oauth('profile')
     def current_user():
+        from authlib.integrations.flask_oauth2 import current_token
+
         if current_token:
             return jsonify(get_user_extend_info(current_token.user))
         else:
