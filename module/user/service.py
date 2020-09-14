@@ -2,6 +2,7 @@
 from flask import jsonify
 
 from frame.http.response import queryToDict
+from frame.extension.database import db, db_schema
 
 
 def get_user_extend_info(user_record):
@@ -23,8 +24,6 @@ def get_user_extend_info(user_record):
 
 
 def append_permission(data):
-    from frame.extension.database import db, db_schema
-
     sql = f"""
             SET search_path to {db_schema};
             select 
@@ -45,12 +44,12 @@ def append_permission(data):
         """ % data["id"]
 
     res = db.session.execute(sql).fetchall()
+    db.session.close()
+
     data["permissions"] = queryToDict(res)
 
 
 def append_permission_scope(data):
-    from frame.extension.database import db, db_schema
-
     sql_group = f"""
                 SET search_path to {db_schema};                    
                 select grp.product_key, grp.name, grp.key
@@ -62,4 +61,5 @@ def append_permission_scope(data):
                 """ % data["id"]
 
     res_group = db.session.execute(sql_group).fetchall()
+    db.session.close()
     data["permission_scopes"] = queryToDict(res_group)
