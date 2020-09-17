@@ -35,17 +35,13 @@ def job_sync_ldap():
     #     user_list = json.load(file_obj)
 
     department_list = DepartmentSchema(many=True).load(department_list)
+    department_list = [item for item in department_list if
+                       json.loads(item.remark).get("distinguishedName").endswith(
+                           "OU=鹏华基金,DC=ad,DC=phfund,DC=com,DC=cn")]
+
     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
 
     # 使用
-    department_map = {}
-    for item in department_list:
-        data = json.loads(item.remark)
-        department_map[data.get("distinguishedName")] = item
-
-    department_list = get_members(department_map.get("CN=鹏华基金管理有限公司,OU=邮件群组,OU=鹏华基金,DC=ad,DC=phfund,DC=com,DC=cn"),
-                                  department_map)
-
     department_map = {}
     for item in department_list:
         data = json.loads(item.remark)
@@ -74,6 +70,12 @@ def job_sync_ldap():
             if data.get("memberOf") and len(data.get("memberOf")) >= 1:
                 item.department_key = [department_map[item].key for item in data.get("memberOf") if
                                        department_map.get(item)]
+            else:
+                continue
+
+            # 没有所属机构不处理
+            if not item.department_key or len(item.department_key) < 1:
+                continue
 
             record = User.query.filter_by(source='phfund', external_id=item.external_id).first()
             if record:
