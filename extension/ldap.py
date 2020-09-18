@@ -25,7 +25,7 @@ class LadpServer():
         """
 
         att_list = ['objectGUID', 'name', 'uid', 'title', 'sAMAccountName', 'mobile', 'userAccountControl',
-                    'displayName', 'description', 'mail', 'memberOf', 'distinguishedName', 'objectClass']
+                    'displayName', 'description', 'mail', 'memberOf', 'enabled', 'distinguishedName', 'objectClass']
 
         res = self.conn.extend.standard.paged_search(search_base=self.DC,
                                                      search_filter="(&(objectCategory=person)(objectClass=organizationalPerson))",
@@ -42,7 +42,8 @@ class LadpServer():
         查询组织下的组
         org: 组织，格式为：aaa.bbb 即bbb组织下的aaa组织，不包含域地址
         """
-        att_list = ['objectGUID','name','sAMAccountName','member', 'displayName', 'description','mail','memberOf','distinguishedName','objectClass']
+        att_list = ['objectGUID', 'name', 'sAMAccountName', 'member', 'displayName', 'description', 'mail', 'memberOf',
+                    'distinguishedName', 'objectClass']
 
         res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))',
                                                      attributes=att_list)
