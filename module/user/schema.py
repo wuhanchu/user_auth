@@ -19,11 +19,11 @@ class PhfundUserSchema(ma.SQLAlchemySchema):
     email = ma.auto_field()
     mobile_phone = ma.auto_field(data_key="mobilePhone")
     department_key = ma.auto_field(data_key="department")
-    enabled = ma.auto_field(data_key="userStatus")
+    enable = ma.auto_field()
 
     @pre_load(pass_many=False)
     def pre_load(self, in_data, **kwargs):
         in_data["department"] = [in_data["department"]] if in_data.get("department") else []
-        in_data["userStatus"] = 1 if in_data.get("userStatus") == "正常" else 0
+        in_data["enable"] = True if in_data.get("userStatus") == "正常" else False
 
         return in_data
