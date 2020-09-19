@@ -71,20 +71,23 @@ def update_user_password():
 @blueprint.route('/role', methods=['PUT'])
 def update_user_roles():
     data = request.get_json()
-    user_id = get_args_delete_prefix(request.args.get("id", ""))
+    user_id_list = get_args_delete_prefix(request.args.get("id", "")).split(",")
     role_ids = data.get("role_ids")
 
-    user_roles = UserRole.query.filter(UserRole.user_id == user_id).all()
-    for role_id in role_ids:
-        # 判断数据库中是否已经存在该用户
-        selected = [ur for ur in user_roles if ur.role_id == role_id]
-        if len(selected) == 0:
-            user_role = UserRole(user_id=user_id, role_id=role_id)
-            db.session.add(user_role)
-        else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
-            user_roles.remove(selected[0])
-    # 删除已经不存在的数据
-    [db.session.delete(user_role) for user_role in user_roles]
+    for user_id in user_id_list:
+        user_roles = UserRole.query.filter(UserRole.user_id == user_id).all()
+        for role_id in role_ids:
+            # 判断数据库中是否已经存在该用户
+            selected = [ur for ur in user_roles if ur.role_id == role_id]
+            if len(selected) == 0:
+                user_role = UserRole(user_id=user_id, role_id=role_id)
+                db.session.add(user_role)
+            else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
+                user_roles.remove(selected[0])
+
+        # 删除已经不存在的数据
+        [db.session.delete(user_role) for user_role in user_roles]
+
     db.session.commit()
     return JsonResult.success("更新用户角色成功！")
 
