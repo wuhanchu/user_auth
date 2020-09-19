@@ -17,6 +17,8 @@ celery.init_app(app)
 
 module.init_app(app)
 
+print(app.url_map)
+
 if __name__ == '__main__':
 
     args = parser.parse_args()
