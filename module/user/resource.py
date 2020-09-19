@@ -137,6 +137,9 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 
             # 查询本地数据
             user_record = User.query.filter_by(loginid=data.get("loginid")).first()
+            if not user_record.enable:
+                return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
+
             data["id"] = user_record.id
 
             # 附加权限
@@ -156,6 +159,8 @@ else:
     def current_user():
         if current_token:
             user = current_token.user
+            if not user.enable:
+                return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
             return jsonify(get_user_extend_info(user))
         else:
             return JsonResult.error()
