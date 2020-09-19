@@ -13,7 +13,7 @@ from .model import OAuth2Client
 from .. import get_user_pattern
 from ..user.model import User
 from config import ConfigDefine
-from ..user.schema import PhfundUserSchema
+
 
 
 @blueprint.route('/', methods=('GET', 'POST'))
@@ -93,6 +93,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
     @blueprint.route('/token', methods=('DELETE',))
     def logout():
         from flask import current_app, request
+        from ..phfund.schema import UserSchema
 
         url = urllib.parse.urljoin(
             current_app.config.get(ConfigDefine.USER_SERVER_URL),
@@ -102,7 +103,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         if result.get("httpcode"):
             return result.get("message"), result.get("httpcode")
 
-        result = PhfundUserSchema().loads(response.json())
+        result = UserSchema().loads(response.json())
         return jsonify(result)
 
 # 默认

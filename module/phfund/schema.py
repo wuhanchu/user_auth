@@ -36,7 +36,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
     mobile_phone = ma.auto_field(data_key="mobile")
     external_id = ma.Method(data_key="objectGUID", deserialize="load_external_id")
     source = ma.auto_field(default="phfund")
-    enabled = ma.auto_field()
+    enable = ma.auto_field()
 
     @pre_load()
     def pre_load(self, in_data, **kwargs):
@@ -45,7 +45,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
 
         in_data["objectGUID"] = self.load_external_id(in_data["objectGUID"])
         in_data["department"] = [in_data["department"]] if in_data.get("department") else []
-        in_data["enabled"] = 0 if in_data.get("userStatus") and bin(in_data.get("userStatus"))[-2] == '1' else 1
+        in_data["enable"] = False if in_data.get("userStatus") and bin(in_data.get("userStatus"))[-2] == '1' else True
         in_data["remark"] = json.dumps(in_data, ensure_ascii=False)
         in_data["source"] = 'phfund'
 
