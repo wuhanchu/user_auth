@@ -3,7 +3,6 @@ import json
 from celery_once import QueueOnce
 
 from extension.celery import celery
-
 # from celery_once import QueueOnce
 from extension.ldap import LadpServer
 
@@ -15,12 +14,7 @@ def job_sync_ldap():
     """
     from extension.celery import flask_app
 
-    from module.phfund.schema import UserSchema
-    from module.phfund.schema import DepartmentSchema
-    from frame.extension.database import db
-    from module.user.model import User
     from config import ConfigDefine
-    from module.user.model import Department
 
     operation = LadpServer(flask_app.config.get(ConfigDefine.USER_SERVER_LDAP),
                            flask_app.config.get(ConfigDefine.USER_SERVER_ACCOUNT),
@@ -28,11 +22,18 @@ def job_sync_ldap():
 
     department_list = operation.get_all_group_info()
     user_list = operation.get_all_user_info()
+    sync_data(department_list, user_list)
 
-    # with open("test/data/group.json") as file_obj:
-    #     department_list = json.load(file_obj)
-    # with open("test/data/user.json") as file_obj:
-    #     user_list = json.load(file_obj)
+
+def sync_data(department_list, user_list):
+    """"""
+    from extension.celery import flask_app
+
+    from module.phfund.schema import UserSchema
+    from module.phfund.schema import DepartmentSchema
+    from frame.extension.database import db
+    from module.user.model import User
+    from module.user.model import Department
 
     department_list = DepartmentSchema(many=True).load(department_list)
     department_list = [item for item in department_list if

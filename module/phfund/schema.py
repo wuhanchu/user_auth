@@ -36,6 +36,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
     mobile_phone = ma.auto_field(data_key="mobile")
     external_id = ma.Method(data_key="objectGUID", deserialize="load_external_id")
     source = ma.auto_field(default="phfund")
+    enabled = ma.auto_field()
 
     @pre_load()
     def pre_load(self, in_data, **kwargs):
@@ -44,7 +45,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema, BaseSchema):
 
         in_data["objectGUID"] = self.load_external_id(in_data["objectGUID"])
         in_data["department"] = [in_data["department"]] if in_data.get("department") else []
-        in_data["userStatus"] = 0 if in_data.get("userStatus") == 514 else 1
+        in_data["enabled"] = 0 if in_data.get("userStatus") and bin(in_data.get("userStatus"))[-2] == '1' else 1
         in_data["remark"] = json.dumps(in_data, ensure_ascii=False)
         in_data["source"] = 'phfund'
 
@@ -64,6 +65,7 @@ class DepartmentSchema(ma.SQLAlchemySchema, BaseSchema):
     name = ma.auto_field(data_key="name")
     external_id = ma.Method(data_key="objectGUID", deserialize="load_external_id")
     source = ma.auto_field(default="phfund")
+    order_no = ma.auto_field(data_key="msDS-HABSeniorityIndex")
 
     @pre_load()
     def pre_load(self, in_data, **kwargs):

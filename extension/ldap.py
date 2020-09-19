@@ -43,7 +43,7 @@ class LadpServer():
         org: 组织，格式为：aaa.bbb 即bbb组织下的aaa组织，不包含域地址
         """
         att_list = ['objectGUID', 'name', 'sAMAccountName', 'member', 'displayName', 'description', 'mail', 'memberOf',
-                    'distinguishedName', 'objectClass']
+                    'distinguishedName', 'objectClass',"msDS-HABSeniorityIndex"]
 
         res = self.conn.extend.standard.paged_search(search_base=self.DC, search_filter='(&(objectCategory=group))',
                                                      attributes=att_list)
