@@ -36,17 +36,18 @@ def sync_data(department_list, user_list):
     from module.user.model import Department
 
     department_list = DepartmentSchema(many=True).load(department_list)
-    department_list = [item for item in department_list if
-                       json.loads(item.remark).get("distinguishedName").endswith(
-                           "OU=鹏华基金,DC=ad,DC=phfund,DC=com,DC=cn")]
-
+    department_list = [item for item in department_list if "user" not in
+                       json.loads(item.remark).get("objectClass")]
     user_list = UserSchema(many=True).load([item for item in user_list if len(item.get("name")) <= 32])
 
     # 使用
     department_map = {}
     for item in department_list:
         data = json.loads(item.remark)
-        department_map[data.get("distinguishedName")] = item
+        if data.get("distinguishedName").startswith("CN="):
+            department_map[data.get("distinguishedName")] = item
+        else:
+            department_map[f'CN={data.get("name")},{data.get("distinguishedName")}'] = item
 
     # 循环生成 key
     for item in department_list:
@@ -75,14 +76,15 @@ def sync_data(department_list, user_list):
                 continue
 
             # 没有所属机构不处理
-            if not item.department_key or len(item.department_key) < 1:
+            if not item.loginid or (
+                    not item.loginid.startswith("x_") and (not item.department_key or len(item.department_key) < 1)):
                 continue
 
             record = User.query.filter_by(source='phfund', external_id=item.external_id).first()
             if record:
                 item.id = record.id
                 db.session.merge(item)
-            else:
+            elif item.enable:
                 db.session.add(item)
 
             db.session.commit()
@@ -115,15 +117,4 @@ def create_key(item, department_map):
         return ""
 
     data = json.loads(item.remark)
-    if not data.get("memberOf") or len(data.get("memberOf")) < 1:
-        return item.external_id
-
-    elif len(data.get("memberOf")) >= 1:
-        member_key_real = None
-        for member_key in data.get("memberOf"):
-            if department_map.get(member_key):
-                member_key_real = member_key
-                break
-
-        key_father = create_key(department_map.get(member_key_real), department_map)
-        return (key_father + "_" if key_father else "") + item.external_id
+    return ",".join(data.get("distinguishedName").split(",")[::-1]).replace(",OU=", "_OU=")

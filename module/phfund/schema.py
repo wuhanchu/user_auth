@@ -65,7 +65,7 @@ class DepartmentSchema(ma.SQLAlchemySchema, BaseSchema):
     name = ma.auto_field(data_key="name")
     external_id = ma.Method(data_key="objectGUID", deserialize="load_external_id")
     source = ma.auto_field(default="phfund")
-    order_no = ma.auto_field(data_key="msDS-HABSeniorityIndex")
+    order_no = ma.auto_field(data_key="description")
 
     @pre_load()
     def pre_load(self, in_data, **kwargs):
@@ -76,5 +76,7 @@ class DepartmentSchema(ma.SQLAlchemySchema, BaseSchema):
 
         in_data["remark"] = json.dumps(in_data, ensure_ascii=False)
         in_data["source"] = 'phfund'
+        in_data["description"] = int(in_data["description"][0]) if in_data.get("description") and len(
+            in_data.get("description")) > 0 else None
 
         return in_data
