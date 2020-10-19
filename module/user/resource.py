@@ -48,7 +48,7 @@ def user_get():
 
     name = request.args.get("name")
     if name is not None:
-        q = q.filter(User.name.like("%" + name.split + "%"))
+        q = q.filter(User.name.like("%" + name + "%"))
     # q = q.order_by(User.name.desc())
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
