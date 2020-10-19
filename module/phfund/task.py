@@ -21,7 +21,7 @@ def job_sync_ldap():
                            flask_app.config.get(ConfigDefine.USER_SERVER_PASSWORD))
 
     department_list = operation.get_all_group_info()
-    user_list = operation.get_all_user_info()
+    user_list = operation.get_all_user_info(department_list)
     sync_data(department_list, user_list)
 
 
