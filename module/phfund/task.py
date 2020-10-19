@@ -117,4 +117,4 @@ def create_key(item, department_map):
         return ""
 
     data = json.loads(item.remark)
-    return ",".join(data.get("distinguishedName").split(",")[::-1]).replace(",OU=", "_OU=")
+    return "_".join(data.get("distinguishedName").split(",")[::-1]).replace(",OU=", "_OU=")
