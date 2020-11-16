@@ -11,7 +11,6 @@ from frame.extension.database import db, db_schema
 from frame.http.response import queryToDict
 from frame.http.exception import BusiError
 from frame.util import com_tool
-from module.user.model import User
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 
 
@@ -46,6 +45,8 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
+        from module.user.model import User
+
         user = User.query.filter_by(loginid=username).first()
         # 校验密码
         if user.password == com_tool.get_MD5_code(password):
@@ -59,6 +60,8 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
             return token
 
     def authenticate_user(self, credential):
+        from module.user.model import User
+
         return User.query.get(credential.user_id)
 
 
@@ -71,11 +74,6 @@ authorization = AuthorizationServer(
 require_oauth = ResourceProtector()
 
 
-# def require_oauth(profile):
-#     def decorate(f):
-#         return f
-#     return decorate
-
 class _BearerTokenValidator(BearerTokenValidator):
     def __call__(self, *args, **kwargs):
         # 登录验证
@@ -85,7 +83,8 @@ class _BearerTokenValidator(BearerTokenValidator):
         method = token_request.method
 
         # 权限验证
-        if _req.url_rule and not permission_context.check_permission(_req.url_rule.rule, method, self.get_usr_roles(token.user_id)):
+        if _req.url_rule and not permission_context.check_permission(_req.url_rule.rule, method,
+                                                                     self.get_usr_roles(token.user_id)):
             raise BusiError("Permission denied!", 'API has not access permission <%s>:%s' % (method, uri), code=403)
         return token
 
@@ -97,8 +96,9 @@ class _BearerTokenValidator(BearerTokenValidator):
         return role_list
 
     def authenticate_token(self, token_string):
-        q = db.session.query(OAuth2Token)
-        return q.filter_by(access_token=token_string).first()
+        token = OAuth2Token.query.filter_by(access_token=token_string).first()
+        token.user
+        return token
 
     def request_invalid(self, request):
         return False
@@ -107,7 +107,7 @@ class _BearerTokenValidator(BearerTokenValidator):
         return token.revoked
 
 
-def config_oauth(app):
+def init_app(app):
     authorization.init_app(app)
 
     # support all grants

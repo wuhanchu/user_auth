@@ -2,7 +2,6 @@
 import urllib.parse
 
 import requests
-from authlib.integrations.flask_oauth2 import current_token
 from flask import request, jsonify
 from flask_restplus._http import HTTPStatus
 from sqlalchemy import func, Text
@@ -20,6 +19,7 @@ from .service import get_user_extend_info, append_permission, append_permission_
 from .. import get_user_pattern
 from ..role.model import Role
 
+from authlib.integrations.flask_oauth2 import current_token
 
 @blueprint.route('', methods=['GET'])
 @require_oauth('profile')
@@ -195,7 +195,9 @@ else:
     @blueprint.route('/current', methods=['GET'])
     @require_oauth('profile')
     def current_user():
+
         if current_token:
+            db.session.merge(current_token)
             user = current_token.user
             if not user.enable:
                 return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED

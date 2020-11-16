@@ -13,7 +13,7 @@ def init_app(app, **kwargs):
     import_dir(os.path.dirname(__file__), __name__)
 
     # 加载oauth2认证模块
-    from .extension.oauth2 import config_oauth
-    config_oauth(app)
+    from .extension.oauth2 import init_app
+    init_app(app)
 
     app.register_blueprint(blueprint)

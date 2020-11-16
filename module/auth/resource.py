@@ -6,7 +6,6 @@ from flask import request, session
 from werkzeug.security import gen_salt
 import urllib.parse
 
-from module.auth.extension.oauth2 import authorization
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
@@ -58,6 +57,7 @@ def create_client():
 @blueprint.route('/authorize', methods=['GET', 'POST'])
 def authorize():
     from ..user.resource import current_user
+    from module.auth.extension.oauth2 import authorization
 
     user = current_user()
     if request.method == 'GET':
@@ -78,12 +78,16 @@ def authorize():
 
 @blueprint.route('/token', methods=['POST'])
 def issue_token():
+    from module.auth.extension.oauth2 import authorization
+
     res = authorization.create_token_response(request)
     return res
 
 
 @blueprint.route('/revoke', methods=['POST'])
 def revoke_token():
+    from module.auth.extension.oauth2 import authorization
+
     return authorization.create_endpoint_response('revocation', request)
 
 
