@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 import urllib.parse
+from http import HTTPStatus
 
 import requests
 from flask import request, jsonify
-from flask_restplus._http import HTTPStatus
 from sqlalchemy import func, Text
 
 from config import ConfigDefine
@@ -20,6 +20,7 @@ from .. import get_user_pattern
 from ..role.model import Role
 
 from authlib.integrations.flask_oauth2 import current_token
+
 
 @blueprint.route('', methods=['GET'])
 @require_oauth('profile')
@@ -49,7 +50,7 @@ def user_get():
     name = request.args.get("name")
     if name is not None:
         q = q.filter(User.name.like("%" + name.split(".")[-1].replace("*", "") + "%"))
-    # q = q.order_by(User.name.desc())
+
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     sort = request.args.get('sort')
@@ -199,8 +200,11 @@ else:
         if current_token:
             db.session.merge(current_token)
             user = current_token.user
-            if not user.enable:
-                return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
-            return jsonify(get_user_extend_info(user))
+            user_extend = {"client_id": current_token.client_id}
+            if user:
+                if not user.enable:
+                    return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
+                user_extend = {**user_extend, **get_user_extend_info(user)}
+            return jsonify(user_extend)
         else:
             return JsonResult.error()

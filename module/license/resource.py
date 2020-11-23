@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
+from http import HTTPStatus
 
 from flask import request, abort
-from flask_restplus._http import HTTPStatus
 
 from frame.extension.database import db
 from frame.http.response import JsonResult

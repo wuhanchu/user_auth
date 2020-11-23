@@ -9,3 +9,4 @@ grant_type
 response_type
 scope
 并没有生效
+git
