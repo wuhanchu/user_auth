@@ -61,7 +61,7 @@ class Config:
     PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL')
 
     # database
-    DB_SCHEMA = "user_auth_temp"
+    DB_SCHEMA = "user_auth"
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
