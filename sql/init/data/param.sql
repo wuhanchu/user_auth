@@ -1,1 +1,1 @@
-INSERT INTO "param"("name", "key", "value") VALUES ('版本', 'version', '0.7');
+INSERT INTO "param"("name", "key", "value") VALUES ('版本', 'version', '0.8');
