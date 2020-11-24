@@ -15,13 +15,13 @@ pipeline {
         PORT_DEV  = "32024"
         SQLALCHEMY_DATABASE_URI_DEV = "postgresql://postgres:dataknown1234@172.17.0.1:32021/dataknown"
         PROXY_SERVER_DEV = "http://172.17.0.1:32023"
-        CELERY_BROKER_DEV = "http://172.17.0.1:32061"
+        CELERY_BROKER_DEV = "redis://:dataknown1234@server.aiknown.cn:32061"
 
         SERVER_TEST = "192.168.1.34"
         SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
         PROXY_SERVER_TEST = "http://192.168.1.34:40020"
         PORT_TEST  = "40016"
-        CELERY_BROKER_TEST = "http://172.17.0.1:31063"
+        CELERY_BROKER_TEST = "redis://:dataknown1234@server.aiknown.cn:31063"
 
     }
 
