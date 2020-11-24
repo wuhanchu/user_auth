@@ -1,5 +1,3 @@
-set search_path to user_auth;
-
 drop view IF EXISTS permission_role cascade;
 drop view IF EXISTS user_extend cascade;
 

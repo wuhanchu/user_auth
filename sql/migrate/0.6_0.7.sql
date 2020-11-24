@@ -1,19 +1,19 @@
-ALTER TABLE "user_auth"."department"
+ALTER TABLE "department"
     ADD COLUMN "order_no" int4;
 
-COMMENT ON COLUMN "user_auth"."department"."order_no" IS '排序号';
+COMMENT ON COLUMN "department"."order_no" IS '排序号';
 
-ALTER TABLE "user_auth"."user"
+ALTER TABLE "user"
     ADD COLUMN "enable" bool DEFAULT true;
 
-COMMENT ON COLUMN "user_auth"."user"."enable" IS '是否启用';
+COMMENT ON COLUMN "user"."enable" IS '是否启用';
 
-ALTER TABLE "user_auth"."user"
+ALTER TABLE "user"
     DROP COLUMN "enabled" CASCADE;
 
-drop view IF EXISTS  "user_auth"."user_extend" cascade ;
+drop view IF EXISTS  "user_extend" cascade ;
 
-CREATE VIEW "user_auth"."user_extend" AS
+CREATE VIEW "user_extend" AS
 SELECT "user".id,
        "user".name,
        "user".telephone,
@@ -42,10 +42,10 @@ FROM user_auth."user"
          LEFT JOIN user_auth.user_role ur ON "user".id = ur.user_id
 GROUP BY "user".id;
 
-ALTER TABLE "user_auth"."user_extend"
+ALTER TABLE "user_extend"
     OWNER TO "postgres";
 
-UPDATE "user_auth"."param"
+UPDATE "param"
 SET name  = '版本',
     value = '0.7'
 WHERE key = 'version';

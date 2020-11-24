@@ -66,7 +66,15 @@ class Config:
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-
+    AUTO_UPDATE = os.environ.get('AUTO_UPDATE', False)  # 自动更新数据库
+    DB_INIT_FILE = ["sql/init/table.sql", "sql/init/view.sql", "sql/init/data/permission.sql",
+                    "sql/init/data/permission_scope.sql",
+                    "sql/init/data/role.sql",
+                    "sql/init/data/user.sql",
+                    "sql/init/data/user_role.sql",
+                    "sql/init/data/permission_scope_detail.sql",
+                    "sql/init/data/role_permission_scope.sql",
+                    "sql/init/data/param.sql"]
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
     CELERY_BROKER = os.environ.get('CELERY_BROKER')
@@ -84,10 +92,12 @@ class DevelopmentConfig(Config):
                                              'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
 
     CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32061")
+    AUTO_UPDATE = True  # 自动更新数据库
 
 
 class TestingConfig(Config):
     TESTING = True
+    AUTO_UPDATE = True  # 自动更新数据库
 
 
 class ProductionConfig(Config):

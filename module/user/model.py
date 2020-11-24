@@ -11,7 +11,7 @@ from module.role.model import Role
 
 class User(BaseModel, db.Model):
     __tablename__ = 'user'
-    __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
+    __table_args__ = {'extend_existing': True, 'schema': db_schema}
 
     id = Column(INTEGER(11), primary_key=True, autoincrement=True)
 
@@ -34,5 +34,5 @@ class UserRole(BaseModel, db.Model):
 
 class Department(BaseModel, db.Model):
     __tablename__ = 'department'
-    __table_args__ = {'extend_existing': True, 'schema': 'user_auth'}
+    __table_args__ = {'extend_existing': True, 'schema': db_schema}
     id = Column(INTEGER(11), primary_key=True, autoincrement=True)
