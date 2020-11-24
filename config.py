@@ -71,6 +71,7 @@ class Config:
                     "sql/init/data/permission_scope.sql",
                     "sql/init/data/role.sql",
                     "sql/init/data/user.sql",
+                    "sql/init/data/oauth2_client.sql",
                     "sql/init/data/user_role.sql",
                     "sql/init/data/permission_scope_detail.sql",
                     "sql/init/data/role_permission_scope.sql",
