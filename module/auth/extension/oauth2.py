@@ -97,7 +97,7 @@ class _BearerTokenValidator(BearerTokenValidator):
 
     def authenticate_token(self, token_string):
         token = OAuth2Token.query.filter_by(access_token=token_string).first()
-        token.user
+        token and token.user
         return token
 
     def request_invalid(self, request):
