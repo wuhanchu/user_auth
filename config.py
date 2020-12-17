@@ -93,7 +93,7 @@ class DevelopmentConfig(Config):
                                              'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
 
     CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32061")
-    AUTO_UPDATE = True  # 自动更新数据库
+    # AUTO_UPDATE = True  # 自动更新数据库
 
 
 class TestingConfig(Config):
