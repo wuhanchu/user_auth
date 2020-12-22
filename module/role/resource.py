@@ -45,34 +45,6 @@ def get_role(id):
     return JsonResult.queryResult(obj)
 
 
-@blueprint.route('', methods=['POST'])
-def add_role():
-    obj = Role()
-    args = request.get_json()
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    obj.opr_at = int(time.time())
-    db.session.add(obj)
-    db.session.commit()
-    return JsonResult.success("创建成功！", {"id": obj.id})
-
-
-# PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('', methods=['PATCH'])
-def update_role():
-    id = request.args.get("id")
-    obj = Role.query.get(id)
-    if obj is None:
-        return JsonResult.error("对象不存在，id=%s" % id)
-    args = request.get_json()
-    if "password" in args:
-        args.pop("password")
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    db.session.commit()
-    return JsonResult.success("更新成功！", {"id": obj.id})
-
-
 @blueprint.route('/permission', methods=['GET'])
 def role_permissions_list():
     role_id = request.args.get("role_id")
