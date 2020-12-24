@@ -49,13 +49,16 @@ def create_client():
     client = OAuth2Client(**request.form.to_dict(flat=True))
     client.user_id = user.get("id")
     client.client_id = gen_salt(24)
+    client.response_type = "code"
+    client.scope = request.args.get("scope")
+    client.grant_type = request.args.get("grantType")
     if client.token_endpoint_auth_method == 'none':
         client.client_secret = ''
     else:
         client.client_secret = gen_salt(48)
     db.session.add(client)
     db.session.commit()
-    return redirect('/')
+    return JsonResult.success("创建成功！", {"id": client.id})
 
 
 @blueprint.route('/client', methods=['DELETE'])
