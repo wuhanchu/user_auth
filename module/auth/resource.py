@@ -63,7 +63,6 @@ def delete_client():
     id = request.args.get("id")
     clients = OAuth2Client.query.get(id)
     if clients is not None:
-        # 删除已经不存在的数据
         db.session.delete(clients)
         db.session.commit()
         return JsonResult.success("删除成功！", {"id": id})
