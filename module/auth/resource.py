@@ -3,9 +3,12 @@ import requests
 from authlib.oauth2 import OAuth2Error
 from flask import render_template, redirect, jsonify
 from flask import request, session
+from sqlalchemy import func
 from werkzeug.security import gen_salt
 import urllib.parse
 
+from frame.http.response import JsonResult
+from frame.util import sql_tool
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
@@ -39,6 +42,7 @@ def create_client():
 
     user = current_user()
     user = user.json
+
     if not user:
         return
 
@@ -52,6 +56,39 @@ def create_client():
     db.session.add(client)
     db.session.commit()
     return redirect('/')
+
+
+@blueprint.route('/client', methods=['DELETE'])
+def delete_client():
+    id = request.args.get("id")
+    clients = OAuth2Client.query.get(id)
+    if clients is not None:
+        # 删除已经不存在的数据
+        db.session.delete(clients)
+        db.session.commit()
+        return JsonResult.success("删除成功！", {"id": id})
+    else:
+        return JsonResult.error("删除失败,client不存在", {"id": id})
+
+
+@blueprint.route('/client', methods=['GET'])
+def get_client():
+    id = request.args.get("id")
+    if id:
+        obj = OAuth2Client.query.get(id)
+        return JsonResult.queryResult(obj)
+
+    q = db.session.query(
+        OAuth2Client
+    )
+
+    limit = int(request.args.get('limit'))
+    offset = int(request.args.get('offset'))
+    sort = request.args.get('sort')
+    if sort is None:
+        sort = "-id"
+    res, total = sql_tool.model_page(q, limit, offset, sort)
+    return JsonResult.res_page(res, total)
 
 
 @blueprint.route('/authorize', methods=['GET', 'POST'])
