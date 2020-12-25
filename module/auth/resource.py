@@ -8,7 +8,7 @@ from werkzeug.security import gen_salt
 import urllib.parse
 
 from frame.http.response import JsonResult
-from frame.util import sql_tool
+from frame.util import sql_tool, param_tool
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
@@ -49,9 +49,8 @@ def create_client():
     client = OAuth2Client(**request.form.to_dict(flat=True))
     client.user_id = user.get("id")
     client.client_id = gen_salt(24)
-    client.response_type = "code"
-    client.scope = request.args.get("scope")
-    client.grant_type = request.args.get("grantType")
+    args = request.get_json()
+    param_tool.set_dict_parm(client, args)
     if client.token_endpoint_auth_method == 'none':
         client.client_secret = ''
     else:
@@ -59,6 +58,22 @@ def create_client():
     db.session.add(client)
     db.session.commit()
     return JsonResult.success("创建成功！", {"id": client.id})
+
+
+@blueprint.route('/client', methods=['PUT'])
+def update_client():
+    from ..user.resource import current_user
+
+    id = request.args.get("id")
+
+    user = current_user()
+    user = user.json
+
+    obj = OAuth2Client.query.get(id)
+    args = request.get_json()
+    param_tool.set_dict_parm(obj, args)
+    db.session.commit()
+    return JsonResult.success("更新成功！", {"id": id})
 
 
 @blueprint.route('/client', methods=['DELETE'])
