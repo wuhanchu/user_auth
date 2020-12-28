@@ -94,7 +94,7 @@ class DevelopmentConfig(Config):
 
     CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32061")
     # AUTO_UPDATE = True  # 自动更新数据库
-    FETCH_USER = False
+    # FETCH_USER = True
     # CHECK_API = False
 
 
