@@ -9,6 +9,11 @@ from frame.extension.database import db, BaseModel, db_schema
 from module.user.model import User
 
 
+class OAuth2ClientModel(db.Model, BaseModel):
+    __tablename__ = 'oauth2_client'
+    id = db.Column(db.Integer, primary_key=True)
+
+
 class OAuth2Client(db.Model, BaseModel, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'
     id = db.Column(db.Integer, primary_key=True)

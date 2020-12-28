@@ -17,7 +17,6 @@ def get_permission(id):
 
 
 @blueprint.route('', methods=['GET'])
-@require_oauth("profile")
 def permission_list():
     q = Permission.query
 
@@ -38,7 +37,6 @@ def permission_list():
 
 
 @blueprint.route('', methods=['POST'])
-@require_oauth("profile")
 def add_permission():
     obj = Permission()
     args = request.get_json()
@@ -50,7 +48,6 @@ def add_permission():
 
 
 @blueprint.route('/<id>', methods=['PATCH'])
-@require_oauth("profile")
 def update_permission(id):
     permission = Permission.query.get(id)
     if permission is None:
@@ -63,7 +60,6 @@ def update_permission(id):
 
 
 @blueprint.route('/<id>', methods=['DELETE'])
-@require_oauth("profile")
 def del_permission(id):
     "删除权限"
     permission = Permission.query.get(id)

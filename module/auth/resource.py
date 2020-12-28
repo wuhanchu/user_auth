@@ -1,20 +1,23 @@
 # -*- coding: UTF-8 -*-
+import json
+import urllib.parse
+
 import requests
 from authlib.oauth2 import OAuth2Error
 from flask import render_template, redirect, jsonify
 from flask import request, session
-from sqlalchemy import func
 from werkzeug.security import gen_salt
-import urllib.parse
 
-from frame.http.response import JsonResult
-from frame.util import sql_tool, param_tool
+from config import ConfigDefine
+from frame.http.response import Response
+from frame.util import param_tool
+from run import app
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
-from .. import get_user_pattern
+from .schema import client_param, client_res
+from .. import get_user_pattern, blueprint_main
 from ..user.model import User
-from config import ConfigDefine
 from ..user.schema import PhfundUserSchema
 
 
@@ -34,78 +37,6 @@ def home():
     else:
         clients = []
     return render_template('oauth_index.html', user=user, clients=clients)
-
-
-@blueprint.route('/client', methods=['POST'])
-def create_client():
-    from ..user.resource import current_user
-
-    user = current_user()
-    user = user.json
-
-    if not user:
-        return
-
-    client = OAuth2Client(**request.form.to_dict(flat=True))
-    client.user_id = user.get("id")
-    client.client_id = gen_salt(24)
-    args = request.get_json()
-    param_tool.set_dict_parm(client, args)
-    if client.token_endpoint_auth_method == 'none':
-        client.client_secret = ''
-    else:
-        client.client_secret = gen_salt(48)
-    db.session.add(client)
-    db.session.commit()
-    return JsonResult.success("创建成功！", {"id": client.id})
-
-
-@blueprint.route('/client', methods=['PUT'])
-def update_client():
-    from ..user.resource import current_user
-
-    id = request.args.get("id")
-
-    user = current_user()
-    user = user.json
-
-    obj = OAuth2Client.query.get(id)
-    args = request.get_json()
-    param_tool.set_dict_parm(obj, args)
-    db.session.commit()
-    return JsonResult.success("更新成功！", {"id": id})
-
-
-@blueprint.route('/client', methods=['DELETE'])
-def delete_client():
-    id = request.args.get("id")
-    clients = OAuth2Client.query.get(id)
-    if clients is not None:
-        db.session.delete(clients)
-        db.session.commit()
-        return JsonResult.success("删除成功！", {"id": id})
-    else:
-        return JsonResult.error("删除失败,client不存在", {"id": id})
-
-
-@blueprint.route('/client', methods=['GET'])
-def get_client():
-    id = request.args.get("id")
-    if id:
-        obj = OAuth2Client.query.get(id)
-        return JsonResult.queryResult(obj)
-
-    q = db.session.query(
-        OAuth2Client
-    )
-
-    limit = int(request.args.get('limit'))
-    offset = int(request.args.get('offset'))
-    sort = request.args.get('sort')
-    if sort is None:
-        sort = "-id"
-    res, total = sql_tool.model_page(q, limit, offset, sort)
-    return JsonResult.res_page(res, total)
 
 
 @blueprint.route('/authorize', methods=['GET', 'POST'])
@@ -171,3 +102,28 @@ else:
     def logout():
         del session['id']
         return redirect('/')
+
+
+@blueprint_main.route('/oauth2_client', methods=['POST'])
+def create_client():
+    from .schema import OAuth2ClientSchema
+
+    param = client_param.load(request.json)
+    client = OAuth2Client(**param)
+    client.client_id = gen_salt(24)
+
+    if client.token_endpoint_auth_method == 'none':
+        client.client_secret = ''
+    else:
+        client.client_secret = gen_salt(48)
+
+    client.meta_data = {
+        "scope": client.scope,
+        "grant_types": json.loads(client.grant_type),
+        "response_types": client.response_type
+    }
+
+    db.session.add(client)
+    db.session.commit()
+
+    return Response(data=client_res.dump(client)).get_response()

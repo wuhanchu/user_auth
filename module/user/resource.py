@@ -23,7 +23,6 @@ from authlib.integrations.flask_oauth2 import current_token
 
 
 @blueprint.route('', methods=['GET'])
-@require_oauth('profile')
 def user_get():
     """
     用户列表
@@ -150,20 +149,6 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
         from flask import current_app, request
 
         # 调用服务器获取当前数据
-        #
-        # data = {
-        #     "userId": 1341,
-        #     "username": "biaozhu",
-        #     "realname": "吴汉楚",
-        #     "email": "x_wuhanchu@phfund.com.cn",
-        #     "mobilePhone": "",
-        #     "fixedPhone": "",
-        #     "company": "",
-        #     "department": "",
-        #     "title": "",
-        #     "userStatus": "正常",
-        #     "sortNumber": "0"
-        # }
         try:
 
             url = urllib.parse.urljoin(
@@ -194,7 +179,6 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 else:
 
     @blueprint.route('/current', methods=['GET'])
-    @require_oauth('profile')
     def current_user():
 
         if current_token:
