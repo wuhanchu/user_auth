@@ -81,7 +81,7 @@ def add_user():
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
 
-@blueprint.route('/password', methods=['PUT'])
+@blueprint.route('/password', methods=['PATCH'])
 def update_user_password():
     """
     # 修改密码
@@ -89,7 +89,6 @@ def update_user_password():
     :return:
     """
     id = request.args.get("id")
-
     obj = User.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
@@ -105,6 +104,29 @@ def update_user_password():
             return JsonResult.error("修改密码失败，请输入新密码！")
     else:
         return JsonResult.error("修改密码失败，旧密码错误！")
+
+
+@blueprint.route('/password_for_admin', methods=['PATCH'])
+def admin_update_user_password():
+    """
+    # 修改密码(管理员使用不需要输入用户旧密码)
+    :param id:
+    :return:
+    """
+    id = request.args.get("id")
+
+    obj = User.query.get(id)
+
+    if obj is None:
+        return JsonResult.error("对象不存在，id=%s" % id)
+    args = request.get_json()
+    if "new_password" in args:
+        new_passwd = com_tool.get_MD5_code(args["new_password"])
+        obj.password = new_passwd
+        db.session.commit()
+        return JsonResult.success("修改密码成功！", {"id": obj.id})
+    else:
+        return JsonResult.error("修改密码失败，请输入新密码！")
 
 
 @blueprint.route('/role', methods=['PUT'])
