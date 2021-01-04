@@ -113,13 +113,14 @@ def admin_update_user_password():
     :param id:
     :return:
     """
-    id = request.args.get("id")
+
+    args = request.get_json()
+    id = args["id"]
 
     obj = User.query.get(id)
 
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
-    args = request.get_json()
     if "new_password" in args:
         new_passwd = com_tool.get_MD5_code(args["new_password"])
         obj.password = new_passwd
