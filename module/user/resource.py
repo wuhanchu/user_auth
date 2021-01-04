@@ -9,7 +9,7 @@ from sqlalchemy import func, Text
 from config import ConfigDefine
 from frame.extension.database import db
 from frame.extension.postgrest.util import get_args_delete_prefix
-from frame.http.response import JsonResult
+from frame.http.response import JsonResult, Response
 from frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
@@ -106,7 +106,7 @@ def update_user_password():
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/password/reset', methods=['{POST}'])
+@blueprint.route('/password/reset', methods=['POST'])
 def admin_update_user_password():
     """
     # 修改密码(管理员使用不需要输入用户旧密码)
@@ -124,9 +124,11 @@ def admin_update_user_password():
         new_passwd = com_tool.get_MD5_code(args["new_password"])
         obj.password = new_passwd
         db.session.commit()
-        return JsonResult.success("修改密码成功！", {"id": obj.id})
+        response = Response(message="修改密码成功！")
     else:
-        return JsonResult.error("修改密码失败，请输入新密码！")
+        response = Response(result=False, message="修改密码失败，请输入新密码！")
+
+    return response.get_response()
 
 
 @blueprint.route('/role', methods=['PUT'])
