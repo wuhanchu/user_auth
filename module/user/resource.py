@@ -106,7 +106,7 @@ def update_user_password():
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/password_for_admin', methods=['PATCH'])
+@blueprint.route('/password/reset', methods=['{POST}'])
 def admin_update_user_password():
     """
     # 修改密码(管理员使用不需要输入用户旧密码)
