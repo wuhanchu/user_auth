@@ -85,10 +85,10 @@ def add_user():
 def update_user_password():
     """
     # 修改密码
-    :param id:
     :return:
     """
-    id = request.args.get("id")
+    user = current_user().json
+    id = user['id']
     obj = User.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
