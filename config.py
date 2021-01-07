@@ -117,6 +117,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     USER_SERVER_PASSWORD = os.environ.get(ConfigDefine.USER_SERVER_PASSWORD, "DATAknown1234")
     from celery.schedules import crontab
     CHECK_API = False
+    FETCH_USER = False
 
     # module
     ENABLED_MODULE = [
