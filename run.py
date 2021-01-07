@@ -13,16 +13,17 @@ parser.add_argument('--beat', action="store_true")
 # 初始化
 app = create_app()
 marshmallow.init_app(app)
+celery.init_app(app)
 
 module.init_app(app)
 
 print(app.url_map)
 
+
 if __name__ == '__main__':
 
     args = parser.parse_args()
     if args.celery:
-        celery.init_app(app)
 
         print("celery work")
         from extension.celery import celery, load_periodic_tasks
