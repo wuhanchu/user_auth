@@ -40,6 +40,8 @@ def user_get():
         func.max(User.loginid).label("loginid"),
         func.max(User.telephone).label("telephone"),
         func.max(User.address).label("address"),
+        User.token, User.expires_in, User.login_at, User.login_ip, User.login_count, User.remark, User.opr_by,
+        User.opr_at, User.del_fg, User.external_id, User.source, User.email, User.mobile_phone, User.enable,
         func.string_agg(func.cast(Role.id, Text),
                         ',').label("roles")).outerjoin(
         UserRole, UserRole.user_id == User.id).outerjoin(
