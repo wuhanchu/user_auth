@@ -42,26 +42,36 @@ class LadpServer():
             if res:
                 #pass
                 userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        # 2.0 查出所有智能客服项目组的人员
+        res = self.conn.extend.standard.paged_search(search_base='OU=鹏华基金,' + self.DC,
+                                                     search_filter="(&(objectCategory=person)(objectClass=organizationalPerson)"
+                                                                   "(memberOf=CN=智能客服项目组,OU=邮件群组,OU=鹏华基金,DC=ad,DC=phfund,DC=com,DC=cn))",
+                                                     attributes=att_list, search_scope=SUBTREE, generator=True)
+        if res:
+            userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        
+        '''
         # 2. 再查出所有IT外包人员中“李学森”为项目经理的人员
-        res = self.conn.extend.standard.paged_search(search_base='OU=IT开发,OU=外来人员,OU=鹏华基金,'+self.DC,
+        res = self.conn.extend.standard.paged_search(search_base='OU=鹏华基金,'+self.DC,
                                                      search_filter="(&(objectCategory=person)(objectClass=organizationalPerson)(description=*李学森*))",
                                                      attributes=att_list, search_scope=SUBTREE, generator=True)
-        if res:
-            userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        #if res:
+        #    userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
        
         # 3. 再查出所有IT外包人员中“邱杰”为项目经理的人员
-        res = self.conn.extend.standard.paged_search(search_base='OU=IT开发,OU=外来人员,OU=鹏华基金,'+self.DC,
+        res = self.conn.extend.standard.paged_search(search_base='OU=鹏华基金,'+self.DC,
                                                      search_filter="(&(objectCategory=person)(objectClass=organizationalPerson)(description=*邱杰*))",
                                                      attributes=att_list, search_scope=SUBTREE, generator=True)
-        if res:
-            userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        #if res:
+        #    userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
 
         # 4. 再查出所有IT外包人员中“林承操”为项目经理的人员
-        res = self.conn.extend.standard.paged_search(search_base='OU=IT开发,OU=外来人员,OU=鹏华基金,'+self.DC,
+        res = self.conn.extend.standard.paged_search(search_base='OU=鹏华基金,'+self.DC,
                                                      search_filter="(&(objectCategory=person)(objectClass=organizationalPerson)(description=*林承操*))",
                                                      attributes=att_list, search_scope=SUBTREE, generator=True)
-        if res:
-                userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        #if res:
+        #        userList.extend([dict(item.get("attributes")) for item in res if item.get("attributes")])
+        '''
         return userList
 
     def get_all_group_info(self):
