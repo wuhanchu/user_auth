@@ -10,5 +10,5 @@ class OAuth2ClientSchema(ma.SQLAlchemyAutoSchema):
         include_fk = False
 
 
-client_param = OAuth2ClientSchema(only=("client_name", "client_metadata"))
-client_res = OAuth2ClientSchema(only=("id",))
+client_param = OAuth2ClientSchema(only=("client_name", "client_uri", "grant_type", "scope", "response_type"))
+client_res = OAuth2ClientSchema(only=("id", "client_name", "client_id", "client_secret"))

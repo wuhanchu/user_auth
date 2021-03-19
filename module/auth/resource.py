@@ -109,19 +109,13 @@ def create_client():
     from .schema import OAuth2ClientSchema
 
     param = client_param.load(request.json)
-    client = OAuth2Client(**param)
+    client = OAuth2Client(**param, token_endpoint_auth_method="client_secret_basic")
     client.client_id = gen_salt(24)
 
     if client.token_endpoint_auth_method == 'none':
         client.client_secret = ''
     else:
         client.client_secret = gen_salt(48)
-
-    client.meta_data = {
-        "scope": client.scope,
-        "grant_types": json.loads(client.grant_type),
-        "response_types": client.response_type
-    }
 
     db.session.add(client)
     db.session.commit()
