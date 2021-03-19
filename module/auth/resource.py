@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-import json
 import urllib.parse
 
 import requests
@@ -10,8 +9,7 @@ from werkzeug.security import gen_salt
 
 from config import ConfigDefine
 from frame.http.response import Response
-from frame.util import param_tool
-from run import app
+from module.auth.extension.oauth2 import require_oauth
 from . import blueprint
 from .model import *
 from .model import OAuth2Client
@@ -105,9 +103,8 @@ else:
 
 
 @blueprint_main.route('/oauth2_client', methods=['POST'])
+@require_oauth()
 def create_client():
-    from .schema import OAuth2ClientSchema
-
     param = client_param.load(request.json)
     client = OAuth2Client(**param, token_endpoint_auth_method="client_secret_basic")
     client.client_id = gen_salt(24)
