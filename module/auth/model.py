@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-import json
 import time
+import json
 
 from authlib.integrations.sqla_oauth2 import OAuth2ClientMixin, OAuth2AuthorizationCodeMixin, OAuth2TokenMixin
 from sqlalchemy.orm import foreign
