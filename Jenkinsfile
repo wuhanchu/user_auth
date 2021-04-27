@@ -11,7 +11,7 @@ pipeline {
         GROUP = "z_ai_frame"
         PROJECT = "user_auth"
 
-        SERVER_DEV = "192.168.1.152"
+        SERVER_DEV = "192.168.100.152"
 
         SERVER_TEST = "192.168.1.34"
         SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
