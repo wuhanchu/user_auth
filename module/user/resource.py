@@ -14,7 +14,6 @@ from frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
 from . import blueprint
-from .schema import PhfundUserSchema
 from .service import get_user_extend_info, append_permission, append_permission_scope
 from .. import get_user_pattern
 from ..role.model import Role
@@ -174,6 +173,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
     @blueprint.route('/current', methods=['GET'])
     def current_user():
         from flask import current_app, request
+        from .schema import PhfundUserSchema
 
         # 调用服务器获取当前数据
         try:
