@@ -101,7 +101,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_dev']) {
-                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/user_auth.yml -p dataknowon --env-file ./env/dataknown_dev.env pull &&  docker-compose -f ./compose/user_auth.yml -p dataknowon --env-file ./env/dataknown_dev.env up -d'"
+                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/user_auth.yml -p dataknown --env-file ./env/dataknown_dev.env pull &&  docker-compose -f ./compose/user_auth.yml -p dataknown --env-file ./env/dataknown_dev.env up -d'"
                         }
                     }
                 }
