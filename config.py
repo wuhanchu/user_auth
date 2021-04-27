@@ -88,11 +88,11 @@ class DevelopmentConfig(Config):
     ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest"]
 
     RUN_PORT = 5000
-    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:32023")
+    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:36023")
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
-                                             'postgresql://postgres:dataknown1234@server.aiknown.cn:32021/dataknown')
+                                             'postgresql://postgres:dataknown1234@server.aiknown.cn:36021/dataknown')
 
-    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:32061")
+    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:36061")
     # AUTO_UPDATE = True  # 自动更新数据库
     FETCH_USER = False
     CHECK_API = False
