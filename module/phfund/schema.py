@@ -1,6 +1,6 @@
 import json
 
-from marshmallow import EXCLUDE, pre_load
+from marshmallow import EXCLUDE, pre_load, INCLUDE
 
 from extension.marshmallow import ma
 from module.user.model import User, Department
@@ -78,5 +78,30 @@ class DepartmentSchema(ma.SQLAlchemySchema, BaseSchema):
         in_data["source"] = 'phfund'
         in_data["description"] = int(in_data["description"][0]) if in_data.get("description") and len(
             in_data.get("description")) > 0 else None
+
+        return in_data
+
+
+class PhfundUserSchema(ma.SQLAlchemySchema):
+    """
+    asr 请求参数
+    """
+
+    class Meta:
+        model = User
+        unknown = INCLUDE
+
+    id = ma.auto_field(data_key="userId")
+    loginid = ma.auto_field(data_key="username")
+    name = ma.auto_field(data_key="realname")
+    email = ma.auto_field()
+    mobile_phone = ma.auto_field(data_key="mobilePhone")
+    department_key = ma.auto_field(data_key="department")
+    enable = ma.auto_field()
+
+    @pre_load(pass_many=False)
+    def pre_load(self, in_data, **kwargs):
+        in_data["department"] = [in_data["department"]] if in_data.get("department") else []
+        in_data["enable"] = True if in_data.get("userStatus") == "正常" else False
 
         return in_data

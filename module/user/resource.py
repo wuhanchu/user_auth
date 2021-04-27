@@ -173,7 +173,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
     @blueprint.route('/current', methods=['GET'])
     def current_user():
         from flask import current_app, request
-        from .schema import PhfundUserSchema
+        from ..phfund.schema import PhfundUserSchema
 
         # 调用服务器获取当前数据
         try:

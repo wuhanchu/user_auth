@@ -79,7 +79,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
     @blueprint.route('/token', methods=('DELETE',))
     def logout():
         from flask import current_app, request
-        from ..user.schema import PhfundUserSchema
+        from ..phfund.schema import PhfundUserSchema
 
         url = urllib.parse.urljoin(
             current_app.config.get(ConfigDefine.USER_SERVER_URL),
