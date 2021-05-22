@@ -10,15 +10,8 @@ pipeline {
     environment {
         GROUP = "z_ai_frame"
         PROJECT = "user_auth"
-
         SERVER_DEV = "192.168.100.152"
-
         SERVER_TEST = "192.168.1.34"
-        SQLALCHEMY_DATABASE_URI_TEST = "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown"
-        PROXY_SERVER_TEST = "http://192.168.1.34:40020"
-        PORT_TEST  = "40016"
-        CELERY_BROKER_TEST = "redis://:dataknown1234@server.aiknown.cn:31063"
-
     }
 
     stages {
@@ -101,7 +94,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_dev']) {
-                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/user_auth.yml -p dataknown --env-file ./env/dataknown_dev.env pull &&  docker-compose -f ./compose/user_auth.yml -p dataknown --env-file ./env/dataknown_dev.env up -d'"
+                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/z_ai_service.yml -f ./consumer/dataknown/z_ai_service_test.yml -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/z_ai_service.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
                         }
                     }
                 }
@@ -114,7 +107,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_test']) {
-                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'docker pull server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME} &&  docker rm -f  ${PROJECT}; docker run --restart=always -d -p ${PORT_TEST}:5000 -e PROXY_SERVER_URL=${PROXY_SERVER_TEST} -e SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI_TEST}  -e CELERY_BROKER=${CELERY_BROKER_TEST}  -e FLASK_CONFIG=testing --name ${PROJECT} server.aiknown.cn:31003/${GROUP}/${PROJECT}:${BRANCH_NAME};'"
+                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/z_ai_service.yml -f ./consumer/dataknown/z_ai_service_test.yml -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/z_ai_service.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
                         }
                     }
                 }
