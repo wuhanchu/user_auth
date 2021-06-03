@@ -67,13 +67,12 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
     AUTO_UPDATE = os.environ.get('AUTO_UPDATE', False)  # 自动更新数据库
-    DB_INIT_FILE = ["sql/init/table.sql", "sql/init/view.sql", "sql/init/data/permission.sql",
+    DB_INIT_FILE = ["sql/init/table.sql", "sql/init/view.sql",
                     "sql/init/data/permission_scope.sql",
                     "sql/init/data/role.sql",
                     "sql/init/data/user.sql",
                     "sql/init/data/oauth2_client.sql",
                     "sql/init/data/user_role.sql",
-                    "sql/init/data/permission_scope_detail.sql",
                     "sql/init/data/role_permission_scope.sql",
                     "sql/init/data/param.sql"]
     # 用户服务模式

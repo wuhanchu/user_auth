@@ -1,3 +1,9 @@
+ALTER TABLE "user_auth"."role_permission_scope"
+    DROP CONSTRAINT if exists "role_permission_scope_permission_scope_product_key_key_fk";
+
+delete
+from "permission_scope"
+where product_key = 'user_auth';
 
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('登录', 'login', NULL, 'user_auth')
@@ -133,3 +139,14 @@ ON CONFLICT DO NOTHING;
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('客户端_新增', 'oauth2_client_post', 'oauth2_client_get', 'user_auth')
 ON CONFLICT DO NOTHING;
+
+insert into role_permission_scope(role_id, permission_scope_key, product_key)
+select 1 as role_id, key as permission_scope_key, product_key
+from permission_scope
+where (product_key, key) not in (select product_key, permission_scope_key from role_permission_scope where role_id = 1);
+
+
+UPDATE "param"
+SET name  = '版本',
+    value = '0.9'
+WHERE key = 'version';
