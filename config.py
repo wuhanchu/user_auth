@@ -75,6 +75,8 @@ class Config:
                     "sql/init/data/user_role.sql",
                     "sql/init/data/role_permission_scope.sql",
                     "sql/init/data/param.sql"]
+    DB_VERSION_FILE = ["sql/migrate/0.8_0.9.sql"]
+
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
     CELERY_BROKER = os.environ.get('CELERY_BROKER')
