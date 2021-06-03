@@ -1,5 +1,14 @@
-ALTER TABLE "user_auth"."role_permission_scope"
+ALTER TABLE "role_permission_scope"
     DROP CONSTRAINT if exists "role_permission_scope_permission_scope_product_key_key_fk";
+
+delete
+from "permission_scope_detail"
+where product_key = 'user_auth';
+
+
+delete
+from "permission"
+where product_key = 'user_auth';
 
 delete
 from "permission_scope"
