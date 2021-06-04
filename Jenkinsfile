@@ -94,7 +94,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_dev']) {
-                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/z_ai_service.yml -f ./consumer/dataknown/z_ai_service_test.yml -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/z_ai_service.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
+                             sh "ssh  -t  root@${SERVER_DEV} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/user_auth.yml  -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/user_auth.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
                         }
                     }
                 }
@@ -107,7 +107,7 @@ pipeline {
 
                     steps {
                         sshagent(credentials : ['dataknown_test']) {
-                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/z_ai_service.yml -f ./consumer/dataknown/z_ai_service_test.yml -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/z_ai_service.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
+                             sh "ssh  -t  root@${SERVER_TEST} -o StrictHostKeyChecking=no  'cd /root/project/maintenance_script && docker-compose -f ./compose/user_auth.yml -f ./consumer/dataknown/user_auth_test.yml -p dataknown  --env-file ./env/dataknown_test.env pull &&  docker-compose -f ./compose/user_auth.yml -p dataknown  --env-file ./env/dataknown_test.env up -d'"
                         }
                     }
                 }
