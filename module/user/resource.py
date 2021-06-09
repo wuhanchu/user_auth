@@ -206,6 +206,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 else:
 
     @blueprint.route('/current', methods=['GET'])
+    @require_oauth()
     def current_user():
 
         if current_token:
