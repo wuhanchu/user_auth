@@ -105,7 +105,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    pass
+    AUTO_UPDATE = True  # 自动更新数据库
 
 
 class DevelopmentPhfundConfig(DevelopmentConfig):
