@@ -42,8 +42,6 @@ FROM user_auth."user"
          LEFT JOIN user_auth.user_role ur ON "user".id = ur.user_id
 GROUP BY "user".id;
 
-ALTER TABLE "user_extend"
-    OWNER TO "postgres";
 
 UPDATE "param"
 SET name  = '版本',

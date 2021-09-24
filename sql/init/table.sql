@@ -26,7 +26,6 @@ CREATE SEQUENCE "department_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "department_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for oauth2_client_id_seq
@@ -38,7 +37,6 @@ CREATE SEQUENCE "oauth2_client_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "oauth2_client_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for oauth2_code_id_seq
@@ -50,7 +48,6 @@ CREATE SEQUENCE "oauth2_code_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "oauth2_code_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for oauth2_token_id_seq
@@ -62,7 +59,6 @@ CREATE SEQUENCE "oauth2_token_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "oauth2_token_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for permission_scope_detail_id_seq
@@ -74,7 +70,6 @@ CREATE SEQUENCE "permission_scope_detail_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "permission_scope_detail_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for role_id_seq
@@ -86,7 +81,6 @@ CREATE SEQUENCE "role_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "role_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for role_permission_scope_id_seq
@@ -98,7 +92,6 @@ CREATE SEQUENCE "role_permission_scope_id_seq"
     MAXVALUE 9223372036854775807
     START 1000
     CACHE 1;
-ALTER SEQUENCE "role_permission_scope_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for sys_user_role_id_seq
@@ -110,7 +103,6 @@ CREATE SEQUENCE "sys_user_role_id_seq"
     MAXVALUE 2147483647
     START 1
     CACHE 1;
-ALTER SEQUENCE "sys_user_role_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for user_id_seq
@@ -122,7 +114,6 @@ CREATE SEQUENCE "user_id_seq"
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
-ALTER SEQUENCE "user_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Sequence structure for weixin_id_seq
@@ -134,7 +125,6 @@ CREATE SEQUENCE "weixin_id_seq"
     MAXVALUE 2147483647
     START 1
     CACHE 1;
-ALTER SEQUENCE "weixin_id_seq" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for department
@@ -152,7 +142,6 @@ CREATE TABLE "department" (
                                           "order_no" int4
 )
 ;
-ALTER TABLE "department" OWNER TO "postgres";
 COMMENT ON COLUMN "department"."key" IS '编码';
 COMMENT ON COLUMN "department"."external_id" IS '外部 ID';
 COMMENT ON COLUMN "department"."source" IS '来源';
@@ -168,7 +157,6 @@ CREATE TABLE "license" (
                                        "content" text COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
-ALTER TABLE "license" OWNER TO "postgres";
 COMMENT ON COLUMN "license"."product_key" IS '项目KEY';
 COMMENT ON COLUMN "license"."content" IS '证书内容';
 
@@ -204,7 +192,6 @@ CREATE TABLE "oauth2_client" (
                                              "expires_at" int4
 )
 ;
-ALTER TABLE "oauth2_client" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for oauth2_code
@@ -222,7 +209,6 @@ CREATE TABLE "oauth2_code" (
                                            "code_challenge" text COLLATE "pg_catalog"."default" DEFAULT 'test'::text
 )
 ;
-ALTER TABLE "oauth2_code" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for oauth2_token
@@ -241,7 +227,6 @@ CREATE TABLE "oauth2_token" (
                                             "revoked" bool
 )
 ;
-ALTER TABLE "oauth2_token" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for param
@@ -253,7 +238,6 @@ CREATE TABLE "param" (
                                      "value" text COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "param" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for permission
@@ -268,7 +252,6 @@ CREATE TABLE "permission" (
                                           "product_key" text COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
-ALTER TABLE "permission" OWNER TO "postgres";
 COMMENT ON COLUMN "permission"."name" IS '权限名称';
 COMMENT ON COLUMN "permission"."description" IS '权限描述';
 COMMENT ON COLUMN "permission"."url" IS '路由匹配地址';
@@ -286,7 +269,6 @@ CREATE TABLE "permission_scope" (
                                                 "product_key" text COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
-ALTER TABLE "permission_scope" OWNER TO "postgres";
 COMMENT ON COLUMN "permission_scope"."key" IS '关联菜单字段';
 COMMENT ON COLUMN "permission_scope"."parent_key" IS '父节点';
 
@@ -302,7 +284,6 @@ CREATE TABLE "permission_scope_detail" (
                                                        "product_key_scope" text COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "permission_scope_detail" OWNER TO "postgres";
 
 -- ----------------------------
 -- Table structure for role
@@ -319,7 +300,6 @@ CREATE TABLE "role" (
                                     "remark" text COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "role" OWNER TO "postgres";
 COMMENT ON COLUMN "role"."id" IS '角色ID';
 COMMENT ON COLUMN "role"."name" IS '角色名称';
 COMMENT ON COLUMN "role"."chinese_name" IS '角色中文名';
@@ -340,9 +320,7 @@ CREATE TABLE "role_permission_scope" (
                                                      "product_key" text COLLATE "pg_catalog"."default"
 )
 ;
-ALTER TABLE "role_permission_scope" OWNER TO "postgres";
-COMMENT ON TABLE "role_permission_scope" IS '权限角色表
-';
+
 
 -- ----------------------------
 -- Table structure for user
@@ -374,7 +352,6 @@ CREATE TABLE "user" (
                                     "enable" bool DEFAULT true
 )
 ;
-ALTER TABLE "user" OWNER TO "postgres";
 COMMENT ON COLUMN "user"."id" IS '用户ID';
 COMMENT ON COLUMN "user"."name" IS '用户姓名';
 COMMENT ON COLUMN "user"."telephone" IS '用户电话';
@@ -408,8 +385,7 @@ CREATE TABLE "user_role" (
                                          "role_id" int4
 )
 ;
-ALTER TABLE "user_role" OWNER TO "postgres";
-COMMENT ON TABLE "user_role" IS '用户角色表';
+
 
 -- ----------------------------
 -- Table structure for weixin
@@ -429,7 +405,6 @@ CREATE TABLE "weixin" (
                                       "unionid" varchar(32) COLLATE "pg_catalog"."default" DEFAULT ''::character varying
 )
 ;
-ALTER TABLE "weixin" OWNER TO "postgres";
 
 -- ----------------------------
 -- Alter sequences owned by
