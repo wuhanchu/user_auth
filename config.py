@@ -70,6 +70,7 @@ class Config:
     DB_INIT_FILE = ["sql/init/table.sql", "sql/init/view.sql",
                     "sql/init/data/permission_scope.sql",
                     "sql/init/data/role.sql",
+                    "sql/init/data/department.sql",
                     "sql/init/data/user.sql",
                     "sql/init/data/oauth2_client.sql",
                     "sql/init/data/user_role.sql",
