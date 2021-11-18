@@ -71,7 +71,7 @@ def add_user():
     # 将参数加载进去
     param_tool.set_dict_parm(obj, args)
     password = args.get("password")
-    password = com_tool.get_MD5_code(password)
+    password = com_tool.get_md5_code(password)
     obj.password = password
     db.session.add(obj)
     try:
@@ -94,10 +94,10 @@ def update_user_password():
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
     args = request.get_json()
-    if "old_password" in args and obj.password == com_tool.get_MD5_code(
+    if "old_password" in args and obj.password == com_tool.get_md5_code(
             args["old_password"]):
         if "new_password" in args:
-            new_passwd = com_tool.get_MD5_code(args["new_password"])
+            new_passwd = com_tool.get_md5_code(args["new_password"])
             obj.password = new_passwd
             db.session.commit()
             return JsonResult.success("修改密码成功！", {"id": obj.id})
@@ -123,7 +123,7 @@ def admin_update_user_password():
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
     if "new_password" in args:
-        new_passwd = com_tool.get_MD5_code(args["new_password"])
+        new_passwd = com_tool.get_md5_code(args["new_password"])
         obj.password = new_passwd
         db.session.commit()
         response = Response(message="修改密码成功！")

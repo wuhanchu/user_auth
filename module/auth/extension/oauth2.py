@@ -49,7 +49,7 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
         user = User.query.filter_by(loginid=username).first()
         # 校验密码
-        if user.password == com_tool.get_MD5_code(password):
+        if user.password == com_tool.get_md5_code(password):
             return user
 
 
