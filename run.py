@@ -6,9 +6,9 @@ from frame.app import create_app
 import argparse
 import module
 
-parser = argparse.ArgumentParser(description='manual to this script')
-parser.add_argument('--celery', action="store_true")
-parser.add_argument('--beat', action="store_true")
+parser = argparse.ArgumentParser(description="manual to this script")
+parser.add_argument("--celery", action="store_true")
+parser.add_argument("--beat", action="store_true")
 
 # 初始化
 app = create_app()
@@ -20,18 +20,15 @@ module.init_app(app)
 print(app.url_map)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     args = parser.parse_args()
     if args.celery:
-
-        print("celery work")
-        from extension.celery import celery, load_periodic_tasks
+        from extension.celery import celery
 
         if args.beat:
-            load_periodic_tasks()
-            celery.start(argv=['celery', 'beat'])
+            celery.start(argv=["celery", "beat", "-S", "redbeat.RedBeatScheduler"])
         else:
-            celery.worker_main(['worker'])
+            celery.worker_main(["worker"])
     else:
-        app.run('0.0.0.0', port=app.config.get("RUN_PORT"), threaded=False)
+        app.run("0.0.0.0", port=app.config.get("RUN_PORT"), threaded=False)

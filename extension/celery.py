@@ -11,17 +11,19 @@ def init_app(app):
     global flask_app
     flask_app = app
 
-    celery = Celery('tasks', backend=app.config.get("CELERY_BROKER"), broker=app.config.get("CELERY_BROKER"))
-    celery.conf.ONCE = {
-        'backend': 'celery_once.backends.Redis',
-        'settings': {
-            'url': app.config.get("CELERY_BROKER") + '/0'
+    # 增加work
+    celery = Celery(
+        "tasks",
+        backend=app.config.get("CELERY_BROKER"),
+        broker=app.config.get("CELERY_BROKER"),
+    )
+
+    # 增加定时任务
+    celery.config_from_object(
+        {
+            "CELERY_TIMEZONE": "Asia/Shanghai",
+            "ENABLE_UTC": True,
+            "redbeat_redis_url": app.config.get("CELERY_BROKER"),
+            **app.config,
         }
-    }
-
-
-def load_periodic_tasks():
-    """加载定时任务"""
-    if flask_app.config.get(ConfigDefine.CELERY_SCHEDULE):
-        celery.conf.update(timezone='Asia/Shanghai',
-                           enable_utc=True, beat_schedule=flask_app.config.get(ConfigDefine.CELERY_SCHEDULE))
+    )

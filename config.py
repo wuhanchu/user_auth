@@ -15,7 +15,7 @@ class ConfigDefine:
     USER_SERVER_ACCOUNT = "USER_SERVER_ACCOUNT"  # LDAP服务账号
     USER_SERVER_PASSWORD = "USER_SERVER_PASSWORD"  # LDAP服务密码
 
-    CELERY_SCHEDULE = "CELERY_SCHEDULE"  # 定时任务
+    CELERYBEAT_SCHEDULE = "CELERYBEAT_SCHEDULE"  # 定时任务
     LDAP_INTERVAL_MINUTE = "LDAP_INTERVAL_MINUTE"  # 定时任务
 
     class UserPattern:
@@ -133,7 +133,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
 
     # schedule jobs
     minutes = int(os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 1))
-    CELERY_SCHEDULE = {
+    CELERYBEAT_SCHEDULE = {
         "user_job_sync_ldap": {
             "task": "module.phfund.task.job_sync_ldap",
             "schedule": timedelta(minutes=minutes)
