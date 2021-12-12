@@ -23,6 +23,7 @@ def init_app(app):
         {
             "CELERY_TIMEZONE": "Asia/Shanghai",
             "ENABLE_UTC": True,
+            "redbeat_key_prefix": app.config.get("PRODUCT_KEY"),
             "redbeat_redis_url": app.config.get("CELERY_BROKER"),
             **app.config,
         }
