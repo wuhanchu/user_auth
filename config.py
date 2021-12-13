@@ -77,6 +77,7 @@ class Config:
                     "sql/init/data/role_permission_scope.sql",
                     "sql/init/data/param.sql"]
     DB_VERSION_FILE = ["sql/migrate/0.8_0.9.sql"]
+    DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", False)  # 自动运行更新文件开开关
 
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
@@ -107,6 +108,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     AUTO_UPDATE = True  # 自动更新数据库
+    DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", True)  # 自动运行更新文件开开关
 
 
 class DevelopmentPhfundConfig(DevelopmentConfig):
