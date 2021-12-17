@@ -59,6 +59,14 @@ class Config:
 
     # posrgrest
     PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL')
+    DB_POOL_SIZE = (
+        int(os.environ.get("DB_POOL_SIZE")) if os.environ.get("DB_POOL_SIZE") else None
+    )
+    DB_MAX_OVERFLOW = (
+        int(os.environ.get("DB_MAX_OVERFLOW"))
+        if os.environ.get("DB_MAX_OVERFLOW")
+        else None
+    )
 
     # database
     DB_SCHEMA = "user_auth"
