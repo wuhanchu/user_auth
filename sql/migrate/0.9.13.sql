@@ -1,4 +1,4 @@
 UPDATE "param"
 SET name  = '版本',
-    value = '1.9.14'
+    value = '0.9.13.sql'
 WHERE key = 'version';
