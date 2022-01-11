@@ -27,7 +27,7 @@ if __name__ == "__main__":
         from extension.celery import celery
 
         if args.beat:
-            celery.start(argv=["celery", "beat", "-S", "redbeat.RedBeatScheduler"])
+            celery.start(argv=["beat", "-S", "redbeat.RedBeatScheduler"])
         else:
             celery.worker_main(["worker"])
     else:

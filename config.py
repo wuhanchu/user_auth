@@ -89,7 +89,10 @@ class Config:
 
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
-    CELERY_BROKER = os.environ.get('CELERY_BROKER')
+
+    #reids
+    REDIS_URL = os.environ.get("REDIS_URL")
+    REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME")
 
 
 class DevelopmentConfig(Config):
@@ -103,7 +106,8 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
                                              'postgresql://postgres:dataknown1234@server.aiknown.cn:36021/dataknown')
 
-    CELERY_BROKER = os.environ.get('CELERY_BROKER', "redis://:dataknown1234@server.aiknown.cn:36061")
+    REDIS_URL = os.environ.get('REDIS_URL', "redis://:dataknown1234@server.aiknown.cn:36061")
+    REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME", "mymaster")
     # AUTO_UPDATE = True  # 自动更新数据库
     FETCH_USER = False
     CHECK_API = False
