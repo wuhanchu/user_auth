@@ -90,9 +90,12 @@ class Config:
     # 用户服务模式
     USER_PATTERN = os.environ.get(ConfigDefine.USER_PATTERN, ConfigDefine.UserPattern.standard)
 
-    #reids
+    # reids
     REDIS_URL = os.environ.get("REDIS_URL")
     REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME")
+
+    # celery
+    CELERY_DEFAULT_QUEUE = PRODUCT_KEY
 
 
 class DevelopmentConfig(Config):
