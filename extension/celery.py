@@ -22,14 +22,18 @@ def init_app(app):
 
     # redis sentinel 模式
     if broker_url.startswith("sentinel"):
+        password = None
         sentinels = []
         urls = broker_url.split(";")
         for url in urls:
             url = urlparse(url)
+            password = url.password
             sentinels.append((url.hostname, url.port))
         redbeat_redis_options["sentinels"] = sentinels
         redbeat_redis_options["service_name"] = redis_master_name
         redbeat_redis_url = "redis-sentinel"
+        if password:
+            redbeat_redis_options["password"] = password
 
     celery = Celery(
         "tasks",
@@ -50,5 +54,5 @@ def init_app(app):
         }
     )
 
-    celery.conf.broker_transport_options.update({'master_name': app.config.get("REDIS_MASTER_NAME")})
+    celery.conf.broker_transport_options.update(master_name=redis_master_name)
     celery.conf.result_backend_transport_options = celery.conf.broker_transport_options
