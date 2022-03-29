@@ -99,17 +99,17 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    DEBUG = False
 
     # set enable
     ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest"]
 
     RUN_PORT = 5000
-    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://server.aiknown.cn:36023")
+    PROXY_SERVER_URL = os.environ.get('PROXY_SERVER_URL', "http://192.168.1.152:36023")
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI',
-                                             'postgresql://postgres:dataknown1234@server.aiknown.cn:36021/dataknown')
+                                             'postgresql://postgres:dataknown1234@192.168.1.152:36021/dataknown')
 
-    REDIS_URL = os.environ.get('REDIS_URL', "redis://:dataknown1234@server.aiknown.cn:36061")
+    REDIS_URL = os.environ.get('REDIS_URL', "redis://:dataknown1234@http://192.168.1.152:36061")
     REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME", "mymaster")
     # AUTO_UPDATE = True  # 自动更新数据库
     FETCH_USER = False
