@@ -6,6 +6,11 @@ from frame.app import create_app
 import argparse
 import module
 
+if "gaussdb" in os.environ.get("SQLALCHEMY_DATABASE_URI", ""):
+    from sqlalchemy.dialects.postgresql.base import PGDialect
+
+    PGDialect._get_server_version_info = lambda *args: (9, 2)
+
 parser = argparse.ArgumentParser(description="manual to this script")
 parser.add_argument("--celery", action="store_true")
 parser.add_argument("--beat", action="store_true")
