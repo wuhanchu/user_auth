@@ -1,4 +1,6 @@
 # encoding: utf-8
+import os
+
 from extension import celery
 from extension import marshmallow
 
