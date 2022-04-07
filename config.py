@@ -42,7 +42,7 @@ class Config:
     ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest", "sentry"]
 
     # sentry
-    SENTRY_DS = "https://c58a597cd1fb4a44b2b719f357325597@server.aiknown.cn:31027/4"
+    SENTRY_DS = "https://c58a597cd1fb4a44b2b719f357325597:d2eeb8285a584261a0b1bd56206991ef@ai.dataknown.cn:31443/4"
 
     # auth
     LICENSE_CHECK = False

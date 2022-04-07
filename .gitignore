@@ -7,3 +7,4 @@
 service.sh
 /celerybeat.pid
 /celerybeat-schedule
+*.pytest_cache
