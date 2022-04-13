@@ -4,7 +4,6 @@ from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
 class ConfigDefine:
     """配置定义"""
 
@@ -28,8 +27,8 @@ class ConfigDefine:
 
 
 class Config:
-    CHECK_API = bool(strtobool(os.environ.get("CHECK_API",'False')))
-    CHECK_PASSWORD = bool(strtobool(os.environ.get("CHECK_PASSWORD",'True')))
+    CHECK_API = bool(strtobool(os.environ.get("CHECK_API", 'False')))
+    CHECK_PASSWORD = bool(strtobool(os.environ.get("CHECK_PASSWORD", 'True')))
 
     # project
     PRODUCT_KEY = "user_auth"
@@ -120,7 +119,6 @@ class DevelopmentConfig(Config):
     REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME", "mymaster")
     # AUTO_UPDATE = True  # 自动更新数据库
     FETCH_USER = False
-    CHECK_API = False
 
 
 class TestingConfig(Config):
@@ -149,7 +147,6 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     )
     from celery.schedules import crontab
 
-    CHECK_API = False
     FETCH_USER = False
 
     # module
