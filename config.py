@@ -118,7 +118,7 @@ class DevelopmentConfig(Config):
     )
     REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME", "mymaster")
     # AUTO_UPDATE = True  # 自动更新数据库
-    FETCH_USER = False
+    # FETCH_USER = False
 
 
 class TestingConfig(Config):
