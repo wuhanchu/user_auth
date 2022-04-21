@@ -32,10 +32,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.celery:
         from extension.celery import celery
+        log_level = app.config.get("LOG_LEVEL", "ERROR")
 
         if args.beat:
-            celery.start(argv=["beat", "-S", "redbeat.RedBeatScheduler"])
+            celery.start(
+                argv=["beat", "-l", log_level, "-S", "redbeat.RedBeatScheduler"]
+            )
         else:
-            celery.worker_main(["worker"])
+            celery.worker_main(
+                ["worker", "-l", log_level, "-c", app.config.get("CORE_NUM")]
+            )
     else:
         app.run("0.0.0.0", port=app.config.get("RUN_PORT"), threaded=False)

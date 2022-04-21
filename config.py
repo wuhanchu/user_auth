@@ -29,6 +29,7 @@ class ConfigDefine:
 class Config:
     CHECK_API = bool(strtobool(os.environ.get("CHECK_API", 'False')))
     CHECK_PASSWORD = bool(strtobool(os.environ.get("CHECK_PASSWORD", 'True')))
+    CORE_NUM = os.environ.get("CORE_NUM", 5)
 
     # project
     PRODUCT_KEY = "user_auth"
