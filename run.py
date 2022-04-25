@@ -29,6 +29,6 @@ if __name__ == "__main__":
         if args.beat:
             celery.start(argv=["beat", "-S", "redbeat.RedBeatScheduler"])
         else:
-            celery.worker_main(["worker"])
+            celery.worker_main(["worker"], "-c", app.config.get("CORE_NUM"))
     else:
         app.run("0.0.0.0", port=app.config.get("RUN_PORT"), threaded=False)
