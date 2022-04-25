@@ -22,6 +22,7 @@ from authlib.integrations.flask_oauth2 import current_token
 
 
 @blueprint.route('', methods=['GET'])
+@require_oauth()
 def user_get():
     """
     用户列表
@@ -61,6 +62,7 @@ def user_get():
 
 
 @blueprint.route('', methods=['POST'])
+@require_oauth()
 def add_user():
     """
     增加用户
@@ -83,6 +85,7 @@ def add_user():
 
 
 @blueprint.route('/password', methods=['PATCH'])
+@require_oauth()
 def update_user_password():
     """
     # 修改密码
@@ -108,6 +111,7 @@ def update_user_password():
 
 
 @blueprint.route('/password/reset', methods=['POST'])
+@require_oauth()
 def admin_update_user_password():
     """
     # 修改密码(管理员使用不需要输入用户旧密码)
@@ -134,6 +138,7 @@ def admin_update_user_password():
 
 
 @blueprint.route('/role', methods=['PUT'])
+@require_oauth()
 def update_user_roles():
     data = request.get_json()
     user_id_list = get_args_delete_prefix(request.args.get("id", "")).split(",")
@@ -158,6 +163,7 @@ def update_user_roles():
 
 
 @blueprint.route('/role', methods=['GET'])
+@require_oauth()
 def user_roles_list():
     user_id = request.args.get("user_id")
 

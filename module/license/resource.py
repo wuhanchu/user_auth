@@ -10,6 +10,7 @@ from module.license.util import create_license
 from . import blueprint, util
 from .model import License
 
+from module.auth.extension.oauth2 import require_oauth
 
 @blueprint.route('', methods=['POST'])
 @auto_commit(db.session)
@@ -33,10 +34,11 @@ def license_upload():
 
 
 @blueprint.route('/file', methods=['POST'])
+@require_oauth()
 def license_create():
     """
-    证书验证
-    :return:
+    证书创建
+    :return: 证书编码
     """
     params = request.json
 

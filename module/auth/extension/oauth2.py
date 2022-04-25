@@ -12,7 +12,7 @@ from frame.http.response import queryToDict
 from frame.http.exception import BusiError
 from frame.util import com_tool
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
-
+flask_app = None
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def create_authorization_code(self, client, user, request):
@@ -49,7 +49,7 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
         user = User.query.filter_by(loginid=username).first()
         # 校验密码
-        if user.password == com_tool.get_md5_code(password):
+        if user and (not flask_app.config.get("CHECK_PASSWORD") or user.password == com_tool.get_md5_code(password)):
             return user
 
 
@@ -108,6 +108,8 @@ class _BearerTokenValidator(BearerTokenValidator):
 
 
 def init_app(app):
+    global flask_app
+    flask_app = app
     authorization.init_app(app)
 
     # support all grants
