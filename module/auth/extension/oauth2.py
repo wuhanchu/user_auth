@@ -1,6 +1,9 @@
 from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector
-from authlib.integrations.sqla_oauth2 import create_query_client_func, create_save_token_func, \
-    create_revocation_endpoint
+from authlib.integrations.sqla_oauth2 import (
+    create_query_client_func,
+    create_save_token_func,
+    create_revocation_endpoint,
+)
 from authlib.oauth2.rfc6749 import grants
 from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
@@ -12,7 +15,9 @@ from frame.http.response import queryToDict
 from frame.http.exception import BusiError
 from frame.util import com_tool
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
+
 flask_app = None
+
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def create_authorization_code(self, client, user, request):
@@ -30,7 +35,8 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
     def parse_authorization_code(self, code, client):
         item = OAuth2AuthorizationCode.query.filter_by(
-            code=code, client_id=client.client_id).first()
+            code=code, client_id=client.client_id
+        ).first()
         if item and not item.is_expired():
             return item
 
@@ -49,7 +55,10 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
         user = User.query.filter_by(loginid=username).first()
         # 校验密码
-        if user and (not flask_app.config.get("CHECK_PASSWORD") or user.password == com_tool.get_md5_code(password)):
+        if user and (
+            not flask_app.config.get("CHECK_PASSWORD")
+            or user.password == com_tool.get_md5_code(password)
+        ):
             return user
 
 
@@ -89,13 +98,17 @@ class _BearerTokenValidator(BearerTokenValidator):
         return token
 
     def get_usr_roles(self, user_id):
-        sql = "select role_id from %s.user_role where user_id =%s " % (db_schema, user_id)
+        sql = "select role_id from %s.user_role where user_id =%s " % (
+            db_schema,
+            user_id,
+        )
         res = db.session.execute(sql).fetchall()
         role_list = queryToDict(res)
-        role_list = [str(role['role_id']) for role in role_list]
+        role_list = [str(role["role_id"]) for role in role_list]
         return role_list
 
     def authenticate_token(self, token_string):
+        # todo 增加token
         token = OAuth2Token.query.filter_by(access_token=token_string).first()
         token and token.user
         return token

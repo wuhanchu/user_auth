@@ -53,7 +53,7 @@ def check_license(content):
 
         # 机器码不匹配
         if record["machine_info"] != get_net_card():
-            return False, record, "机器码不匹配"
+            return False, record, "证书无效，机器码不匹配"
         
         if record["due_time"] and datetime.datetime.strptime(record["due_time"],
                                                              '%Y-%m-%d').date() < datetime.datetime.now().date():
