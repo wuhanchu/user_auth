@@ -4,6 +4,7 @@ from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class ConfigDefine:
     """配置定义"""
 
@@ -27,8 +28,8 @@ class ConfigDefine:
 
 
 class Config:
-    CHECK_API = bool(strtobool(os.environ.get("CHECK_API", 'False')))
-    CHECK_PASSWORD = bool(strtobool(os.environ.get("CHECK_PASSWORD", 'True')))
+    CHECK_API = bool(strtobool(os.environ.get("CHECK_API", "False")))
+    CHECK_PASSWORD = bool(strtobool(os.environ.get("CHECK_PASSWORD", "True")))
     CORE_NUM = os.environ.get("CORE_NUM", 5)
 
     # project
@@ -39,7 +40,14 @@ class Config:
     RUN_PORT = os.environ.get("RUN_PORT", 5000)
 
     # set enable
-    ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest", "sentry"]
+    ENABLED_EXTENSION = [
+        "loguru",
+        "lock",
+        "database",
+        "permission",
+        "postgrest",
+        "sentry",
+    ]
 
     # sentry
     SENTRY_DS = "https://c58a597cd1fb4a44b2b719f357325597:d2eeb8285a584261a0b1bd56206991ef@ai.dataknown.cn:31443/4"

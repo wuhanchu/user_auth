@@ -34,7 +34,6 @@ def license_upload():
 
 
 @blueprint.route('/file', methods=['POST'])
-@require_oauth()
 def license_create():
     """
     证书创建
