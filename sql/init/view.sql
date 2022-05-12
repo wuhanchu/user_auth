@@ -18,4 +18,4 @@ create or replace view user_extend as
 select "user".*, array_agg(ur.role_id) filter ( where ur.role_id is not null ) as roles
 from "user"
          left join user_role ur on "user".id = ur.user_id
-group by "user".id
+group by "user".id;
