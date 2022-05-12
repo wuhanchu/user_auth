@@ -111,7 +111,7 @@ class DevelopmentConfig(Config):
     DEBUG = False
 
     # set enable
-    ENABLED_EXTENSION = ["loguru", "database", "permission", "postgrest"]
+    ENABLED_EXTENSION = ["loguru", "lock", "database", "permission", "postgrest"]
 
     RUN_PORT = os.environ.get("RUN_PORT", 31502)
     PROXY_SERVER_URL = os.environ.get(
