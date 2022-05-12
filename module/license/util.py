@@ -53,13 +53,14 @@ def check_license(content):
 
         # 机器码不匹配
         if record["machine_info"] != get_net_card():
-            return False, "机器码不匹配"
+            return False, record, "证书无效，机器码不匹配"
+        
         if record["due_time"] and datetime.datetime.strptime(record["due_time"],
                                                              '%Y-%m-%d').date() < datetime.datetime.now().date():
             return False, "证书已过期,有效期截止：%s" % record["due_time"]
-        return True, record
+        return True, record, "证书解析成功"
     except:
-        return False, "证书解析错误"
+        return False, None, "证书解析错误"
 
 
 def create_license(machine_info, product_key, due_time, custom_name):
