@@ -91,7 +91,6 @@ class Config:
         "sql/init/data/role_permission_scope.sql",
         "sql/init/data/param.sql",
     ]
-    DB_VERSION_FILE = ["sql/migrate/0.9.sql", "sql/migrate/0.9.14.sql"]
     DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", False)  # 自动运行更新文件开开关
 
     # 用户服务模式
