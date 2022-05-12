@@ -81,7 +81,6 @@ class Config:
     AUTO_UPDATE = os.environ.get("AUTO_UPDATE", False)  # 自动更新数据库
     DB_INIT_FILE = [
         "sql/init/table.sql",
-        "sql/init/view.sql",
         "sql/init/data/permission_scope.sql",
         "sql/init/data/role.sql",
         "sql/init/data/department.sql",
@@ -91,6 +90,7 @@ class Config:
         "sql/init/data/role_permission_scope.sql",
         "sql/init/data/param.sql",
     ]
+    DB_UPDATE_FILE=["sql/init/view.sql"]
     DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", False)  # 自动运行更新文件开开关
 
     # 用户服务模式
