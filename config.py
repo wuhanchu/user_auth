@@ -133,7 +133,9 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     AUTO_UPDATE = True  # 自动更新数据库
-
+    DB_UPDATE_SWITCH = bool(
+        strtobool(os.environ.get("DB_UPDATE_SWITCH", "True"))
+    )  # 自动运行更新文件开开关
 
 class ProductionConfig(Config):
     AUTO_UPDATE = True  # 自动更新数据库
