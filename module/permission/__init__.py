@@ -4,7 +4,7 @@ import os
 
 from flask import Blueprint
 
-from frame.util.py_utils import import_dir
+from flask_frame.util.py_utils import import_dir
 
 blueprint = Blueprint('permission', __name__, url_prefix='/permission')
 

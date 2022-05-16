@@ -6,7 +6,7 @@ from authlib.integrations.sqla_oauth2 import OAuth2ClientMixin, OAuth2Authorizat
 from sqlalchemy.orm import foreign
 from werkzeug.utils import cached_property
 
-from frame.extension.database import db, BaseModel, db_schema
+from flask_frame.extension.database import db, BaseModel, db_schema
 from module.user.model import User
 
 

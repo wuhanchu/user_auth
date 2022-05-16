@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship, foreign, remote
 
-from frame.extension.database import BaseModel, db, db_schema
+from flask_frame.extension.database import BaseModel, db, db_schema
 
 
 class PermissionScope(db.Model, BaseModel):

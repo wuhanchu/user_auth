@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship, foreign, remote
 
-from frame.extension.database import db, BaseModel, db_schema
+from flask_frame.extension.database import db, BaseModel, db_schema
 from module.permission.model import PermissionScope
 
 

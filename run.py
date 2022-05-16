@@ -4,9 +4,10 @@ import os
 from extension import celery
 from extension import marshmallow
 
-from frame.app import create_app
+from flask_frame.app import create_app
 import argparse
 import module
+from config import config
 
 if "gaussdb" in os.environ.get("SQLALCHEMY_DATABASE_URI", ""):
     from sqlalchemy.dialects.postgresql.base import PGDialect
@@ -18,7 +19,7 @@ parser.add_argument("--celery", action="store_true")
 parser.add_argument("--beat", action="store_true")
 
 # 初始化
-app = create_app()
+app = create_app(config)
 marshmallow.init_app(app)
 celery.init_app(app)
 

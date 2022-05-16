@@ -4,7 +4,7 @@ from flask import current_app
 
 from . import blueprint
 from .task import job_sync_ldap
-from frame.http.response import http_response_schema
+from flask_frame.api.response import http_response_schema
 
 print("init phfund user resource")
 

@@ -1,17 +1,15 @@
 from flask import request
 
-from frame import permission_context
-from frame.http.response import JsonResult
-from frame.util import param_tool, sql_tool
+from flask_frame import permission_context
+from flask_frame.api.response import JsonResult
+from flask_frame.util import param_tool, sql_tool
 from module.auth.extension.oauth2 import require_oauth
 from .. import blueprint
 from ..model import *
 
 
 # 权限分组列表
-
-
-@blueprint.route('/scope', methods=['GET'])
+@blueprint.route("/scope", methods=["GET"])
 @require_oauth()
 def permission_scope_list():
     id = request.args.get("id")
@@ -23,9 +21,9 @@ def permission_scope_list():
     if name is not None:
         q = q.filter(PermissionScope.name.like("%" + name + "%"))
     q = q.order_by(PermissionScope.name.desc())
-    offset = int(request.args.get('offset'))
-    limit = int(request.args.get('limit'))
-    sort = request.args.get('sort')
+    offset = int(request.args.get("offset"))
+    limit = int(request.args.get("limit"))
+    sort = request.args.get("sort")
     if sort == None:
         sort = "-id"
     res, total = sql_tool.model_page(q, limit, offset, sort)
@@ -39,7 +37,7 @@ def get_permission_scope(id):
 
 
 # 添加
-@blueprint.route('/scope', methods=['POST'])
+@blueprint.route("/scope", methods=["POST"])
 @require_oauth()
 def add_permission_scope():
     obj = PermissionScope()
@@ -52,7 +50,7 @@ def add_permission_scope():
 
 
 # 更新， PUT:全部字段 ；PATCH:部分字段
-@blueprint.route('/scope/<id>', methods=['PATCH'])
+@blueprint.route("/scope/<id>", methods=["PATCH"])
 @require_oauth()
 def update_permission_scope(id):
     obj = PermissionScope.query.get(id)
@@ -65,7 +63,7 @@ def update_permission_scope(id):
     return JsonResult.success("更新成功！", {"id": obj.id})
 
 
-@blueprint.route('/scope', methods=['DELETE'])
+@blueprint.route("/scope", methods=["DELETE"])
 @require_oauth()
 def del_permission_scope(id):
     """
@@ -83,31 +81,35 @@ def del_permission_scope(id):
     return JsonResult.success("删除成功！", {"id": id})
 
 
-@blueprint.route('/scope/detail', methods=['GET'])
+@blueprint.route("/scope/detail", methods=["GET"])
 @require_oauth()
 def get_group_permissions():
     permission_scope_key = request.args.get("permission_scope_key")
-    q = Permission.query.join(PermissionScopeRetail,
-                              PermissionScopeRetail.permission_key == Permission.key) \
-        .filter(PermissionScopeRetail.permission_scope_key == permission_scope_key)
+    q = Permission.query.join(
+        PermissionScopeRetail, PermissionScopeRetail.permission_key == Permission.key
+    ).filter(PermissionScopeRetail.permission_scope_key == permission_scope_key)
     list = q.all()
     return JsonResult.queryResult(list)
 
 
-@blueprint.route('/scope/detail', methods=['PUT'])
+@blueprint.route("/scope/detail", methods=["PUT"])
 @require_oauth()
 def update_group_permissions():
     args = request.get_json()
     permission_scope_key = request.args.get("permission_scope_key")
     permission_keys = args.get("permission_keys")
     group_permissions = PermissionScopeRetail.query.filter(
-        PermissionScopeRetail.permission_scope_key == permission_scope_key).all()
+        PermissionScopeRetail.permission_scope_key == permission_scope_key
+    ).all()
     for permission_key in permission_keys:
         # 判断数据库中是否已经存在该用户
-        selected = [pr for pr in group_permissions if pr.permission_key == permission_key]
+        selected = [
+            pr for pr in group_permissions if pr.permission_key == permission_key
+        ]
         if len(selected) == 0:
-            role_permission = PermissionScopeRetail(permission_scope_key=permission_scope_key,
-                                                    permission_key=permission_key)
+            role_permission = PermissionScopeRetail(
+                permission_scope_key=permission_scope_key, permission_key=permission_key
+            )
             db.session.add(role_permission)
         else:  # 已存在的角色，从user_roles中删掉，剩下的是要删除的用户
             group_permissions.remove(selected[0])

@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 from flask import jsonify
 
-from frame.http.response import queryToDict
-from frame.extension.database import db, db_schema
+from flask_frame.api.response import queryToDict
+from flask_frame.extension.database import db, db_schema
 
 
 def get_user_extend_info(user_record):

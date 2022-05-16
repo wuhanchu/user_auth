@@ -8,7 +8,7 @@ from flask import request, session
 from werkzeug.security import gen_salt
 
 from config import ConfigDefine
-from frame.http.response import Response
+from flask_frame.api.response import Response
 from module.auth.extension.oauth2 import require_oauth
 from . import blueprint
 from .model import *

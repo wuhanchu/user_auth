@@ -31,7 +31,7 @@ def sync_data(department_list, user_list):
 
     from module.phfund.schema import UserSchema
     from module.phfund.schema import DepartmentSchema
-    from frame.extension.database import db
+    from flask_frame.extension.database import db
     from module.user.model import User
     from module.user.model import Department
 
