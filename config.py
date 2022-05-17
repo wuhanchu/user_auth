@@ -49,7 +49,6 @@ class Config:
         "postgrest",
         "sentry",
         "celery",
-        "api_log",
     ]
 
     # sentry
