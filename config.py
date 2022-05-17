@@ -42,11 +42,14 @@ class Config:
     # set enable
     ENABLED_EXTENSION = [
         "loguru",
+        "marshmallow",
         "lock",
         "database",
         "permission",
         "postgrest",
         "sentry",
+        "celery",
+        "api_log",
     ]
 
     # sentry
@@ -90,7 +93,7 @@ class Config:
         "sql/init/data/role_permission_scope.sql",
         "sql/init/data/param.sql",
     ]
-    DB_UPDATE_FILE=["sql/init/view.sql"]
+    DB_UPDATE_FILE = ["sql/init/view.sql"]
     DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", False)  # 自动运行更新文件开开关
 
     # 用户服务模式
@@ -110,23 +113,21 @@ class DevelopmentConfig(Config):
     DEBUG = False
 
     # set enable
-    ENABLED_EXTENSION = ["loguru", "lock", "database", "permission", "postgrest"]
+    ENABLED_EXTENSION = [
+        item for item in Config.ENABLED_EXTENSION if item not in ["sentry"]
+    ]
 
     RUN_PORT = os.environ.get("RUN_PORT", 31502)
-    PROXY_SERVER_URL = os.environ.get(
-        "PROXY_SERVER_URL", "http://192.168.100.152:36023"
-    )
+    PROXY_SERVER_URL = os.environ.get("PROXY_SERVER_URL", "http://192.168.1.152:36023")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "SQLALCHEMY_DATABASE_URI",
-        "postgresql://postgres:dataknown1234@192.168.100.152:36021/dataknown",
+        "postgresql://postgres:dataknown1234@192.168.1.152:36021/dataknown",
     )
 
     REDIS_URL = os.environ.get(
-        "REDIS_URL", "redis://:dataknown1234@http://192.168.100.152:36061"
+        "REDIS_URL", "redis://:dataknown1234@http://192.168.1.152:36061"
     )
     REDIS_MASTER_NAME = os.environ.get("REDIS_MASTER_NAME", "mymaster")
-    # AUTO_UPDATE = True  # 自动更新数据库
-    # FETCH_USER = False
 
 
 class TestingConfig(Config):
@@ -135,6 +136,7 @@ class TestingConfig(Config):
     DB_UPDATE_SWITCH = bool(
         strtobool(os.environ.get("DB_UPDATE_SWITCH", "True"))
     )  # 自动运行更新文件开开关
+
 
 class ProductionConfig(Config):
     AUTO_UPDATE = True  # 自动更新数据库
@@ -155,7 +157,6 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     USER_SERVER_PASSWORD = os.environ.get(
         ConfigDefine.USER_SERVER_PASSWORD, "DATAknown1234"
     )
-    from celery.schedules import crontab
 
     FETCH_USER = False
 

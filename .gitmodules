@@ -1,0 +1,3 @@
+[submodule "flask_frame"]
+	path = flask_frame
+	url = git@github.com:wuhanchu/flask_rest_frame.git
