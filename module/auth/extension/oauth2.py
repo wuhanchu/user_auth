@@ -9,11 +9,11 @@ from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import request as _req
 from werkzeug.security import gen_salt
 
-from frame import permission_context
-from frame.extension.database import db, db_schema
-from frame.http.response import queryToDict
-from frame.http.exception import BusiError
-from frame.util import com_tool
+from flask_frame import permission_context
+from flask_frame.extension.database import db, db_schema
+from flask_frame.api.response import queryToDict
+from flask_frame.api.exception import BusiError
+from flask_frame.util import com_tool
 from ..model import OAuth2Token, OAuth2AuthorizationCode, OAuth2Client
 
 flask_app = None

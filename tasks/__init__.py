@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from invoke import task
 
-from frame.app import create_app
-from frame.tasks import database
+from flask_frame.app import create_app
+from flask_frame.tasks import database
 
 
 @task

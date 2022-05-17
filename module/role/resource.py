@@ -3,11 +3,11 @@ import time
 
 from flask import request
 
-from frame import permission_context
-from frame.extension.database import db
-from frame.extension.postgrest.util import get_args_delete_prefix
-from frame.http.response import JsonResult
-from frame.util import sql_tool, param_tool
+from flask_frame import permission_context
+from flask_frame.extension.database import db
+from flask_frame.extension.postgrest.util import get_args_delete_prefix
+from flask_frame.api.response import JsonResult
+from flask_frame.util import sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.permission.model import Permission, PermissionScopeRetail, PermissionScope
 from module.role.model import Role, RolePermissionScope

@@ -1,4 +1,4 @@
-from frame.extension.database import db, BaseModel
+from flask_frame.extension.database import db, BaseModel
 
 
 class License(db.Model, BaseModel):

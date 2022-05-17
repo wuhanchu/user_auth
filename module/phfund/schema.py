@@ -2,7 +2,7 @@ import json
 
 from marshmallow import EXCLUDE, pre_load, INCLUDE
 
-from extension.marshmallow import ma
+from flask_frame.extension.marshmallow import ma
 from module.user.model import User, Department
 
 

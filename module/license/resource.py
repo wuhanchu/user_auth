@@ -3,9 +3,9 @@ from http import HTTPStatus
 
 from flask import request, abort
 
-from frame.extension.database import db
-from frame.http.response import Response
-from frame.util.db import auto_commit
+from flask_frame.extension.database import db
+from flask_frame.api.response import Response
+from flask_frame.util.db import auto_commit
 from module.license.util import create_license
 from . import blueprint, util
 from .model import License

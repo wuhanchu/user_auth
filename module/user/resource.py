@@ -7,10 +7,10 @@ from flask import request, jsonify
 from sqlalchemy import func, Text
 
 from config import ConfigDefine
-from frame.extension.database import db
-from frame.extension.postgrest.util import get_args_delete_prefix
-from frame.http.response import JsonResult, Response
-from frame.util import com_tool, sql_tool, param_tool
+from flask_frame.extension.database import db
+from flask_frame.extension.postgrest.util import get_args_delete_prefix
+from flask_frame.api.response import JsonResult, Response
+from flask_frame.util import com_tool, sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
 from . import blueprint

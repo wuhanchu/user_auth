@@ -9,3 +9,4 @@ service.sh
 /celerybeat-schedule
 *.pytest_cache
 flask_frame
+had-update-db
