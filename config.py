@@ -45,7 +45,6 @@ class Config:
         "marshmallow",
         "lock",
         "database",
-        "permission",
         "postgrest",
         "sentry",
         "celery",
@@ -58,10 +57,7 @@ class Config:
     LICENSE_CHECK = False
 
     # module
-    ENABLED_MODULE = ["permission", "user", "role", "auth", "license"]
-
-    # permission config
-    USER_AUTH_LOCAL = True
+    ENABLED_MODULE = [ "user", "role", "auth", "license"]
 
     # posrgrest
     PROXY_SERVER_URL = os.environ.get("PROXY_SERVER_URL")
@@ -160,7 +156,7 @@ class DevelopmentPhfundConfig(DevelopmentConfig):
     FETCH_USER = False
 
     # module
-    ENABLED_MODULE = ["permission", "user", "role", "auth", "license", "phfund"]
+    ENABLED_MODULE = ["user", "role", "auth", "license", "phfund"]
 
     # schedule jobs
     minutes = int(os.environ.get(ConfigDefine.LDAP_INTERVAL_MINUTE, 1))

@@ -2,7 +2,7 @@
 import os
 
 from flask_frame.extension import celery
-from flask_frame.extension import marshmallow
+from extension import permission
 
 from flask_frame.app import create_app
 import argparse
@@ -16,7 +16,7 @@ parser.add_argument("--beat", action="store_true")
 
 # 初始化
 app = create_app(config)
-marshmallow.init_app(app)
+permission.init_app(app)
 module.init_app(app)
 
 print(app.url_map)
