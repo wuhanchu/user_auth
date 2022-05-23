@@ -20,14 +20,16 @@ def fetch_current_user(token_string):
 
     from authlib.integrations.flask_oauth2 import current_token
 
-    if current_token and current_token.user:
-        from module.user.service import get_user_extend_info
+    user = None
+    if current_token:
+        if current_token.user:
+            from module.user.service import get_user_extend_info
 
-        user = get_user_extend_info(current_token.user)
+            user = get_user_extend_info(current_token.user)
+        else:
+            user = {"client_id": current_token.client_id}
         g.current_user = user
-        return user
-
-    return None
+    return user
 
 
 def check_user_permission(token_string=None):
@@ -48,6 +50,7 @@ def check_user_permission(token_string=None):
         pass
 
     local_oauth()
+
     user = fetch_current_user(token_string)
     return check_url_permission(user)
 
