@@ -39,7 +39,7 @@ def check_user_permission(token_string=None):
     :return:
     """
     # 获取token 不需要检查权限
-    if request.url_rule.rule == "/auth/token":
+    if request.url_rule.rule in ["/auth/token", "/license", "/license/check"]:
         return True
 
     from module.auth.extension.oauth2 import require_oauth

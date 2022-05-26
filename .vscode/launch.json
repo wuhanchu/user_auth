@@ -12,7 +12,7 @@
         "FLASK_CONFIG": "development",
         "CHECK_PASSWORD": "False",
         "PROXY_SERVER_URL": "http://192.168.100.152:36023",
-        "SQLALCHEMY_DATABASE_URI": "postgresql://dataknown:dataknown1234@127.0.0.1:5432/dataknown",
+        "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:dataknown1234@192.168.1.34:31014/dataknown",
         "REDIS_URL": "redis://:dataknown1234@192.168.100.152:36061",
         "CHECK_API": "True"
       },
