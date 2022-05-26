@@ -1,8 +1,4 @@
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('project_post', 'project_post', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('project_delete', 'project_delete', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('project_patch', 'project_patch', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('project_get', 'project_export', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('project_get', 'project_get', 'z_know_info', 'z_know_info');
+
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_post', 'role_post', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_delete', 'role_delete', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_patch', 'role_patch', 'user_auth', 'user_auth');
@@ -21,13 +17,6 @@ INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", 
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_get', 'login', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('permission_get', 'login', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('permission_get', 'role_get', 'user_auth', 'user_auth');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_get', 'question_get', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_post', 'question_post', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_delete', 'question_delete', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_patch', 'question_patch', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_get', 'question_export', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_post', 'question_import', 'z_know_info', 'z_know_info');
-INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('question_put', 'question_put', 'z_know_info', 'z_know_info');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_get', 'role_get', NULL, NULL);
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_get', 'role_export', 'user_auth', NULL);
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_post', 'role_import', 'user_auth', NULL);
