@@ -21,46 +21,6 @@ from ..role.model import Role
 from authlib.integrations.flask_oauth2 import current_token
 
 
-@blueprint.route('', methods=['GET'])
-@require_oauth()
-def user_get():
-    """
-    用户列表
-    :return:
-    """
-
-    id = request.args.get("id")
-    if id:
-        obj = User.query.get(id)
-        return JsonResult.queryResult(obj)
-
-    q = db.session.query(
-        User.id, User.department_key,
-        func.max(User.name).label("name"),
-        func.max(User.loginid).label("loginid"),
-        func.max(User.telephone).label("telephone"),
-        func.max(User.address).label("address"),
-        User.token, User.expires_in, User.login_at, User.login_ip, User.login_count, User.remark, User.opr_by,
-        User.opr_at, User.del_fg, User.external_id, User.source, User.email, User.mobile_phone, User.enable,
-        func.string_agg(func.cast(Role.id, Text),
-                        ',').label("roles")).outerjoin(
-        UserRole, UserRole.user_id == User.id).outerjoin(
-        Role,
-        Role.id == UserRole.role_id).group_by(User.id)
-
-    name = request.args.get("name")
-    if name is not None:
-        q = q.filter(User.name.like("%" + name.split(".")[-1].replace("*", "") + "%"))
-
-    offset = int(request.args.get('offset'))
-    limit = int(request.args.get('limit'))
-    sort = request.args.get('sort')
-    if sort is None:
-        sort = "-id"
-    res, total = sql_tool.model_page(q, limit, offset, sort)
-    return JsonResult.res_page(res, total)
-
-
 @blueprint.route('', methods=['POST'])
 @require_oauth()
 def add_user():
