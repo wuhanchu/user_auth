@@ -1,6 +1,7 @@
 drop view IF EXISTS permission_role cascade;
 drop view IF EXISTS user_extend cascade;
 
+-- 角色权限
 create or replace view permission_role as
 SELECT permission.name,
        permission.url,
@@ -14,8 +15,10 @@ FROM permission
          JOIN role ON role.id = role_permission_scope.role_id
 GROUP BY permission.name, permission.url, permission.method;
 
+-- 用户角色
 create or replace view user_extend as
-select "user".*, array_agg(ur.role_id) filter ( where ur.role_id is not null ) as roles
+select "user".*, array_agg(ur.role_id) filter ( where ur.role_id is not null ) as role_id
 from "user"
          left join user_role ur on "user".id = ur.user_id
 group by "user".id;
+
