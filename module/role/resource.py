@@ -2,48 +2,15 @@
 import time
 
 from flask import request
-
 from flask_frame import permission_context
+from flask_frame.api.response import JsonResult
 from flask_frame.extension.database import db
 from flask_frame.extension.postgrest.util import get_args_delete_prefix
-from flask_frame.api.response import JsonResult
-from flask_frame.util import sql_tool, param_tool
 from module.auth.extension.oauth2 import require_oauth
-from module.permission.model import Permission, PermissionScopeRetail, PermissionScope
-from module.role.model import Role, RolePermissionScope
+from module.permission.model import Permission, PermissionScope, PermissionScopeRetail
+from module.role.model import RolePermissionScope
+
 from . import blueprint
-
-
-# 角色列表
-@blueprint.route("", methods=["GET"])
-@require_oauth()
-def role_list():
-    id = request.args.get("id")
-    if id:
-        return get_role(id)
-
-    q = Role.query
-    name = request.args.get("name")
-    if name is not None:
-        q = q.filter(Role.name.like("%" + name + "%"))
-    q = q.order_by(Role.name.desc())
-    offset = int(request.args.get("offset"))
-    limit = int(request.args.get("limit"))
-    sort = request.args.get("sort")
-    if sort == None:
-        sort = "-id"
-    res, total = sql_tool.model_page(q, limit, offset, sort)
-    return JsonResult.res_page(res, total)
-
-
-def get_role(id):
-    """
-    # 详细角色信息
-    :param id:
-    :return:
-    """
-    obj = Role.query.get(id)
-    return JsonResult.queryResult(obj)
 
 
 @blueprint.route("/permission", methods=["GET"])

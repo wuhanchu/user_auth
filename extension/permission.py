@@ -52,7 +52,7 @@ def check_user_permission(token_string=None):
     local_oauth()
 
     user = fetch_current_user(token_string)
-    return check_url_permission(user)
+    return check_url_permission(user, app.config.get("PRODUCT_KEY"))
 
 
 def init_app(flask_app):
