@@ -32,10 +32,7 @@ select "user".id,
        "user".remark,
        "user".create_time,
        "user".update_time,
-       array_agg(ur.role_id) filter (
-           where
-           ur.role_id is not null
-           ) as role_id
+       array_remove(array_agg(ur.role_id), null) as role_id
 from "user"
          left join user_role ur on "user".id = ur.user_id
-group by "user".id;
+group by "user".id;;

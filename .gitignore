@@ -10,3 +10,4 @@ service.sh
 *.pytest_cache
 flask_frame
 had-update-db
+.vscode

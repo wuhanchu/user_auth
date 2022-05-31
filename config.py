@@ -102,7 +102,9 @@ class Config:
 
     # celery
     CELERY_DEFAULT_QUEUE = PRODUCT_KEY
-
+    PROXY_LOCAL = bool(
+        strtobool(os.environ.get("PROXY_LOCAL", "True"))
+    ) 
 
 class DevelopmentConfig(Config):
     DEBUG = False
