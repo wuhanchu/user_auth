@@ -21,7 +21,7 @@ from ..role.model import Role
 from authlib.integrations.flask_oauth2 import current_token
 
 
-@blueprint.route('', methods=['POST'])
+@blueprint.route("", methods=["POST"])
 @require_oauth()
 def add_user():
     """
@@ -44,7 +44,7 @@ def add_user():
     return JsonResult.success("创建成功！", {"userid": obj.id})
 
 
-@blueprint.route('/password', methods=['PATCH'])
+@blueprint.route("/password", methods=["PATCH"])
 @require_oauth()
 def update_user_password():
     """
@@ -52,13 +52,14 @@ def update_user_password():
     :return:
     """
     user = current_user().json
-    id = user['id']
+    id = user["id"]
     obj = User.query.get(id)
     if obj is None:
         return JsonResult.error("对象不存在，id=%s" % id)
     args = request.get_json()
     if "old_password" in args and obj.password == com_tool.get_md5_code(
-            args["old_password"]):
+        args["old_password"]
+    ):
         if "new_password" in args:
             new_passwd = com_tool.get_md5_code(args["new_password"])
             obj.password = new_passwd
@@ -70,7 +71,7 @@ def update_user_password():
         return JsonResult.error("修改密码失败，旧密码错误！")
 
 
-@blueprint.route('/password/reset', methods=['POST'])
+@blueprint.route("/password/reset", methods=["POST"])
 @require_oauth()
 def admin_update_user_password():
     """
@@ -97,7 +98,7 @@ def admin_update_user_password():
     return response.get_response()
 
 
-@blueprint.route('/role', methods=['PUT'])
+@blueprint.route("/role", methods=["PUT"])
 @require_oauth()
 def update_user_roles():
     data = request.get_json()
@@ -122,21 +123,23 @@ def update_user_roles():
     return JsonResult.success("更新用户角色成功！")
 
 
-@blueprint.route('/role', methods=['GET'])
+@blueprint.route("/role", methods=["GET"])
 @require_oauth()
 def user_roles_list():
     user_id = request.args.get("user_id")
 
-    list = Role.query.join(
-        UserRole,
-        UserRole.role_id == Role.id).filter(UserRole.user_id == user_id).all()
+    list = (
+        Role.query.join(UserRole, UserRole.role_id == Role.id)
+        .filter(UserRole.user_id == user_id)
+        .all()
+    )
     return JsonResult.queryResult(list)
 
 
 # 鹏华
 if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 
-    @blueprint.route('/current', methods=['GET'])
+    @blueprint.route("/current", methods=["GET"])
     def current_user():
         from flask import current_app, request
         from ..phfund.schema import PhfundUserSchema
@@ -146,7 +149,8 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 
             url = urllib.parse.urljoin(
                 current_app.config.get(ConfigDefine.USER_SERVER_URL),
-                "/user/operation/detail_info")
+                "/user/operation/detail_info",
+            )
             response = requests.get(url, headers=request.headers)
 
             data = response.json()
@@ -155,7 +159,7 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
             # 查询本地数据
             user_record = User.query.filter_by(loginid=data.get("loginid")).first()
             if not user_record.enable:
-                return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
+                return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
 
             data["id"] = user_record.id
 
@@ -166,22 +170,34 @@ if get_user_pattern() == ConfigDefine.UserPattern.phfund:
             # 返回
             return jsonify(data)
         except Exception as e:
-            return {'message': "查找不到用户"}, HTTPStatus.UNAUTHORIZED
+            return {"message": "查找不到用户"}, HTTPStatus.UNAUTHORIZED
+
 
 # 默认
 else:
 
-    @blueprint.route('/current', methods=['GET'])
+    @blueprint.route("/current", methods=["GET"])
     @require_oauth()
     def current_user():
 
         if current_token:
+            from module.auth.model import OAuth2Client
+
             db.session.merge(current_token)
             user = current_token.user
-            user_extend = {"client_id": current_token.client_id}
+
+            # 补充客户端信息
+            client = OAuth2Client.query.filter_by(
+                client_id=current_token.client_id
+            ).first()
+            user_extend = {
+                "client_id": current_token.client_id,
+                "client_name": client.client_name,
+            }
+
             if user:
                 if not user.enable:
-                    return {'message': "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
+                    return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
                 user_extend = {**user_extend, **get_user_extend_info(user)}
             return jsonify(user_extend)
         else:

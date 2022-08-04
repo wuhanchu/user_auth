@@ -53,7 +53,8 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
         from module.user.model import User
 
-        user = User.query.filter_by(loginid=username).first()
+        user = User.query.filter_by(loginid=username, enable=True).first()
+
         # 校验密码
         if user and (
             not flask_app.config.get("CHECK_PASSWORD")
