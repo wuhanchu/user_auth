@@ -72,6 +72,7 @@ class Config:
 
     # database
     DB_SCHEMA = "user_auth"
+    DB_VERSION = os.environ.get("DB_VERSION")
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
