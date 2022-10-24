@@ -39,9 +39,42 @@ def add_user():
     try:
         db.session.commit()
     except Exception:
-        return JsonResult.error("创建失败，用户名重复！", {"loginid": obj.loginid})
+        return JsonResult.error("创建失败，账户重复！", {"loginid": obj.loginid})
 
-    return JsonResult.success("创建成功！", {"userid": obj.id})
+    return JsonResult.success("创建成功！", {"id": obj.id})
+
+
+@blueprint.route("/register", methods=["POST"])
+def user_register():
+    """
+    用户注册
+    :return:
+    """
+    from module.config.model import Config
+    from flask_frame.api.exception import ResourceError
+
+    register_switch = Config.query.filter_by(key=Config.KEY.register_switch).first()
+    if not register_switch or register_switch.value.trim() != "true":
+        raise ResourceError("注册功能已关闭")
+
+    obj = User()
+    args = request.get_json()
+
+    # 将参数加载进去
+    param_tool.set_dict_parm(obj, args)
+    password = args.get("password")
+    password = com_tool.get_md5_code(password)
+    obj.password = password
+    db.session.add(obj)
+
+    try:
+        db.session.commit()
+    except Exception:
+        return Response(
+            result=False, message="创建失败，账户重复！", data={"loginid": obj.loginid}
+        ).mark_flask_response()
+
+    return Response(data={"id": obj.id}).mark_flask_response()
 
 
 @blueprint.route("/password", methods=["PATCH"])

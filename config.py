@@ -57,7 +57,7 @@ class Config:
     LICENSE_CHECK = False
 
     # module
-    ENABLED_MODULE = [ "user", "role", "auth", "license"]
+    ENABLED_MODULE = ["user", "role", "auth", "license"]
 
     # posrgrest
     PROXY_SERVER_URL = os.environ.get("PROXY_SERVER_URL")
@@ -89,7 +89,10 @@ class Config:
         "sql/init/data/role_permission_scope.sql",
         "sql/init/data/param.sql",
     ]
-    DB_UPDATE_FILE = ["sql/init/view.sql"]
+    DB_UPDATE_FILE = [
+        "sql/init/view.sql",
+        "sql/init/data/config.sql",
+    ]
     DB_UPDATE_SWITCH = os.environ.get("DB_UPDATE_SWITCH", False)  # 自动运行更新文件开开关
 
     # 用户服务模式
@@ -103,9 +106,8 @@ class Config:
 
     # celery
     CELERY_DEFAULT_QUEUE = PRODUCT_KEY
-    PROXY_LOCAL = bool(
-        strtobool(os.environ.get("PROXY_LOCAL", "False"))
-    ) 
+    PROXY_LOCAL = bool(strtobool(os.environ.get("PROXY_LOCAL", "False")))
+
 
 class DevelopmentConfig(Config):
     DEBUG = False
