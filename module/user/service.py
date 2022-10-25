@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-from flask import jsonify
 
 from flask_frame.api.response import queryToDict
 from flask_frame.extension.database import db, db_schema

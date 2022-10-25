@@ -54,7 +54,7 @@ def user_register():
     from flask_frame.api.exception import ResourceError
 
     register_switch = Config.query.filter_by(key=Config.KEY.register_switch).first()
-    if not register_switch or register_switch.value.trim() != "true":
+    if not register_switch or register_switch.value.strip() != "true":
         raise ResourceError("注册功能已关闭")
 
     obj = User()
