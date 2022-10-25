@@ -30,13 +30,15 @@ def add_user():
     """
     obj = User()
     args = request.get_json()
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    password = args.get("password")
-    password = com_tool.get_md5_code(password)
-    obj.password = password
-    db.session.add(obj)
+
     try:
+        # 将参数加载进去
+        param_tool.set_dict_parm(obj, args)
+        password = args.get("password")
+        password = com_tool.get_md5_code(password)
+        obj.password = password
+        db.session.add(obj)
+
         db.session.commit()
     except Exception:
         return JsonResult.error("创建失败，账户重复！", {"loginid": obj.loginid})
@@ -57,17 +59,17 @@ def user_register():
     if not register_switch or register_switch.value.strip() != "true":
         raise ResourceError("注册功能已关闭")
 
-    obj = User()
-    args = request.get_json()
-
-    # 将参数加载进去
-    param_tool.set_dict_parm(obj, args)
-    password = args.get("password")
-    password = com_tool.get_md5_code(password)
-    obj.password = password
-    db.session.add(obj)
-
     try:
+        obj = User()
+        args = request.get_json()
+
+        # 将参数加载进去
+        param_tool.set_dict_parm(obj, args)
+        password = args.get("password")
+        password = com_tool.get_md5_code(password)
+        obj.password = password
+        db.session.add(obj)
+
         db.session.commit()
     except Exception:
         return Response(
