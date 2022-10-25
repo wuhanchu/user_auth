@@ -3,22 +3,22 @@ import urllib.parse
 from http import HTTPStatus
 
 import requests
-from flask import request, jsonify
-from sqlalchemy import func, Text
-
+from authlib.integrations.flask_oauth2 import current_token
 from config import ConfigDefine
+from flask import jsonify, request
+from flask_frame.api.response import JsonResult, Response
 from flask_frame.extension.database import db
 from flask_frame.extension.postgrest.util import get_args_delete_prefix
-from flask_frame.api.response import JsonResult, Response
-from flask_frame.util import com_tool, sql_tool, param_tool
+from flask_frame.util import com_tool, param_tool, sql_tool
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
-from . import blueprint
-from .service import get_user_extend_info, append_permission, append_permission_scope
+from sqlalchemy import Text, func
+
 from .. import get_user_pattern
 from ..role.model import Role
-
-from authlib.integrations.flask_oauth2 import current_token
+from . import blueprint
+from .service import (append_permission, append_permission_scope,
+                      get_user_extend_info)
 
 
 @blueprint.route("", methods=["POST"])
@@ -41,9 +41,12 @@ def add_user():
 
         db.session.commit()
     except Exception:
-        return JsonResult.error("创建失败，账户重复！", {"loginid": obj.loginid})
+        db.session.rollback()
+        return Response(
+            result=False, message="创建失败，账户重复！", data={"loginid": obj.loginid}
+        ).mark_flask_response()
 
-    return JsonResult.success("创建成功！", {"id": obj.id})
+    return Response(data={"id": obj.id}).mark_flask_response()
 
 
 @blueprint.route("/register", methods=["POST"])
@@ -52,8 +55,8 @@ def user_register():
     用户注册
     :return:
     """
-    from module.config.model import Config
     from flask_frame.api.exception import ResourceError
+    from module.config.model import Config
 
     register_switch = Config.query.filter_by(key=Config.KEY.register_switch).first()
     if not register_switch or register_switch.value.strip() != "true":
@@ -72,6 +75,8 @@ def user_register():
 
         db.session.commit()
     except Exception:
+        db.session.rollback()
+
         return Response(
             result=False, message="创建失败，账户重复！", data={"loginid": obj.loginid}
         ).mark_flask_response()
@@ -171,69 +176,30 @@ def user_roles_list():
     return JsonResult.queryResult(list)
 
 
-# 鹏华
-if get_user_pattern() == ConfigDefine.UserPattern.phfund:
 
-    @blueprint.route("/current", methods=["GET"])
-    def current_user():
-        from flask import current_app, request
-        from ..phfund.schema import PhfundUserSchema
+@blueprint.route("/current", methods=["GET"])
+@require_oauth()
+def current_user():
 
-        # 调用服务器获取当前数据
-        try:
+    if current_token:
+        from module.auth.model import OAuth2Client
 
-            url = urllib.parse.urljoin(
-                current_app.config.get(ConfigDefine.USER_SERVER_URL),
-                "/user/operation/detail_info",
-            )
-            response = requests.get(url, headers=request.headers)
+        db.session.merge(current_token)
+        user = current_token.user
 
-            data = response.json()
-            data = PhfundUserSchema().load(data)
+        # 补充客户端信息
+        client = OAuth2Client.query.filter_by(
+            client_id=current_token.client_id
+        ).first()
+        user_extend = {
+            "client_id": current_token.client_id,
+            "client_name": client.client_name,
+        }
 
-            # 查询本地数据
-            user_record = User.query.filter_by(loginid=data.get("loginid")).first()
-            if not user_record.enable:
+        if user:
+            if not user.enable:
                 return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
-
-            data["id"] = user_record.id
-
-            # 附加权限
-            append_permission(data)
-            append_permission_scope(data)
-
-            # 返回
-            return jsonify(data)
-        except Exception as e:
-            return {"message": "查找不到用户"}, HTTPStatus.UNAUTHORIZED
-
-
-# 默认
-else:
-
-    @blueprint.route("/current", methods=["GET"])
-    @require_oauth()
-    def current_user():
-
-        if current_token:
-            from module.auth.model import OAuth2Client
-
-            db.session.merge(current_token)
-            user = current_token.user
-
-            # 补充客户端信息
-            client = OAuth2Client.query.filter_by(
-                client_id=current_token.client_id
-            ).first()
-            user_extend = {
-                "client_id": current_token.client_id,
-                "client_name": client.client_name,
-            }
-
-            if user:
-                if not user.enable:
-                    return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
-                user_extend = {**user_extend, **get_user_extend_info(user)}
-            return jsonify(user_extend)
-        else:
-            return JsonResult.error()
+            user_extend = {**user_extend, **get_user_extend_info(user)}
+        return jsonify(user_extend)
+    else:
+        return JsonResult.error()
