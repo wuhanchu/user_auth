@@ -40,7 +40,8 @@ def role_permission_scopes_list():
 
     q = PermissionScope.query.join(
         RolePermissionScope,
-        RolePermissionScope.permission_scope_key == PermissionScope.key,
+        RolePermissionScope.permission_scope_key == PermissionScope.key
+        and RolePermissionScope.product_key == PermissionScope.product_key,
     ).filter(RolePermissionScope.role_id == role_id)
     list = q.all()
     return JsonResult.queryResult(list)
