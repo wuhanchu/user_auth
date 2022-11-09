@@ -36,13 +36,23 @@ def role_permissions_list():
 @blueprint.route("/permission_scope", methods=["GET"])
 @require_oauth()
 def role_permission_scopes_list():
+    """查询角色权限范围
+
+    Returns:
+        _type_: _description_
+    """
+    from sqlalchemy import and_
+
     role_id = get_args_delete_prefix(request.args.get("role_id"))
 
     q = PermissionScope.query.join(
         RolePermissionScope,
-        RolePermissionScope.permission_scope_key == PermissionScope.key
-        and RolePermissionScope.product_key == PermissionScope.product_key,
+        and_(
+            RolePermissionScope.permission_scope_key == PermissionScope.key,
+            RolePermissionScope.product_key == PermissionScope.product_key,
+        ),
     ).filter(RolePermissionScope.role_id == role_id)
+
     list = q.all()
     return JsonResult.queryResult(list)
 
