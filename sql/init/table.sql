@@ -24,8 +24,7 @@ create sequence user_auth.role_id_seq;
 
 
 
-create sequence user_auth.role_permission_scope_id_seq;
-
+CREATE SEQUENCE  user_auth.role_permission_scope_id_seq start 1000;
 
 
 create sequence user_auth.sys_user_role_id_seq
