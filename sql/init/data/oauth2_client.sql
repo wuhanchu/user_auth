@@ -5,6 +5,6 @@ INSERT INTO "oauth2_client"("client_id", "client_secret", "client_id_issued_at",
                             "client_metadata", "issued_at", "expires_at")
 VALUES ('yAl9PO9sA4NKYhcrXfAOXxlD', 'DarmrCkeA04rV8t8vA4mTXhMvn7nEUweE07JgvWhEVpGsukK', 1565360863, 0,
         'http://localhost:5002/api/v1/users?limit=10&offset=0', 'client_secret_basic', 'authorization_code
-password', 'code', 'profile', 'test_client', 'http://localhost:5002', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+password', 'code', 'profile', 'system', 'http://localhost:5002', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
         NULL, 1, '{"grant_types": ["authorization_code","password","client_credentials"], "response_types":"code", "scope":"profile"}', NULL,
         NULL);
