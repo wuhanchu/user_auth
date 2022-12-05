@@ -41,6 +41,8 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
             return item
 
     def delete_authorization_code(self, authorization_code):
+        # delete cache
+        
         db.session.delete(authorization_code)
         db.session.commit()
 
@@ -109,9 +111,45 @@ class _BearerTokenValidator(BearerTokenValidator):
         return role_list
 
     def authenticate_token(self, token_string):
-        # todo 增加token
-        token = OAuth2Token.query.filter_by(access_token=token_string).first()
-        token and token.user
+        # 增加token
+        from flask_frame.extension.redis import redis_client
+        from ..util import generate_token_cache_key, generate_user_cache_key
+        import pickle
+        import codecs
+
+        # 获取缓存数据
+        token = None
+        token_cache_key = generate_token_cache_key(token_string)
+        user_cache_key = generate_user_cache_key(token_string)
+
+        if redis_client:
+            token_str = redis_client.get(token_cache_key)
+            if token_str:
+                token = pickle.loads(codecs.decode(token_str.encode(), "base64"))
+
+            user_str = redis_client.get(user_cache_key)
+            if token and token.user_id and user_str:
+                token.user = pickle.loads(codecs.decode(user_str.encode(), "base64"))
+            elif token and token.user_id and not user_str:
+                token = None
+
+        # 数据库查询
+        if not token:
+            token = OAuth2Token.query.filter_by(access_token=token_string).first()
+            if redis_client:
+                redis_client.set(
+                    token_cache_key,
+                    codecs.encode(pickle.dumps(token), "base64").decode(),
+                    ex=10,
+                )
+            if token and token.user_id and token.user:
+                redis_client.set(
+                    user_cache_key,
+                    codecs.encode(pickle.dumps(token.user), "base64").decode(),
+                    ex=10,
+                )
+
+        # return
         return token
 
     def request_invalid(self, request):

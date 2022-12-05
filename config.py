@@ -44,6 +44,7 @@ class Config:
         "loguru",
         "marshmallow",
         "lock",
+        "redis",
         "database",
         "postgrest",
         "sentry",

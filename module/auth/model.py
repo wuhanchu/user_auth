@@ -13,6 +13,8 @@ from werkzeug.utils import cached_property
 from flask_frame.extension.database import db, BaseModel, db_schema
 from module.user.model import User
 
+from sqlalchemy import event
+
 
 class OAuth2ClientModel(db.Model, BaseModel):
     __tablename__ = "oauth2_client"
@@ -52,3 +54,23 @@ class OAuth2Token(db.Model, BaseModel, OAuth2TokenMixin):
     def is_refresh_token_expired(self):
         expires_at = self.issued_at + self.expires_in * 2
         return expires_at < time.time()
+
+
+@event.listens_for(OAuth2Token, "after_delete")
+def token_delete(mapper, connection, target):
+    """删除token时，删除缓存
+
+    Args:
+        mapper (_type_): _description_
+        connection (_type_): _description_
+        target (_type_): _description_
+    """
+
+    from .util import generate_user_cache_key, generate_token_cache_key
+    from flask_frame.extension.redis import redis_client
+
+    if redis_client and target.access_token:
+        token_cache_key = generate_token_cache_key(target.access_token)
+        user_cache_key = generate_user_cache_key(target.access_token)
+        redis_client.expire(token_cache_key)
+        redis_client.expire(user_cache_key)
