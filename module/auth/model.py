@@ -83,4 +83,4 @@ def token_delete(mapper, connection, target):
 
     if redis_client and target.access_token:
         token_cache_key = generate_token_cache_key(target.access_token)
-        redis_client.expire(token_cache_key)
+        redis_client.delete(token_cache_key)

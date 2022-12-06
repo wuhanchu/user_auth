@@ -130,14 +130,15 @@ class _BearerTokenValidator(BearerTokenValidator):
         # 数据库查询
         if not token:
             token = OAuth2Token.query.filter_by(access_token=token_string).first()
-            token.user_info = get_user_extend_info(token)
-                
-            if redis_client:
-                redis_client.set(
-                    token_cache_key,
-                    codecs.encode(pickle.dumps(token), "base64").decode(),
-                    ex=10,
-                )
+            if token:
+                token.user_info = get_user_extend_info(token)
+
+                if redis_client:
+                    redis_client.set(
+                        token_cache_key,
+                        codecs.encode(pickle.dumps(token), "base64").decode(),
+                        ex=10,
+                    )
 
         # return
         return token
