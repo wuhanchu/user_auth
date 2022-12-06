@@ -49,7 +49,19 @@ class OAuth2Token(db.Model, BaseModel, OAuth2TokenMixin):
     user_id = db.Column(
         db.Integer, db.ForeignKey(db_schema + ".user.id", ondelete="CASCADE")
     )
-    user = db.relationship(User, primaryjoin=User.id == foreign(user_id))
+
+    client_id = db.Column(
+        db.Text, db.ForeignKey(db_schema + ".user.id", ondelete="CASCADE")
+    )
+
+    user = db.relationship(
+        User, primaryjoin=User.id == foreign(user_id), lazy="immediate"
+    )
+    client = db.relationship(
+        OAuth2Client,
+        primaryjoin=OAuth2Client.client_id == foreign(client_id),
+        lazy="immediate",
+    )
 
     def is_refresh_token_expired(self):
         expires_at = self.issued_at + self.expires_in * 2
@@ -66,11 +78,9 @@ def token_delete(mapper, connection, target):
         target (_type_): _description_
     """
 
-    from .util import generate_user_cache_key, generate_token_cache_key
+    from .util import generate_token_cache_key
     from flask_frame.extension.redis import redis_client
 
     if redis_client and target.access_token:
         token_cache_key = generate_token_cache_key(target.access_token)
-        user_cache_key = generate_user_cache_key(target.access_token)
         redis_client.expire(token_cache_key)
-        redis_client.expire(user_cache_key)

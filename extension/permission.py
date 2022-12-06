@@ -9,29 +9,6 @@ check_api = True  # 检查API权限
 fetch_user = True  # 是否获取用户
 
 
-def fetch_current_user(token_string):
-    """
-    todo 使用缓存
-    获取当前用户
-    :param token_string:
-    :return:
-    """
-    global app
-
-    from authlib.integrations.flask_oauth2 import current_token
-
-    user = None
-    if current_token:
-        if current_token.user:
-            from module.user.service import get_user_extend_info
-
-            user = get_user_extend_info(current_token.user)
-        else:
-            user = {"client_id": current_token.client_id}
-        g.current_user = user
-    return user
-
-
 def check_user_permission(token_string=None):
     """
     check current token
@@ -55,9 +32,9 @@ def check_user_permission(token_string=None):
         pass
 
     local_oauth()
+    from authlib.integrations.flask_oauth2 import current_token
 
-    user = fetch_current_user(token_string)
-    return check_url_permission(user, app.config.get("PRODUCT_KEY"))
+    return check_url_permission(current_token.user_info, app.config.get("PRODUCT_KEY"))
 
 
 def init_app(flask_app):

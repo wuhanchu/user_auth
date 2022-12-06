@@ -4,21 +4,20 @@ from http import HTTPStatus
 
 import requests
 from authlib.integrations.flask_oauth2 import current_token
-from config import ConfigDefine
 from flask import jsonify, request
 from flask_frame.api.response import JsonResult, Response
 from flask_frame.extension.database import db
 from flask_frame.extension.postgrest.util import get_args_delete_prefix
 from flask_frame.util import com_tool, param_tool, sql_tool
+from sqlalchemy import Text, func
+
+from config import ConfigDefine
 from module.auth.extension.oauth2 import require_oauth
 from module.user.model import User, UserRole
-from sqlalchemy import Text, func
 
 from .. import get_user_pattern
 from ..role.model import Role
 from . import blueprint
-from .service import (append_permission, append_permission_scope,
-                      get_user_extend_info)
 
 
 @blueprint.route("", methods=["POST"])
@@ -56,6 +55,7 @@ def user_register():
     :return:
     """
     from flask_frame.api.exception import ResourceError
+
     from module.config.model import Config
 
     register_switch = Config.query.filter_by(key=Config.KEY.register_switch).first()
@@ -176,30 +176,13 @@ def user_roles_list():
     return JsonResult.queryResult(list)
 
 
-
 @blueprint.route("/current", methods=["GET"])
 @require_oauth()
 def current_user():
 
     if current_token:
-        from module.auth.model import OAuth2Client
-
-        db.session.merge(current_token)
-        user = current_token.user
-
-        # 补充客户端信息
-        client = OAuth2Client.query.filter_by(
-            client_id=current_token.client_id
-        ).first()
-        user_extend = {
-            "client_id": current_token.client_id,
-            "client_name": client.client_name,
-        }
-
-        if user:
-            if not user.enable:
-                return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
-            user_extend = {**user_extend, **get_user_extend_info(user)}
-        return jsonify(user_extend)
+        if current_token.user and not current_token.user.enable:
+            return {"message": "当前用户被禁用"}, HTTPStatus.UNAUTHORIZED
+        return jsonify(current_token.user_info)
     else:
         return JsonResult.error()

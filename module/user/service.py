@@ -4,22 +4,37 @@ from flask_frame.api.response import queryToDict
 from flask_frame.extension.database import db, db_schema
 
 
-def get_user_extend_info(user_record):
+def get_user_extend_info(token):
     """
-    convert user_record to user
+    转换token的用户字典返回信息
     :param user_record: user database record
     :return:
     """
+    info = {}
+    if token.user:
+        info = queryToDict(token.user)
+        info.pop("password")
+        info.pop("del_fg")
+        info.pop("token")
+        info.pop("opr_at")
+        info.pop("opr_by")
 
-    user = queryToDict(user_record)
-    user.pop("password")
-    user.pop("del_fg")
-    user.pop("token")
+        append_permission(info)
+        append_permission_scope(info)
+    else:
+        info = (
+            {
+                "client_id": token.client_id,
+                "client_name": token.client.client_name,
+            }
+            if token.client
+            else {
+                "client_id": token.client_id,
+            }
+        )
 
-    append_permission(user)
-    append_permission_scope(user)
-
-    return user
+    # 返回
+    return info
 
 
 def append_permission(data):

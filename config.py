@@ -47,12 +47,12 @@ class Config:
         "redis",
         "database",
         "postgrest",
-        "sentry",
         "celery",
     ]
 
     # sentry
-    SENTRY_DS = "https://c58a597cd1fb4a44b2b719f357325597:d2eeb8285a584261a0b1bd56206991ef@ai.dataknown.cn:31443/4"
+    SENTRY_DS = "https://5b16ef46c2194f74822702c15375331f@asus.uglyxu.cn:31001/10"
+    SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "production")
 
     # auth
     LICENSE_CHECK = False
@@ -113,11 +113,6 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = False
 
-    # set enable
-    ENABLED_EXTENSION = [
-        item for item in Config.ENABLED_EXTENSION if item not in ["sentry"]
-    ]
-
     RUN_PORT = os.environ.get("RUN_PORT", 31502)
     PROXY_SERVER_URL = os.environ.get("PROXY_SERVER_URL", "http://192.168.1.152:36023")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -134,6 +129,9 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     AUTO_UPDATE = True  # 自动更新数据库
+    ENABLED_EXTENSION = Config.ENABLED_EXTENSION + ["sentry"]
+    SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "testing")
+
     DB_UPDATE_SWITCH = bool(
         strtobool(os.environ.get("DB_UPDATE_SWITCH", "True"))
     )  # 自动运行更新文件开开关
