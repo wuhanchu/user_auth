@@ -4,5 +4,5 @@ ldap3~=2.8
 celery_once~=3.0.1
 celery-redbeat~=2.0.0
 itsdangerous~=2.0.1
-flask_frame==0.5.2
+flask_frame==0.5.4
 Authlib~=0.14.1
