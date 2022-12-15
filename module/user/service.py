@@ -12,7 +12,11 @@ def get_user_extend_info(token):
     """
     info = {}
     if token.user:
-        info = queryToDict(token.user)
+        info = {
+            "client_id": token.client_id,
+            "client_name": token.client.client_name,
+            **queryToDict(token.user),
+        }
         info.pop("password")
         info.pop("del_fg")
         info.pop("token")
