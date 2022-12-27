@@ -83,11 +83,11 @@ class Config:
         "sql/init/table.sql",
         "sql/init/data/permission_scope.sql",
         "sql/init/data/role.sql",
+        "sql/init/data/role_permission_scope.sql",
         "sql/init/data/department.sql",
         "sql/init/data/user.sql",
         "sql/init/data/oauth2_client.sql",
         "sql/init/data/user_role.sql",
-        "sql/init/data/role_permission_scope.sql",
         "sql/init/data/param.sql",
     ]
     DB_UPDATE_FILE = [

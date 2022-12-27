@@ -8,6 +8,7 @@ INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('系统管理', 'system', 'login', 'user_auth')
 ;
 
+-- 证书
 DELETE FROM "permission_scope" WHERE "key"='license' and "product_key"='user_auth';
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('证书', 'license', 'system', 'user_auth')
@@ -23,6 +24,7 @@ INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('证书_构造', 'license_file_post', 'license', 'user_auth')
 ;
 
+-- 角色
 DELETE FROM "permission_scope" WHERE "key"='role_get' and "product_key"='user_auth';
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('角色', 'role_get', 'system', 'user_auth')
@@ -98,6 +100,7 @@ INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('用户_导出', 'user_export', 'user_get', 'user_auth')
 ;
 
+-- 部门
 DELETE FROM "permission_scope" WHERE "key"='department_get' and "product_key"='user_auth';
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('部门', 'department_get', 'system', 'user_auth')
@@ -128,6 +131,7 @@ INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('部门_新增', 'department_post', 'department_get', 'user_auth')
 ;
 
+-- 客户端
 DELETE FROM "permission_scope" WHERE "key"='oauth2_client_get' and "product_key"='user_auth';
 INSERT INTO "permission_scope"("name", "key", "parent_key", "product_key")
 VALUES ('客户端', 'oauth2_client_get', 'system', 'user_auth')
