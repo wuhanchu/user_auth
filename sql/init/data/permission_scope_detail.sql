@@ -2,6 +2,7 @@
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_post', 'role_post', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_delete', 'role_delete', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('role_patch', 'role_patch', 'user_auth', 'user_auth');
+
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('user_get', 'user_get', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('user_post', 'user_post', 'user_auth', 'user_auth');
 INSERT INTO "permission_scope_detail"("permission_key", "permission_scope_key", "product_key", "product_key_scope") VALUES ('user_delete', 'user_delete', 'user_auth', 'user_auth');
