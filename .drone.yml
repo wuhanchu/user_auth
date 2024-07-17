@@ -21,6 +21,7 @@ steps:
         path: /var/run/docker.sock
 
   - name: publish_tag
+  
     image: plugins/docker
     settings:
       repo: wuhanchu/user_auth
