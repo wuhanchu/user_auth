@@ -54,7 +54,7 @@ steps:
         from_secret: deploy_port
       username:
         from_secret: deploy_username
-      key_path: /root/.ssh/id_rsa
+      key_path: /drone/ssh/id_rsa
       script:
         - cd /home/wuhanchu/project/maintenance_script
         - ./script/check_clash.sh
