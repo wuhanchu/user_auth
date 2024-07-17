@@ -17,15 +17,14 @@ steps:
         from_secret: docker_password
     when:
       branch:
-        include: [master]  # 只在 master 分支上运行
+        include: [master] # 只在 master 分支上运行
       event:
-        include: [push]  # 只包括 push 事件
+        include: [push] # 只包括 push 事件
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
 
   - name: publish_tag
-
     image: plugins/docker
     settings:
       repo: wuhanchu/user_auth
@@ -39,13 +38,26 @@ steps:
         from_secret: docker_password
     when:
       branch:
-        include: [master]  # 只在 master 分支上运行
+        include: [master] # 只在 master 分支上运行
       event:
-        include: [tag]  # 只包括 tag 事件
+        include: [tag] # 只包括 tag 事件
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
 
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: deploy_host
+      port:
+        from_secret: deploy_port
+      username:
+        from_secret: deploy_username
+      key_path: /root/.ssh/id_rsa
+      script:
+        - cd /home/wuhanchu/project/maintenance_script
+        - ./script/check_clash.sh
 volumes:
   - name: dockersock
     host:
