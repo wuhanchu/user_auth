@@ -16,6 +16,7 @@ else:
     parser = argparse.ArgumentParser(description="manual to this script")
     parser.add_argument("--celery", action="store_true")
     parser.add_argument("--beat", action="store_true")
+    
 
     # 初始化
     app = create_app(config)
