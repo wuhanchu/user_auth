@@ -31,7 +31,6 @@ else:
             from flask_frame.extension.celery import celery
 
             log_level = app.config.get("LOG_LEVEL", "ERROR")
-
             if args.beat:
                 celery.start(
                     argv=["beat", "-l", log_level, "-S", "redbeat.RedBeatScheduler"]

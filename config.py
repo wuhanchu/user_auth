@@ -16,7 +16,6 @@ class ConfigDefine:
     USER_SERVER_ACCOUNT = "USER_SERVER_ACCOUNT"  # LDAP服务账号
     USER_SERVER_PASSWORD = "USER_SERVER_PASSWORD"  # LDAP服务密码
 
-    CELERYBEAT_SCHEDULE = "CELERYBEAT_SCHEDULE"  # 定时任务
     LDAP_INTERVAL_MINUTE = "LDAP_INTERVAL_MINUTE"  # 定时任务
 
     class UserPattern:
@@ -24,6 +23,7 @@ class ConfigDefine:
         phfund = "phfund"  # 鹏华
 
     # celery
+    CELERYBEAT_SCHEDULE = "CELERYBEAT_SCHEDULE"  # 定时任务
     CELERY_BROKER = "CELERY_BROKER"
 
 
