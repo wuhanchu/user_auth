@@ -58,7 +58,7 @@ steps:
         from_secret: deploy_key
       script:
         - cd /home/wuhanchu/project/maintenance_script
-        - ./script/check_clash.sh
+        - docker-compose -f ./compose/mysql.yml -p database up -d
 
 volumes:
   - name: dockersock
