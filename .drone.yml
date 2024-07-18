@@ -20,6 +20,9 @@ steps:
         include: [master] # 只在 master 分支上运行
       event:
         include: [push] # 只包括 push 事件
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
 
   - name: publish_tag
     image: plugins/docker
@@ -38,6 +41,9 @@ steps:
         include: [master] # 只在 master 分支上运行
       event:
         include: [tag] # 只包括 tag 事件
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
 
   - name: deploy
     image: appleboy/drone-ssh
