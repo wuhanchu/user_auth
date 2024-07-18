@@ -62,3 +62,7 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
+
+  - name: key_file
+    host:
+      path: /drone/ssh/id_rsa
