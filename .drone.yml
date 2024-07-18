@@ -58,6 +58,10 @@ steps:
       script:
         - cd /home/wuhanchu/project/maintenance_script
         - ./script/check_clash.sh
+    volumes:
+      - name: key_file
+        path: /root/.ssh/id_rsa
+
 volumes:
   - name: dockersock
     host:
